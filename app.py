@@ -15,7 +15,7 @@ st.markdown("---")
 with st.container():
     item_col, days_col = st.columns(2)
     with item_col:
-        item = st.text_input("Item name")
+        item = st.text_input("Item name", "Titanium Ore")
     with days_col:
         num_days = st.number_input("Number of days", 1, 90, 30)
 
@@ -38,11 +38,11 @@ with st.container():
     with ma_col4:
         ma4 = st.checkbox("4 hour", value=False)
     with ma_col12:
-        ma12 = st.checkbox("12 hour", value=False)
+        ma12 = st.checkbox("12 hour", value=True)
     with ma_col24:
-        ma24 = st.checkbox("24 hour", value=True)
+        ma24 = st.checkbox("24 hour", value=False)
     with hide_og_col:
-        hide_original = st.checkbox("Hide raw data", value=False)
+        hide_original = st.checkbox("Hide raw data", value=True)
 
 
 
