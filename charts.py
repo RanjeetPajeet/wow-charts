@@ -134,7 +134,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
     
     if mobile:
         chart = chart.configure_axisY(
-            grid=True,           gridOpacity=0.2,         tickCount=4,
+            grid=True,           gridOpacity=0.2,         tickCount=5,
             titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
             titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
             labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
@@ -146,7 +146,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
             labelFontSize=16,    labelFontWeight="bold",
         )
         
-        chart = chart.properties(title=f"{item} {ylabel}")
+        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
         chart.configure_title(
             fontSize=20,
             font='Calibri',
