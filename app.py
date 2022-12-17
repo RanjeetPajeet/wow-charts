@@ -65,7 +65,8 @@ chart = st.empty()
 if st.button("Submit"):
     if chart_type == "Price":
         chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original), use_container_width=True)
-        st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
+        if mobile:
+            st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
 
 
 
