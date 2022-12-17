@@ -143,7 +143,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
         chart = chart.configure_axisX(
             grid=False,          tickCount="day",        titleOpacity=0,
             labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-            labelFontSize=16,    labelFontWeight="bold",
+            labelFontSize=16,    labelFontWeight="bold", ticks=True,
         )
         
         chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
