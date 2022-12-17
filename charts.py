@@ -134,7 +134,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
     
     if mobile:
         chart = chart.configure_axisY(
-            grid=True,           gridOpacity=0.1,         tickCount=6,
+            grid=True,           gridOpacity=0.2,         tickCount=4,
             titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
             titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
             labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
