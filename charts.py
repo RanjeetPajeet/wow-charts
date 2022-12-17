@@ -155,7 +155,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
             align='center'
         )
         
-        chart = chart.properties(height=300)
+        chart = chart.properties(height=400)
     
 
     return chart
