@@ -5,7 +5,7 @@ from data import get_server_history
 
 
 
-def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool) -> alt.Chart:
+def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool) -> alt.Chart:
     data = get_server_history(item, server, faction, num_days)
     scale = 100 if data["prices"][-1] < 10000 else 10000
     prices = [round(price/scale,2) for price in data["prices"]]
@@ -130,5 +130,23 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
     chart = chart.configure_view(
         strokeOpacity=0,    # remove border
     )
+    
+    
+    if mobile:
+        chart = chart.configure_axisY(
+            grid=True,           gridOpacity=0.1,         tickCount=6,
+            titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
+            titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
+            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
+        )
+        chart = chart.configure_axisX(
+            grid=False,          tickCount="day",        titleOpacity=0,
+            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",
+        )
+        
+        chart = chart.properties(height=300)
+    
 
     return chart
