@@ -147,6 +147,14 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
         )
         
         chart = chart.properties(title=f"{item} {ylabel}")
+        chart.configure_title(
+            fontSize=20,
+            font='Calibri',
+            anchor='start',
+            color='#ffffff',
+            align='center'
+        )
+        
         chart = chart.properties(height=300)
     
 
