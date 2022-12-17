@@ -146,6 +146,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
             labelFontSize=16,    labelFontWeight="bold",
         )
         
+        chart = chart.properties(title=f"{item} {ylabel}")
         chart = chart.properties(height=300)
     
 
