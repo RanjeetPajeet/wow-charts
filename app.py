@@ -43,7 +43,12 @@ with st.container():
         ma24 = st.checkbox("24 hour", value=False)
     with hide_og_col:
         hide_original = st.checkbox("Hide raw data", value=True)
+    
+    st.markdown("##")
+    
+    mobile = st.checkbox("Mobile", value=False)
 
+    
 
 
 st.markdown("---")
