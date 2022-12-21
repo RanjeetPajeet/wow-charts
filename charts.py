@@ -104,7 +104,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
             else:
-                chart = alt.Chart(data).mark_line(color="#bd4043",strokeWidth=3).encode(
+                chart = alt.Chart(data).mark_line(color="#bd4043",strokeWidth=2.5).encode(
                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
         else:
