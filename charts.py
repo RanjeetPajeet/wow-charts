@@ -116,7 +116,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
     chart = chart.properties(height=600)
 
     chart = chart.configure_axisY(
-        grid=True,           gridOpacity=0.1,         tickCount=6,
+        grid=True,           gridOpacity=0.2,         tickCount=6,
         titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
         titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
         labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
