@@ -175,28 +175,36 @@ def align(dataset1: dict, dataset2: dict) -> dict:
 
 
 
-
-def replace_outliers(lst: dict, numStdDevs: int = 3) -> dict:
+# NOTE: THIS FUNCTION NEEDS WORK
+def remove_outliers(lst: list) -> list:
     """
-    Replaces outliers in the given list with the average of the list.
+    Replaces any extreme outliers (that are obviously bad data) with the average of the surrounding data.
 
     Parameters
     ----------
     `lst`: The list to replace outliers in.
-    `numStdDevs`: The number of standard deviations away from the mean that an outlier is.
 
     Returns
     -------
-    `list`: The modified version of the list, with the same structure.
+    `list`: The modified version of the list, with the same number of elements.
     """
-    import numpy as np
-    # get the mean and standard deviation of the data
-    mean = np.mean(lst)
-    stdDev = np.std(lst)
-    print(f"  Mean: {mean:.2f}")
-    print(f"  Standard Deviation: {stdDev:.2f}")
-    # loop through the data and replace outliers with the mean
+    import statistics
+    # get the average and standard deviation of the list
+    avg = statistics.mean(lst)
+    std = statistics.stdev(lst)
+    newLst = []
+    # loop through the list and replace any outliers with the average of the surrounding data
     for i in range(len(lst)):
-        if lst[i] > mean + numStdDevs * stdDev or lst[i] < mean - numStdDevs * stdDev:
-            lst[i] = mean
+        if lst[i] > avg + 2*std or lst[i] < avg - 2*std:
+            newLst.append(avg)
+            # lst[i] = avg
+            # lst[i] = (lst[i-1] + lst[i+1]) / 2
+        else:
+            newLst.append(lst[i])
+    avg2 = statistics.mean(newLst)
+    std2 = statistics.stdev(newLst)
+    for i in range(len(lst)):
+        if lst[i] > avg2 + 2*std2 or lst[i] < avg2 - 2*std2:
+            lst[i] = (avg2+avg)/2
+            # lst[i] = (lst[i-1] + lst[i+1]) / 2
     return lst
