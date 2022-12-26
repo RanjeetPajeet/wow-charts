@@ -172,11 +172,45 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
     region_prices = [round(price/scale,2) for price in region_data["prices"]]
     ylabel = "Price (silver)" if scale==100 else "Price (gold)"
 
-    # make sure server_prices and region_prices are the same length
-    if len(server_prices) > len(region_prices):
-        server_prices = server_prices[:len(region_prices)]
-    elif len(region_prices) > len(server_prices):
-        region_prices = region_prices[:len(server_prices)]
+    # set the minute to 0 for all times to ensure they are the same
+    server_data["times"] = [time.replace(minute=0) for time in server_data["times"]]
+    region_data["times"] = [time.replace(minute=0) for time in region_data["times"]]
+
+
+
+    ###  MIGHT BE ABLE TO GET RID OF ALL THIS LENGTH CHECKING STUFF  ###
+
+    last_time_server = server_data["times"][-1]
+    last_time_region = region_data["times"][-1]
+
+    if last_time_server != last_time_region:
+        if last_time_server > last_time_region:         # the server_data time is later, so remove the last element of server_data
+            server_prices = server_prices[:-1]
+            server_data["times"] = server_data["times"][:-1]
+        elif last_time_server < last_time_region:       # the region_data time is later, so remove the last element of region_data
+            region_prices = region_prices[:-1]
+            region_data["times"] = region_data["times"][:-1]
+
+    # check that the lengths of the two lists are the same
+    if len(server_data["times"]) != len(region_data["times"]):
+        if len(server_data["times"]) > len(region_data["times"]):
+            diff_len = len(server_data["times"]) - len(region_data["times"])
+            server_data["times"] = server_data["times"][diff_len:]
+            server_prices = server_prices[diff_len:]
+        elif len(server_data["times"]) < len(region_data["times"]):
+            diff_len = len(region_data["times"]) - len(server_data["times"])
+            region_data["times"] = region_data["times"][diff_len:]
+            region_prices = region_prices[diff_len:]
+            
+    ####################################################################
+
+
+
+    print("\nlen(server_data):\n", len(server_data))
+    print("\nlen(server_data['times']):\n", len(server_data["times"]))
+    print("\nlen(server_prices):\n", len(server_prices))
+    print("\nLast 5 of server_data['times']:\n", server_data["times"][-5:])
+    print("\nLast 5 of server_prices:\n", server_prices[-5:])
 
     server_data = pd.DataFrame(
         {
@@ -186,6 +220,21 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
             "24-hour moving average": pd.Series(server_prices).rolling(12).mean(),
         }
     )
+    print("\nlen(server_data.rows):\n", len(server_data))
+    print("\nlen(server_data.columns):\n", len(server_data.columns))
+
+
+
+    print("\nlen(region_data):\n", len(region_data))
+    # print("\nlen(region_data.columns):\n", len(region_data.columns))
+    print("\nlen(region_data['times']):\n", len(region_data["times"]))
+    print("\nlen(region_prices):\n", len(region_prices))
+    print("\nLast 5 of region_data['times']:\n", region_data["times"][-5:])
+    print("\nLast 5 of region_prices:\n", region_prices[-5:])
+    print("\n\n")
+    # from stuff import view
+    # view(region_data)
+
     region_data = pd.DataFrame(
         {
             "Time": region_data["times"], ylabel: region_prices,
@@ -200,6 +249,9 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
         server_data = server_data.iloc[-len(region_data):]
     elif len(region_data) > len(server_data):
         region_data = region_data.iloc[-len(server_data):]
+    
+    # make sure server_data and region_data have the same number of columns
+
     
     if hide_original:
         min4_server  = min(server_data["4-hour moving average" ].dropna().tolist()[1:])
@@ -264,16 +316,43 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
         # st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
     
 
+    # if not hide_original:
+    #     ... server = #83c9ff, region = #ff6f83
+    # if ma4:
+    #     if hide_original:
+    #         ... server = #7defa1, region = #7defa1 (#ff8700)
+    #     else:
+    #         ... server = #7defa1, region = #7defa1 (#ff8700)
+    # if ma12:
+    #     if hide_original:
+    #         # if ma4:
+    #               ... server = #6d3fc0, region = #6d3fc0
+    #         # else:
+    #               ... server = #6d3fc0, region = #6d3fc0
+    #     else:
+    #         ... server = #6d3fc0, region = #6d3fc0
+    # if ma24:
+    #     if hide_original:
+    #         # if ma4 or ma12:
+    #               ... server = #bd4043, region = #bd4043
+    #         # else:
+    #               ... server = #bd4043, region = #bd4043
+    #     else:
+    #         ... server = #bd4043, region = #bd4043
+
+    # For the following colors, the region price is always the lighter-shade version of any two colors
+
 
     if not hide_original:
         chart = alt.Chart(server_data).mark_line(
-            color="#83c9ff" if not hide_original else "#0e1117",
+            # color="#83c9ff" if not hide_original else "#0e1117",
+            color="#3aa9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         ) + alt.Chart(region_data).mark_line(
-            color="#ff6f83" if not hide_original else "#0e1117",                                            #  <------ NOTE: "#ff6f83" can be changed
+            color="#83c9ff" if not hide_original else "#0e1117",                                            #  <------ NOTE: "#ff6f83" can be changed
             strokeWidth=2,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
@@ -283,70 +362,94 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
 
     if ma4:
         if hide_original:
-            chart = alt.Chart(server_data).mark_line(color="#7defa1",strokeWidth=2).encode(
+            chart = alt.Chart(server_data).mark_line(
+                        # color="#7defa1",strokeWidth=2).encode(
+                        color="#0ce550",strokeWidth=2).encode(
                         x=alt.X("Time", axis=alt.Axis(title="Date")), 
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
-            ) + alt.Chart(region_data).mark_line(color="#7defa1",strokeWidth=2).encode(                     #  <------ NOTE: "#7defa1" can be changed
+            ) + alt.Chart(region_data).mark_line(
+                        color="#7defa1",strokeWidth=2).encode(                     #  <------ NOTE: "#7defa1" can be changed
                         x=alt.X("Time", axis=alt.Axis(title="Date")), 
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
             )
         else:
-            chart = chart + alt.Chart(server_data).mark_line(color="#7defa1").encode(
+            chart = chart + alt.Chart(server_data).mark_line(
+                                # color="#7defa1").encode(
+                                color="#0ce550").encode(
                                 x=alt.X("Time"),
                                 y=alt.Y("4-hour moving average")
-            ) + alt.Chart(region_data).mark_line(color="#7defa1").encode(                                    #  <------ NOTE: "#7defa1" can be changed
+            ) + alt.Chart(region_data).mark_line(
+                                color="#7defa1").encode(                                    #  <------ NOTE: "#7defa1" can be changed
                                 x=alt.X("Time"),
                                 y=alt.Y("4-hour moving average"))
     
     if ma12:
         if hide_original:
             if ma4:
-                chart = chart + alt.Chart(server_data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
+                chart = chart + alt.Chart(server_data).mark_line(
+                                    # color="#6d3fc0",strokeWidth=2.1).encode(
+                                    color="#6029c1",strokeWidth=2.1).encode(
                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
-                ) + alt.Chart(region_data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
+                ) + alt.Chart(region_data).mark_line(
+                                    color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
             else:
-                chart = alt.Chart(server_data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
+                chart = alt.Chart(server_data).mark_line(
+                            # color="#6d3fc0",strokeWidth=2.1).encode(
+                            color="#6029c1",strokeWidth=2.1).encode(
                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
-                ) + alt.Chart(region_data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
+                ) + alt.Chart(region_data).mark_line(
+                            color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
         else:
-            chart = chart + alt.Chart(server_data).mark_line(color="#6d3fc0").encode(
+            chart = chart + alt.Chart(server_data).mark_line(
+                                # color="#6d3fc0").encode(
+                                color="#6029c1").encode(
                                 x=alt.X("Time"),
                                 y=alt.Y("12-hour moving average")
-            ) + alt.Chart(region_data).mark_line(color="#6d3fc0").encode(                                    #  <------ NOTE: "#6d3fc0" can be changed
+            ) + alt.Chart(region_data).mark_line(
+                                color="#9670dc").encode(                                    #  <------ NOTE: "#6d3fc0" can be changed
                                 x=alt.X("Time"),
                                 y=alt.Y("12-hour moving average"))
 
     if ma24:
         if hide_original:
             if ma4 or ma12:
-                chart = chart + alt.Chart(server_data).mark_line(color="#bd4043",strokeWidth=2.2).encode(
+                chart = chart + alt.Chart(server_data).mark_line(
+                                    # color="#bd4043",strokeWidth=2.2).encode(
+                                    color="#ba191c",strokeWidth=2.2).encode(
                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
-                ) + alt.Chart(region_data).mark_line(color="#bd4043",strokeWidth=2.2).encode(                 #  <------ NOTE: "#bd4043" can be changed
+                ) + alt.Chart(region_data).mark_line(
+                                    color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#bd4043" can be changed
                                     x=alt.X("Time", axis=alt.Axis(title="Date")),
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
             else:
-                chart = alt.Chart(server_data).mark_line(color="#bd4043",strokeWidth=2.2).encode(
+                chart = alt.Chart(server_data).mark_line(
+                            # color="#bd4043",strokeWidth=2.2).encode(
+                            color="#ba191c",strokeWidth=2.2).encode(
                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
-                ) + alt.Chart(region_data).mark_line(color="#bd4043",strokeWidth=2.2).encode(                 #  <------ NOTE: "#bd4043" can be changed
+                ) + alt.Chart(region_data).mark_line(
+                            color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#ff6f83" can be changed
                             x=alt.X("Time", axis=alt.Axis(title="Date")),
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
         else:
-            chart = chart + alt.Chart(server_data).mark_line(color="#bd4043").encode(
+            chart = chart + alt.Chart(server_data).mark_line(
+                # color="#bd4043").encode(
+                color="#ba191c").encode(
                 x=alt.X("Time"),
                 y=alt.Y("24-hour moving average")
-            ) + alt.Chart(region_data).mark_line(color="#bd4043").encode(                                    #  <------ NOTE: "#bd4043" can be changed
+            ) + alt.Chart(region_data).mark_line(
+                color="#ff5169").encode(                                    #  <------ NOTE: "#bd4043" can be changed
                 x=alt.X("Time"),
                 y=alt.Y("24-hour moving average"))
 
