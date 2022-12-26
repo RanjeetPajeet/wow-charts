@@ -1,15 +1,19 @@
 import pandas as pd
 import altair as alt
 import streamlit as st
-from data import get_server_history, get_region_history
+from data import get_server_history, get_region_history, remove_outliers
 
 
 
-def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool) -> alt.Chart:
+def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool, fix_outliers:bool = False) -> alt.Chart:
     data = get_server_history(item, server, faction, num_days)
     scale = 100 if data["prices"][-1] < 10000 else 10000
     prices = [round(price/scale,2) for price in data["prices"]]
     ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+    
+    # run the remove_outliers function
+    if fix_outliers:
+        prices = remove_outliers(prices)
 
     data = pd.DataFrame(
         {
@@ -164,7 +168,7 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
 
 
 
-def plot_price_and_region_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool) -> alt.Chart:
+def plot_price_and_region_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool, fix_outliers:bool = False) -> alt.Chart:
     server_data = get_server_history(item, server, faction, num_days)
     region_data = get_region_history(item, numDays=num_days)
     scale = 100 if server_data["prices"][-1] < 10000 else 10000
@@ -176,6 +180,11 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
     server_data["times"] = [time.replace(minute=0) for time in server_data["times"]]
     region_data["times"] = [time.replace(minute=0) for time in region_data["times"]]
 
+
+    # run the remove_outliers function on both price lists
+    if fix_outliers:
+        server_prices = remove_outliers(server_prices)
+        region_prices = remove_outliers(region_prices)
 
 
     ###  MIGHT BE ABLE TO GET RID OF ALL THIS LENGTH CHECKING STUFF  ###
@@ -206,6 +215,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
 
 
 
+
     server_data = pd.DataFrame(
         {
             "Time": server_data["times"], ylabel: server_prices,
@@ -227,8 +237,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
     #if len(server_data) > len(region_data):
     #    server_data = server_data.iloc[-len(region_data):]
     #elif len(region_data) > len(server_data):
-    #    region_data = region_data.iloc[-len(server_data):]
-    
+    #    aregion_data = region_data.iloc[-len(server_data):]
 
     
     if hide_original:
