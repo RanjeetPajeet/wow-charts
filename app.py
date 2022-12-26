@@ -1,5 +1,5 @@
 import streamlit as st
-from charts import plot_price_history
+from charts import plot_price_history, plot_price_and_region_history
 
 st.set_page_config(
     layout     = "centered",
@@ -27,8 +27,8 @@ with st.container():
     
     st.markdown("##")
 
-    chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region"])
-    chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
+    chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
+    # chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
 
     st.markdown("##")
 
@@ -69,57 +69,11 @@ if st.button("Submit"):
             st.markdown("#")
             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
         chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-#         if mobile:
-#             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
 
+    elif chart_type == "Price & Region Price":
+        if mobile:
+            st.markdown("#")
+            st.markdown("#")
+            st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
+        chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
-
-
-
-
-
-
-
-
-# if __name__ == "__main__":
-#     import streamlit as st
-#     from plots import price, price_and_quantity, price_and_region
-    
-#     st.set_page_config(
-#         page_title="AH Prices",
-#         layout="centered",
-#         page_icon=":moneybag:"
-#     )
-    
-#     with open("style/style.css") as f:      # load css file
-#         st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
-    
-
-#     st.title("Auction House Plots")
-#     # st.write("Simple tool for plotting price & quantity of items.")
-
-#     st.write("")
-
-#     item = st.text_input("Item name", "Saronite Ore")
-#     numDays = st.number_input("Number of days", 1, 90, 7)
-
-#     server = st.selectbox("Server", ["Skyfury", "Faerlina", "Whitemane"])
-#     faction = st.selectbox("Faction", ["Alliance", "Horde"])
-
-#     chartType = st.selectbox("Chart type", ["Price", "Price & Quantity", "Price & Region"], help="Select the type of chart you want to view.")
-
-#     st.write("")
-
-#     # replaceOutliers = st.checkbox("Replace outliers", False)
-#     # threshold = st.number_input("Outlier threshold", 1, 5, 2)
-#     # html(javascript, height=0)
-
-#     if st.button("Plot"):
-#         if chartType == "Price":
-#             st.pyplot(price(item, numDays, server, faction))
-#             # disable the view fullscreen button (button title="View fullscreen" class="css-e370rw e191ei0e1")
-#             # st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
-#         elif chartType == "Price & Quantity":
-#             st.pyplot(price_and_quantity(item, numDays, server, faction))
-#         elif chartType == "Price & Region":
-#             st.pyplot(price_and_region(item, numDays, server, faction, replaceOutliers=True, threshold=3))
