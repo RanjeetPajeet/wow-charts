@@ -12,6 +12,7 @@ st.title("Auction House Charts")
 st.markdown("---")
 
 
+
 with st.container():
     st.markdown("### Parameters")
     st.markdown("###")
@@ -39,13 +40,15 @@ with st.container():
 
     ma_col4, ma_col12, ma_col24, hide_og_col = st.columns(4)
     with ma_col4:
-        ma4 = st.checkbox("4 hour", value=False)
+        ma4 = st.checkbox("4 hour", value=False, key="ma4_checkbox")
     with ma_col12:
-        ma12 = st.checkbox("12 hour", value=True)
+        ma12 = st.checkbox("12 hour", value=True, key="ma12_checkbox")
     with ma_col24:
-        ma24 = st.checkbox("24 hour", value=False)
+        ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
     with hide_og_col:
-        hide_original = st.checkbox("Hide raw data", value=True)
+        hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
+
+
     
     st.markdown("##")
     
