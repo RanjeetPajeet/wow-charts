@@ -14,6 +14,7 @@ st.markdown("---")
 
 with st.container():
     st.markdown("### Parameters")
+    st.markdown("###")
     item_col, days_col = st.columns(2)
     with item_col:
         item = st.text_input("Item name", "Titanium Ore")
@@ -31,7 +32,7 @@ with st.container():
     chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
     # chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
 
-    st.markdown("##")
+    st.markdown("#")
 
     st.markdown("### Moving averages")
     st.markdown("###")
