@@ -13,6 +13,7 @@ st.markdown("---")
 
 
 with st.container():
+    st.markdown("### Parameters")
     item_col, days_col = st.columns(2)
     with item_col:
         item = st.text_input("Item name", "Titanium Ore")
@@ -33,6 +34,7 @@ with st.container():
     st.markdown("##")
 
     st.markdown("### Moving averages")
+    st.markdown("###")
 
     ma_col4, ma_col12, ma_col24, hide_og_col = st.columns(4)
     with ma_col4:
@@ -76,4 +78,5 @@ if st.button("Submit"):
             st.markdown("#")
             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+
 
