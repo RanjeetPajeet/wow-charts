@@ -188,7 +188,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
     )
     region_data = pd.DataFrame(
         {
-            "Time": region_prices["times"], ylabel: region_prices,
+            "Time": region_data["times"], ylabel: region_prices,
             "4-hour moving average":  pd.Series(region_prices).rolling(2).mean(),
             "12-hour moving average": pd.Series(region_prices).rolling(6).mean(),
             "24-hour moving average": pd.Series(region_prices).rolling(12).mean(),
