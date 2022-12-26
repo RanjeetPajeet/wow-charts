@@ -206,12 +206,6 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
 
 
 
-    print("\nlen(server_data):\n", len(server_data))
-    print("\nlen(server_data['times']):\n", len(server_data["times"]))
-    print("\nlen(server_prices):\n", len(server_prices))
-    print("\nLast 5 of server_data['times']:\n", server_data["times"][-5:])
-    print("\nLast 5 of server_prices:\n", server_prices[-5:])
-
     server_data = pd.DataFrame(
         {
             "Time": server_data["times"], ylabel: server_prices,
@@ -220,21 +214,6 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
             "24-hour moving average": pd.Series(server_prices).rolling(12).mean(),
         }
     )
-    print("\nlen(server_data.rows):\n", len(server_data))
-    print("\nlen(server_data.columns):\n", len(server_data.columns))
-
-
-
-    print("\nlen(region_data):\n", len(region_data))
-    # print("\nlen(region_data.columns):\n", len(region_data.columns))
-    print("\nlen(region_data['times']):\n", len(region_data["times"]))
-    print("\nlen(region_prices):\n", len(region_prices))
-    print("\nLast 5 of region_data['times']:\n", region_data["times"][-5:])
-    print("\nLast 5 of region_prices:\n", region_prices[-5:])
-    print("\n\n")
-    # from stuff import view
-    # view(region_data)
-
     region_data = pd.DataFrame(
         {
             "Time": region_data["times"], ylabel: region_prices,
@@ -245,12 +224,11 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
     )
 
     # make sure server_data and region_data have the same number of rows
-    if len(server_data) > len(region_data):
-        server_data = server_data.iloc[-len(region_data):]
-    elif len(region_data) > len(server_data):
-        region_data = region_data.iloc[-len(server_data):]
+    #if len(server_data) > len(region_data):
+    #    server_data = server_data.iloc[-len(region_data):]
+    #elif len(region_data) > len(server_data):
+    #    region_data = region_data.iloc[-len(server_data):]
     
-    # make sure server_data and region_data have the same number of columns
 
     
     if hide_original:
