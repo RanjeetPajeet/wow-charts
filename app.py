@@ -31,6 +31,11 @@ with st.container():
     st.markdown("##")
 
     chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
+
+    if chart_type == "Price":
+        st.markdown("##")
+        compare_with = st.selectbox("Compare with", ["A","B","C"])
+
     # chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
 
     st.markdown("#")
