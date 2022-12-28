@@ -36,9 +36,9 @@ with st.container():
         #st.markdown("##")
         server_col2, faction_col2 = st.columns(2)
         with server_col2:
-            server2 = st.selectbox("Serverr", ["Skyfury","Faerlina","Whitemane"])
+            server2 = st.selectbox("Server", ["Skyfury","Faerlina","Whitemane"], key="server_compare")
         with faction_col2:
-            faction2 = st.selectbox("Factionn", ["Alliance","Horde"])
+            faction2 = st.selectbox("Faction", ["Alliance","Horde"], key="faction_compare")
             
         compare_with = st.selectbox("Compare with", [None,"A","B","C"])
 
