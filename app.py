@@ -38,7 +38,7 @@ with st.container():
         with server_col2:
             server2 = st.selectbox("Serverr", ["Skyfury","Faerlina","Whitemane"])
         with faction_col2:
-            faction2 = st.selectbox("Faction", ["Alliance","Horde"])
+            faction2 = st.selectbox("Factionn", ["Alliance","Horde"])
             
         compare_with = st.selectbox("Compare with", [None,"A","B","C"])
 
