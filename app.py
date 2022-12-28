@@ -36,10 +36,11 @@ with st.container():
         #st.markdown("##")
         server_col2, faction_col2 = st.columns(2)
         with server_col2:
-            server2 = st.selectbox("Server", ["Skyfury","Faerlina","Whitemane"])
-        compare_with = st.selectbox("Compare with", [None,"A","B","C"])
+            server2 = st.selectbox("Serverr", ["Skyfury","Faerlina","Whitemane"])
         with faction_col2:
             faction2 = st.selectbox("Faction", ["Alliance","Horde"])
+            
+        compare_with = st.selectbox("Compare with", [None,"A","B","C"])
 
     # chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
 
