@@ -159,7 +159,5 @@ def api_offline() -> bool:
         online = server_history("Copper Ore", timerange=1)
     except:
         online = False
-    if not online:
-        return True
-    return False
+    return True if not online else False
 
