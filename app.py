@@ -51,8 +51,6 @@ with st.container():
         server_col_compare, faction_col_compare = st.columns(2)
         with server_col_compare:
             server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
-            #servers = [s for s in [None,"Skyfury","Faerlina","Whitemane"] if s != server]
-            #server_compare = st.selectbox("Compare with", servers, key="server_compare")
         with faction_col_compare:
             if server_compare is not None:
                 if server_compare == server:
@@ -64,10 +62,7 @@ with st.container():
             else:
                 faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
 
-    # chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
-
     st.markdown("#")
-
     st.markdown("### Moving averages")
     st.markdown("###")
 
