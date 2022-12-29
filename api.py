@@ -156,8 +156,10 @@ def api_offline() -> bool:
     `True` if the API is currently down, `False` otherwise
     """
     try:
-        data = server_history("Copper Ore", timerange=1)
-        offline = False
+        online = server_history("Copper Ore", timerange=1)
     except:
-        offline = True
-    return offline
+        online = False
+    if not online:
+        return True
+    return False
+
