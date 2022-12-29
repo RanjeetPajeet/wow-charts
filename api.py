@@ -89,7 +89,7 @@ def region_history(itemname: str, region = "us", timerange: int = None, convert_
     `region`:   The region to get historical price data for.  Default is `us`.
     `timerange`:   The number of days worth of historical price data to retrieve.  If left as `None`, its entire history will be retrieved.
     `convert_timezone`:   Whether or not to convert the timestamps to the local timezone.  Default is `True`.
-    `condensed`:   Whether or not to return the data in a condensed format (i.e., only the `marketValue` and `quantity` fields).  Default is `True`.
+    `condensed`:   Whether or not to return the data in a condensed format (i.e., only the `marketValue` and `quantity` fields).  Default is `False`.
     `rounded`:   Whether or not to round the `marketValue`, `minBuyout`, and `quantity` fields to the nearest copper/integer.  Default is `True`.
 
     Returns
