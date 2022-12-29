@@ -86,7 +86,7 @@ with st.container():
     
     st.markdown("##")
     
-    mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
+#     mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
 
     
 
@@ -100,8 +100,15 @@ st.markdown("##")
 
 chart = st.empty()
 
+c1,c2,c3 = st.columns(3)
+with c1:
+    submit = st.button("Submit")
+with c2:
+    mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
+with c3:
+    pass
 
-submit = st.button("Submit")
+# submit = st.button("Submit")
 # mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
 
 
