@@ -66,7 +66,7 @@ with st.container():
     
     st.markdown("##")
     
-    mobile = st.checkbox("Mobile", value=False, help="asdf")
+    mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
 
     
 
