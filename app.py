@@ -42,7 +42,10 @@ with st.container():
     if chart_type == "Price":
         server_col_compare, faction_col_compare = st.columns(2)
         with server_col_compare:
-            server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
+            if faction_compare is not None:
+                server_compare = st.selectbox("Compare with", ["Skyfury","Faerlina","Whitemane"], key="server_compare")
+            else:
+                server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
         with faction_col_compare:
             if server_compare is not None:
                 if server_compare == server:
@@ -86,6 +89,26 @@ chart = st.empty()
 
 
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
+
+
+
+# if submit:
+#     if chart_type == "Price":
+#         if server_compare is not None and faction_compare is not None:
+            
+#         if mobile:
+#             st.markdown("#")
+#             st.markdown("#")
+#             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
+#         chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+
+#     elif chart_type == "Price & Region Price":
+#         if mobile:
+#             st.markdown("#")
+#             st.markdown("#")
+#             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
+#         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+
 
 
 if submit:
