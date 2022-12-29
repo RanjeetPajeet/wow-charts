@@ -132,3 +132,15 @@ def region_history(itemname: str, region = "us", timerange: int = None, convert_
     else:
         print(response.status_code)
         return {}
+
+
+
+
+
+def api_offline() -> bool:
+    try:
+        data = server_history("Copper Ore", timerange=1)
+        offline = False
+    except:
+        offline = True
+    return offline
