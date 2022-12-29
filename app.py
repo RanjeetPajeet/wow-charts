@@ -1,5 +1,5 @@
 import streamlit as st
-from api import server_history
+from api import api_offline
 from charts import plot_price_history, plot_price_and_region_history
 
 
@@ -13,9 +13,9 @@ st.title("Auction House Data")
 st.markdown("---")
 
 
-try: online = server_history("Copper Ore", timerange=1)
-except: online = False
-if not online: st.error("Nexushub API is currently down.", icon="🚨")
+if api_offline():
+    st.error("Nexushub API is currently down.", icon="🚨")
+
 
 
 
