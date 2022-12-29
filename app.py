@@ -69,37 +69,26 @@ with st.container():
     with hide_og_col:
         hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
 
-    #st.markdown("##")
     
-#     mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
-
-    
-
 st.markdown("---")
-
-
 st.markdown("#")
 
-mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
+
+
+mobile = st.checkbox("Mobile", value=False)
+
 st.markdown("##")
+
 submit = st.button("Submit")
 
 
+
 st.markdown("##")
 st.markdown("##")
+
 
 
 chart = st.empty()
-
-# c1,c2,c3,c4 = st.columns(4)
-# with c1:
-#     submit = st.button("Submit")
-# with c2:
-#     mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
-# with c3:
-#     pass
-# with c4:
-#     pass
 
 
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
