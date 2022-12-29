@@ -10,7 +10,7 @@ import requests
 
 
 
-def server_history(itemname: str, realm = "skyfury", faction = "alliance", timerange: int = None, convert_timezone = True, condensed = False, rounded = True) -> list:
+def server_history(itemname: str, realm = "skyfury", faction = "alliance", timerange: int = None, convert_timezone = True, condensed = False, rounded = True) -> list[dict]:
     """
     Get historical price & quantity data for a particular item on a particular server.
 
@@ -19,8 +19,8 @@ def server_history(itemname: str, realm = "skyfury", faction = "alliance", timer
     `itemname`:   The standard name of the item to get data for.
     `realm`:   The server to get historical price data from.  Default is `skyfury`.
     `faction`:   The faction on the given realm.  Default is `alliance`.
-    `timerange`:   The number of days worth of historical price data to retrieve.  If left as `None`, its entire history will be retrieved.
-    `convert_timezone`:   Whether or not to convert the timestamps to the local timezone.  Default is `True`.
+    `timerange`:   The number of days worth of historical price data to retrieve.  If left as `None` (default), its entire history will be retrieved.
+    `convert_timezone`:   Whether or not to convert the returned timestamps to the local timezone.  Default is `True`.
     `condensed`:   Whether or not to return the data in a condensed format (i.e., only the `marketValue` and `quantity` fields).  Default is `False`.
     `rounded`:   Whether or not to round the `marketValue`, `minBuyout`, and `quantity` fields to the nearest copper/integer.  Default is `True`.
 
@@ -32,6 +32,12 @@ def server_history(itemname: str, realm = "skyfury", faction = "alliance", timer
     >>>         "marketValue": 123456,
     >>>         "minBuyout": 123456,
     >>>         "quantity": 123456,
+    >>>         "scannedAt": "MM-DD-YYYY HH:MM"
+    >>>     },
+    >>>     {
+    >>>         "marketValue": 234567,
+    >>>         "minBuyout": 234567,
+    >>>         "quantity": 234567,
     >>>         "scannedAt": "MM-DD-YYYY HH:MM"
     >>>     },
     >>>     ...
@@ -73,7 +79,7 @@ def server_history(itemname: str, realm = "skyfury", faction = "alliance", timer
 
 
 
-def region_history(itemname: str, region = "us", timerange: int = None, convert_timezone = True, condensed = False, rounded = True) -> list:
+def region_history(itemname: str, region = "us", timerange: int = None, convert_timezone = True, condensed = False, rounded = True) -> list[dict]:
     """
     Get historical price & quantity data for a particular item for an entire region.
 
@@ -147,7 +153,7 @@ def api_offline() -> bool:
 
     Returns
     -------
-    `True` if the API is currently down, `False` otherwise.
+    `True` if the API is currently down, `False` otherwise
     """
     try:
         data = server_history("Copper Ore", timerange=1)
