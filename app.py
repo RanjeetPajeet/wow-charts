@@ -101,8 +101,11 @@ st.markdown("##")
 chart = st.empty()
 
 
+submit = st.button("Submit")
+# mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
 
-if st.button("Submit"):
+
+if submit:
     if chart_type == "Price":
         if mobile:
             st.markdown("#")
