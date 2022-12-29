@@ -42,10 +42,7 @@ with st.container():
     if chart_type == "Price":
         server_col_compare, faction_col_compare = st.columns(2)
         with server_col_compare:
-            if faction_compare is not None:
-                server_compare = st.selectbox("Compare with", ["Skyfury","Faerlina","Whitemane"], key="server_compare")
-            else:
-                server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
+            server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
         with faction_col_compare:
             if server_compare is not None:
                 if server_compare == server:
@@ -56,6 +53,8 @@ with st.container():
                     faction_compare = st.selectbox("", ["Horde","Alliance"], key="faction_compare")
             else:
                 faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
+            if faction_compare is not None and server_compare is None:
+                server_compare = st.selectbox("Compare with", ["Skyfury","Faerlina","Whitemane"], key="server_compare")
 
                 
     st.markdown("#")
