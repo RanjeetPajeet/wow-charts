@@ -32,21 +32,37 @@ with st.container():
 
     chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
 
+#     if chart_type == "Price":
+#         server_col_compare, faction_col_compare = st.columns(2)
+#         with server_col_compare:
+#             servers = [s for s in [None,"Skyfury","Faerlina","Whitemane"] if s != server]
+#             server_compare = st.selectbox("Compare with", servers, key="server_compare")
+#         with faction_col_compare:
+#             if server_compare is not None:
+#                 if server_compare == "Skyfury":
+#                     faction_compare = st.selectbox("", ["Alliance","Horde"], key="faction_compare")
+#                 else:
+#                     faction_compare = st.selectbox("", ["Horde","Alliance"], key="faction_compare")
+#             else:
+#                 faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
+                
+    
     if chart_type == "Price":
         server_col_compare, faction_col_compare = st.columns(2)
         with server_col_compare:
-            servers = [s for s in [None,"Skyfury","Faerlina","Whitemane"] if s != server]
-            server_compare = st.selectbox("Compare with", servers, key="server_compare")
+            server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
+            #servers = [s for s in [None,"Skyfury","Faerlina","Whitemane"] if s != server]
+            #server_compare = st.selectbox("Compare with", servers, key="server_compare")
         with faction_col_compare:
             if server_compare is not None:
-                if server_compare == "Skyfury":
+                if server_compare == server:
+                    faction_compare = st.selectbox("", [f for f in ["Alliance","Horde"] if f != faction], key="faction_compare", disabled=True)
+                elif server_compare == "Skyfury":
                     faction_compare = st.selectbox("", ["Alliance","Horde"], key="faction_compare")
                 else:
                     faction_compare = st.selectbox("", ["Horde","Alliance"], key="faction_compare")
             else:
                 faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
-            
-        #compare_with = st.selectbox("Compare with", [None,"A","B","C"])
 
     # chart_smoothing = st.select_slider("Smoothing", options=[2,4,8,12,24,48], value=2, help="Amount of smoothing for the chart, in hours.")
 
