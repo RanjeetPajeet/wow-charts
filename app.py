@@ -82,12 +82,6 @@ st.markdown("##")
 submit = st.button("Submit")
 
 
-
-st.markdown("##")
-st.markdown("##")
-
-
-
 chart = st.empty()
 
 
