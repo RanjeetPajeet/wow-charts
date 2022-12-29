@@ -11,7 +11,7 @@ st.title("Auction House Data")
 
 st.markdown("---")
 
-
+st.info('This is a purely informational message', icon="ℹ️")
 
 with st.container():
     st.markdown("### Parameters")
