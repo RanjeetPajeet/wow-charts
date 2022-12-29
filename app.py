@@ -54,7 +54,7 @@ with st.container():
             else:
                 faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
             if faction_compare is not None and server_compare is None:
-                server_compare = st.selectbox("Compare with", ["Skyfury","Faerlina","Whitemane"], key="server_compare")
+                server_compare = st.selectbox("Compare with", ["Skyfury","Faerlina","Whitemane"], key="server_comparee")
 
                 
     st.markdown("#")
