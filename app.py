@@ -1,6 +1,6 @@
 import streamlit as st
 from api import api_offline
-from charts import plot_price_history, plot_price_and_region_history
+from charts import plot_price_history, plot_price_and_region_history, plot_price_history_comparison
 
 
 st.set_page_config(
@@ -68,41 +68,38 @@ with st.container():
     with hide_og_col:
         hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
 
-    
+
+
 st.markdown("---")
 st.markdown("#")
 
 
-
 mobile = st.checkbox("Mobile", value=False)
-
 st.markdown("##")
-
 submit = st.button("Submit")
 
 
 chart = st.empty()
 
 
+# Hides the Submit button if on mobile
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
 
 
 
 if submit:
+    if mobile:
+        st.markdown("#")
+        st.markdown("#")
+        st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
+    
     if chart_type == "Price":
         if server_compare is not None and faction_compare is not None:
-            pass    # plot_price_history_comparison(item, server1, faction1, server2, faction2, num_days, ma4, ma12, ma24, hide_original, mobile)
-        if mobile:
-            st.markdown("#")
-            st.markdown("#")
-            st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
-        chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+            chart = st.altair_chart(plot_price_history_comparison(item, server, faction, server_compare, faction_compare, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+        else:
+            chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
     elif chart_type == "Price & Region Price":
-        if mobile:
-            st.markdown("#")
-            st.markdown("#")
-            st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
 
