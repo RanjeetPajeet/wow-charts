@@ -99,6 +99,11 @@ if submit:
         else:
             chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
+
+    elif chart_type == "Price & Quantity":
+        pass
+
+
     elif chart_type == "Price & Region Price":
         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
