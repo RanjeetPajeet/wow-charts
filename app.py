@@ -16,7 +16,7 @@ st.markdown("---")
 
 try: online = server_history("Copper Ore", timerange=1)
 except: online = False
-if not online: st.error("  Nexushub API is currently down.", icon="🚨")
+if not online: st.error("Nexushub API is currently down.", icon="🚨")
 
 
 with st.container():
