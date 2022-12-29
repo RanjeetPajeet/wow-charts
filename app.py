@@ -6,7 +6,7 @@ st.set_page_config(
     page_icon  = ":moneybag:",
     page_title = "AH Prices",
 )
-st.title("Auction House Charts")
+st.title("Auction House Data")
 
 
 st.markdown("---")
