@@ -100,12 +100,14 @@ st.markdown("##")
 
 chart = st.empty()
 
-c1,c2,c3 = st.columns(3)
+c1,c2,c3,c4 = st.columns(4)
 with c1:
     submit = st.button("Submit")
 with c2:
     mobile = st.checkbox("Mobile", value=False, help="Reformats the chart for better viewing on mobile")
 with c3:
+    pass
+with c4:
     pass
 
 # submit = st.button("Submit")
