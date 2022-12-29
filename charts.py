@@ -173,6 +173,50 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
 
 
 
+def plot_price_and_quantity_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
+    data = get_server_history(item, server, faction, num_days)
+    scale = 100 if data["prices"][-1] < 10000 else 10000
+    prices = [round(price/scale,2) for price in data["prices"]]
+    ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+    
+    if fix_outliers:
+        prices = remove_outliers(prices)
+    
+    data = pd.DataFrame(
+        {
+            "Time": data["times"], ylabel: prices,
+            "Quantity": data["quantities"],
+            "4-hour moving average":  pd.Series(prices).rolling( 2).mean(),
+            "12-hour moving average": pd.Series(prices).rolling( 6).mean(),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+        }
+    )
+    
+#     base = alt.Chart(data).encode(
+#         x = alt.X("Time", axis=alt.Axis(title="Date")),
+#         y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
+#     )
+
+    base = alt.Chart(data).encode(x="Time")
+    
+    bar = base.mark_bar().encode(y="Quantity")
+    
+    line = base.mark_line(color="red").encode(y=ylabel)
+    
+    chart = (bar + line).properties(height=600)
+    
+    return chart
+    
+
+
+
+
+
+
+
+
+
+
 def plot_price_and_region_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     server_data = get_server_history(item, server, faction, num_days)
     region_data = get_region_history(item, numDays=num_days)
