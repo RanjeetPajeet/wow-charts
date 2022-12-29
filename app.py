@@ -1,4 +1,5 @@
 import streamlit as st
+from api import server_history
 from charts import plot_price_history, plot_price_and_region_history
 
 st.set_page_config(
@@ -12,6 +13,14 @@ st.title("Auction House Data")
 st.markdown("---")
 
 st.info('This is a purely informational message', icon="ℹ️")
+st.warning('This is a warning', icon="⚠️")
+
+# try: online = server_history("Copper Ore", timerange=1)
+# except: online = False
+    
+# if not online:
+#     st.
+
 
 with st.container():
     st.markdown("### Parameters")
