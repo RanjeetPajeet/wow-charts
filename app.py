@@ -83,6 +83,7 @@ chart = st.empty()
 
 
 # Hides the Submit button if on mobile
+# st.markdown("""<style>@media (pointer:none),(pointer:coarse) {div[value="0"]{display: none;}}</style>""", unsafe_allow_html=True)
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
 
 
