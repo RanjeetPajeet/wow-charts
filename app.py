@@ -37,9 +37,11 @@ with st.container():
         with server_col_compare:
             servers = [s for s in [None,"Skyfury","Faerlina","Whitemane"] if s != server]
             server_compare = st.selectbox("Compare with", servers, key="server_compare")
-            # server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
         with faction_col_compare:
-            faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
+            if server_compare is not None:
+                faction_compare = st.selectbox("", ["Alliance","Horde"], key="faction_compare")
+            else:
+                faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
             
         #compare_with = st.selectbox("Compare with", [None,"A","B","C"])
 
