@@ -1,6 +1,6 @@
 import streamlit as st
 from api import api_offline
-from charts import plot_price_history, plot_price_and_region_history, plot_price_history_comparison
+from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison
 
 
 st.set_page_config(
@@ -101,7 +101,7 @@ if submit:
 
 
     elif chart_type == "Price & Quantity":
-        pass
+        chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
 
     elif chart_type == "Price & Region Price":
