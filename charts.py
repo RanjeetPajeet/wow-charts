@@ -5,7 +5,7 @@ from data import get_server_history, get_region_history, remove_outliers
 
 
 
-def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool, fix_outliers:bool = False) -> alt.Chart:
+def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     data = get_server_history(item, server, faction, num_days)
     scale = 100 if data["prices"][-1] < 10000 else 10000
     prices = [round(price/scale,2) for price in data["prices"]]
@@ -168,10 +168,18 @@ def plot_price_history(item:str, server:str, faction:str, num_days:int, ma4:bool
 
 
 
-def plot_price_and_region_history(item:str, server:str, faction:str, num_days:int, ma4:bool, ma12:bool, ma24:bool, hide_original:bool, mobile:bool, fix_outliers:bool = False) -> alt.Chart:
+
+
+
+
+
+def plot_price_and_region_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     server_data = get_server_history(item, server, faction, num_days)
     region_data = get_region_history(item, numDays=num_days)
-    scale = 100 if server_data["prices"][-1] < 10000 else 10000
+    if server_data["prices"][-1] < 10000 or region_data["prices"][-1] < 10000:
+        scale = 100
+    else: scale = 10000
+    # scale = 100 if server_data["prices"][-1] < 10000 else 10000
     server_prices = [round(price/scale,2) for price in server_data["prices"]]
     region_prices = [round(price/scale,2) for price in region_data["prices"]]
     ylabel = "Price (silver)" if scale==100 else "Price (gold)"
@@ -288,6 +296,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
         minimum = min( min(server_prices), min(region_prices) )
         maximum = max( max(server_prices), max(region_prices) )
     
+    
     try: chart_ylims = (int(minimum/1.25), int(maximum*1.2))
     except Exception as e:
         chart_ylims = (
@@ -329,7 +338,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
 
     # For the following colors, the region price is always the lighter-shade version of any two colors
 
-
+    
     if not hide_original:
         chart = alt.Chart(server_data).mark_line(
             # color="#83c9ff" if not hide_original else "#0e1117",
@@ -347,6 +356,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
         )
         chart = chart.properties(height=600)
 
+        
     if ma4:
         if hide_original:
             chart = alt.Chart(server_data).mark_line(
@@ -369,6 +379,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
                                 color="#7defa1").encode(                                    #  <------ NOTE: "#7defa1" can be changed
                                 x=alt.X("Time"),
                                 y=alt.Y("4-hour moving average"))
+    
     
     if ma12:
         if hide_original:
@@ -405,6 +416,7 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
                                 x=alt.X("Time"),
                                 y=alt.Y("12-hour moving average"))
 
+    
     if ma24:
         if hide_original:
             if ma4 or ma12:
@@ -442,7 +454,268 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
 
 
     chart = chart.properties(height=600)
+    chart = chart.configure_axisY(
+        grid=True,           gridOpacity=0.2,         tickCount=6,
+        titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
+        titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
+        labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+        labelFontSize=16,    labelFontWeight="bold",
+    )
+    chart = chart.configure_axisX(
+        grid=False,          tickCount="day",        titleOpacity=0,
+        labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+        labelFontSize=20,    labelFontWeight="bold",
+    )
+    chart = chart.configure_view(
+        strokeOpacity=0,    # remove border
+    )
+    
+    
+    
+    
+    
+    
+    if mobile:
+        chart = chart.configure_axisY(
+            grid=True,           gridOpacity=0.2,         tickCount=5,
+            titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
+            titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
+            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
+        )
+        chart = chart.configure_axisX(
+            grid=False,          tickCount="day",        titleOpacity=0,
+            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold", 
+        )
+        
+        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
+        chart.configure_title(
+            fontSize=20,
+            font='Calibri',
+            anchor='start',
+            color='#ffffff',
+            align='center'
+        )
+        
+        chart = chart.properties(height=400)
 
+    return chart
+
+
+
+
+
+
+
+
+
+
+def plot_price_history_comparison(item: str, server1: str, faction1: str, server2: str, faction2: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
+    server1_data = get_server_history(item, server1, faction1, num_days)
+    server2_data = get_server_history(item, server2, faction2, num_days)
+    if server1_data["prices"][-1] < 10000 or server2_data["prices"][-1] < 10000:
+        scale = 100
+    else: scale = 10000
+    server1_prices = [round(price/scale,2) for price in server1_data["prices"]]
+    server2_prices = [round(price/scale,2) for price in server2_data["prices"]]
+    ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+    
+    # set the minute to 0 for all times to ensure they are the same
+    server1_data["times"] = [time.replace(minute=0) for time in server1_data["times"]]
+    server2_data["times"] = [time.replace(minute=0) for time in server2_data["times"]]
+
+    # run the remove_outliers function on both price lists
+    if fix_outliers:
+        server1_prices = remove_outliers(server1_prices)
+        server2_prices = remove_outliers(server2_prices)
+    
+    
+    server1_data = pd.DataFrame(
+        {
+            "Time": server1_data["times"], ylabel: server1_prices,
+            "4-hour moving average":  pd.Series(server1_prices).rolling(2).mean(),
+            "12-hour moving average": pd.Series(server1_prices).rolling(6).mean(),
+            "24-hour moving average": pd.Series(server1_prices).rolling(12).mean(),
+        }
+    )
+    server2_data = pd.DataFrame(
+        {
+            "Time": server2_data["times"], ylabel: server2_prices,
+            "4-hour moving average":  pd.Series(server2_prices).rolling(2).mean(),
+            "12-hour moving average": pd.Series(server2_prices).rolling(6).mean(),
+            "24-hour moving average": pd.Series(server2_prices).rolling(12).mean(),
+        }
+    )
+
+
+    if hide_original:
+        min4_server1  = min(server1_data["4-hour moving average" ].dropna().tolist()[1:])
+        min4_server2  = min(server2_data["4-hour moving average" ].dropna().tolist()[1:])
+        max4_server1  = max(server1_data["4-hour moving average" ].dropna().tolist()[1:])
+        max4_server2  = max(server2_data["4-hour moving average" ].dropna().tolist()[1:])
+        min12_server1 = min(server1_data["12-hour moving average"].dropna().tolist()[1:])
+        min12_server2 = min(server2_data["12-hour moving average"].dropna().tolist()[1:])
+        max12_server1 = max(server1_data["12-hour moving average"].dropna().tolist()[1:])
+        max12_server2 = max(server2_data["12-hour moving average"].dropna().tolist()[1:])
+        min24_server1 = min(server1_data["24-hour moving average"].dropna().tolist()[1:])
+        min24_server2 = min(server2_data["24-hour moving average"].dropna().tolist()[1:])
+        max24_server1 = max(server1_data["24-hour moving average"].dropna().tolist()[1:])
+        max24_server2 = max(server2_data["24-hour moving average"].dropna().tolist()[1:])
+        
+        min4  = min(min4_server1 ,  min4_server2)
+        max4  = max(max4_server1 ,  max4_server2)
+        min12 = min(min12_server1, min12_server2)
+        max12 = max(max12_server1, max12_server2)
+        min24 = min(min24_server1, min24_server2)
+        max24 = max(max24_server1, max24_server2)
+
+        if ma4 and not ma12 and not ma24:
+            minimum = min4
+            maximum = max4
+        elif ma12 and not ma4 and not ma24:
+            minimum = min12
+            maximum = max12
+        elif ma24 and not ma4 and not ma12:
+            minimum = min24
+            maximum = max24
+        elif ma4 and ma12 and not ma24:
+            minimum = min(min4, min12)
+            maximum = max(max4, max12)
+        elif ma4 and ma24 and not ma12:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma12 and ma24 and not ma4:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma4 and ma12 and ma24:
+            minimum = min(min4, min12, min24)
+            maximum = max(max4, max12, max24)
+        else:
+            minimum = min( min(server1_prices), min(server2_prices) )
+            maximum = max( max(server1_prices), max(server2_prices) )
+    else:
+        minimum = min( min(server1_prices), min(server2_prices) )
+        maximum = max( max(server1_prices), max(server2_prices) )
+
+
+    try: chart_ylims = (int(minimum/1.25), int(maximum*1.2))
+    except Exception as e:
+        chart_ylims = (
+            int(min( min(server1_prices), min(server2_prices) )/1.25),
+            int(max( max(server1_prices), max(server2_prices) )*1.20),
+        )
+        st.markdown(f"**Error:** {e}")
+
+
+    if not hide_original:
+        chart = alt.Chart(server1_data).mark_line(
+            color="#3aa9ff" if not hide_original else "#0e1117",
+            strokeWidth=2,
+        ).encode(
+            x = alt.X("Time", axis=alt.Axis(title="Date")),
+            y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims))
+        ) + alt.Chart(server2_data).mark_line(
+            color="#83c9ff" if not hide_original else "#0e1117",
+            strokeWidth=2,
+        ).encode(
+            x = alt.X("Time", axis=alt.Axis(title="Date")),
+            y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims))
+        )
+        chart = chart.properties(height=600)
+
+        
+    if ma4:
+        if hide_original:
+            chart = alt.Chart(server1_data).mark_line(
+                        color="#0ce550",strokeWidth=2).encode(
+                        x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                        y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+            ) + alt.Chart(server2_data).mark_line(
+                        color="#7defa1",strokeWidth=2).encode(
+                        x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                        y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+            )
+        else:
+            chart = chart + alt.Chart(server1_data).mark_line(
+                                color="#0ce550").encode(
+                                x = alt.X("Time"),
+                                y = alt.Y("4-hour moving average")
+            ) + alt.Chart(server2_data).mark_line(
+                                color="#7defa1").encode(
+                                x = alt.X("Time"),
+                                y = alt.Y("4-hour moving average"))
+    
+    
+    if ma12:
+        if hide_original:
+            if ma4:
+                chart = chart + alt.Chart(server1_data).mark_line(
+                                    color="#6029c1",strokeWidth=2.1).encode(
+                                    x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(server2_data).mark_line(
+                                    color="#9670dc",strokeWidth=2.1).encode(
+                                    x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                )
+            else:
+                chart = alt.Chart(server1_data).mark_line(
+                            color="#6029c1",strokeWidth=2.1).encode(
+                            x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                            y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(server2_data).mark_line(
+                            color="#9670dc",strokeWidth=2.1).encode(
+                            x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                            y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                )
+        else:
+            chart = chart + alt.Chart(server1_data).mark_line(
+                                color="#6029c1").encode(
+                                x = alt.X("Time"),
+                                y = alt.Y("12-hour moving average")
+            ) + alt.Chart(server2_data).mark_line(
+                                color="#9670dc").encode(
+                                x = alt.X("Time"),
+                                y = alt.Y("12-hour moving average"))
+    
+    
+    if ma24:
+        if hide_original:
+            if ma4 or ma12:
+                chart = chart + alt.Chart(server1_data).mark_line(
+                                    color="#ba191c",strokeWidth=2.2).encode(
+                                    x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(server2_data).mark_line(
+                                    color="#ff5169",strokeWidth=2.2).encode(
+                                    x = alt.X("Time", axis=alt.Axis(title="Date")),
+                                    y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                )
+            else:
+                chart = alt.Chart(server1_data).mark_line(
+                            color="#ba191c",strokeWidth=2.2).encode(
+                            x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                            y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(server2_data).mark_line(
+                            color="#ff5169",strokeWidth=2.2).encode(
+                            x = alt.X("Time", axis=alt.Axis(title="Date")),
+                            y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
+                )
+        else:
+            chart = chart + alt.Chart(server1_data).mark_line(
+                color="#ba191c").encode(
+                x = alt.X("Time"),
+                y = alt.Y("24-hour moving average")
+            ) + alt.Chart(server2_data).mark_line(
+                color="#ff5169").encode(
+                x = alt.X("Time"),
+                y = alt.Y("24-hour moving average"))
+    
+    
+    chart = chart.properties(
+        height=600,
+    )
     chart = chart.configure_axisY(
         grid=True,           gridOpacity=0.2,         tickCount=6,
         titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
@@ -473,16 +746,24 @@ def plot_price_and_region_history(item:str, server:str, faction:str, num_days:in
             labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
             labelFontSize=16,    labelFontWeight="bold", 
         )
-        
-        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
+        chart = chart.properties(
+            title=f"{item} {ylabel.replace('(', '(in ')}",
+        )
         chart.configure_title(
             fontSize=20,
             font='Calibri',
             anchor='start',
             color='#ffffff',
-            align='center'
+            align='center',
         )
-        
-        chart = chart.properties(height=400)
+        chart = chart.properties(
+            height=400,
+        )
 
+    
     return chart
+        
+        
+        
+        
+        
