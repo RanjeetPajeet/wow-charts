@@ -33,10 +33,11 @@ with st.container():
     chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
 
     if chart_type == "Price":
-        #st.markdown("##")
         server_col_compare, faction_col_compare = st.columns(2)
         with server_col_compare:
-            server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
+            servers = [s for s in [None,"Skyfury","Faerlina","Whitemane"] if s != server]
+            server_compare = st.selectbox("Compare with", servers, key="server_compare")
+            # server_compare = st.selectbox("Compare with", [None,"Skyfury","Faerlina","Whitemane"], key="server_compare")
         with faction_col_compare:
             faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare")
             
