@@ -259,10 +259,10 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         maximum = max(prices)
     
     
-    try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
+    try: chart_ylims = (int(minimum/1.40), int(maximum*1.1))
     except Exception as e:
         chart_ylims = (
-            int(min(prices)/1.25),
+            int(min(prices)/1.40),
             int(max(prices)*1.10),
         )
         st.markdown(f"**Error:** {e}")
