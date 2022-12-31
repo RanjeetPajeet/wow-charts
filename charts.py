@@ -186,55 +186,239 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         {
             "Time": data["times"], ylabel: prices,
             "Quantity": data["quantities"],
-            "Quantity  4hMA": pd.Series(data["quantities"]).rolling( 2).mean().astype(int),
-            "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean().astype(int),
-            "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean().astype(int),
+            "Quantity  4hMA": pd.Series(data["quantities"]).rolling( 2).mean(),
+            "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean(),
+            "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean(),
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean(),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean(),
             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
         }
     )
+
     
-#     base = alt.Chart(data).encode(
-#         x = alt.X("Time", axis=alt.Axis(title="Date")),
-#         #y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
-#     )
-#     bar = base.mark_bar().encode(
-#         x = alt.X("Time", axis=alt.Axis(title="Date")),
-#         y = alt.Y("Quantity", axis=alt.Axis(title="Quantity"))
-#     )
-#     line = base.mark_line(color="red").encode(
-#         x = alt.X("Time", axis=alt.Axis(title="Date")),
-#         y = alt.Y(ylabel, axis=alt.Axis(title=ylabel))
-#     )
-
-
 #     base = alt.Chart(data).encode(x="Time")
 #     bar = base.mark_bar().encode(y="Quantity")
 #     line = base.mark_line(color="red").encode(y=ylabel)
+#     if not hide_original:
+#         base = alt.Chart(data).encode(x="Time")
+#         bar = base.mark_bar().encode(y="Quantity")
+#         line = base.mark_line(color="red").encode(y=ylabel)
+#     if ma4:
+#         base = alt.Chart(data).encode(x="Time")
+#         bar = base.mark_bar().encode(y="Quantity 4hMA")
+#         line = base.mark_line(color="red").encode(y="4-hour moving average")
+#     if ma12:
+#         base = alt.Chart(data).encode(x="Time")
+#         bar = base.mark_bar().encode(y="Quantity 12hMA")
+#         line = base.mark_line(color="red").encode(y="12-hour moving average")
+#     if ma24:
+#         base = alt.Chart(data).encode(x="Time")
+#         bar = base.mark_bar().encode(y="Quantity 24hMA")
+#         line = base.mark_line(color="red").encode(y="24-hour moving average")
+#     chart = (bar + line).properties(height=600)
+#     return chart
 
+
+    if hide_original:
+        min4  = min(data["4-hour moving average" ].dropna().tolist()[1:])
+        max4  = max(data["4-hour moving average" ].dropna().tolist()[1:])
+        min12 = min(data["12-hour moving average"].dropna().tolist()[1:])
+        max12 = max(data["12-hour moving average"].dropna().tolist()[1:])
+        min24 = min(data["24-hour moving average"].dropna().tolist()[1:])
+        max24 = max(data["24-hour moving average"].dropna().tolist()[1:])
+        if ma4 and not ma12 and not ma24:
+            minimum = min4
+            maximum = max4
+        elif ma12 and not ma4 and not ma24:
+            minimum = min12
+            maximum = max12
+        elif ma24 and not ma4 and not ma12:
+            minimum = min24
+            maximum = max24
+        elif ma4 and ma12 and not ma24:
+            minimum = min(min4, min12)
+            maximum = max(max4, max12)
+        elif ma4 and ma24 and not ma12:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma12 and ma24 and not ma4:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma4 and ma12 and ma24:
+            minimum = min(min4, min12, min24)
+            maximum = max(max4, max12, max24)
+        else:
+            minimum = min(prices)
+            maximum = max(prices)
+    else:
+        minimum = min(prices)
+        maximum = max(prices)
+    
+    
+    try: chart_ylims = (int(minimum/1.25), int(maximum*1.2))
+    except Exception as e:
+        chart_ylims = (
+            int(min(prices)/1.25),
+            int(max(prices)*1.20),
+        )
+        st.markdown(f"**Error:** {e}")
+    
+    
     if not hide_original:
-        base = alt.Chart(data).encode(x="Time")
-        bar = base.mark_bar().encode(y="Quantity")
-        line = base.mark_line(color="red").encode(y=ylabel)
+        price_line = alt.Chart(data).mark_line(
+            color="#3aa9ff",
+            strokeWidth = 2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+        )
+        quantity_line = alt.Chart(data).mark_area(
+            color=alt.Gradient(
+                gradient="linear",
+                stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
+                       alt.GradientStop(color="#0068c9", offset=0.4)],  # top color
+                x1=1, x2=1, y1=1, y2=0,
+            ),
+            opacity = 0.5,
+            strokeWidth=2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("Quantity", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+        )
+        chart = quantity_line + price_line
+        chart = chart.properties(height=600)
+            
+        
     if ma4:
-        base = alt.Chart(data).encode(x="Time")
-        bar = base.mark_bar().encode(y="Quantity 4hMA")
-        line = base.mark_line(color="red").encode(y="4-hour moving average")
+        price_line_ma4 = alt.Chart(data).mark_line(
+            color="#0ce550",
+            strokeWidth = 2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+        )
+        quantity_line_ma4 = alt.Chart(data).mark_area(
+            color=alt.Gradient(
+                gradient="linear",
+                stops=[alt.GradientStop(color="#7defa1", offset=0),     # bottom color
+                       alt.GradientStop(color="#29b09d", offset=0.4)],  # top color
+                x1=1, x2=1, y1=1, y2=0,
+            ),
+            opacity = 0.5,
+            strokeWidth=2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("Quantity  4hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+        )
+        if hide_original:
+            chart = quantity_line_ma4 + price_line_ma4
+        else:
+            chart = chart + quantity_line_ma4 + price_line_ma4
+    
+
     if ma12:
-        base = alt.Chart(data).encode(x="Time")
-        bar = base.mark_bar().encode(y="Quantity 12hMA")
-        line = base.mark_line(color="red").encode(y="12-hour moving average")
+        price_line_ma12 = alt.Chart(data).mark_line(
+            color = "#6029c1",
+            strokeWidth = 2.1,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+        )
+        quantity_line_ma12 = alt.Chart(data).mark_area(
+            color=alt.Gradient(
+                gradient="linear",
+                stops=[alt.GradientStop(color="#9670dc", offset=0),     # bottom color
+                       alt.GradientStop(color="#5728ae", offset=0.4)],  # top color
+                x1=1, x2=1, y1=1, y2=0,
+            ),
+            opacity = 0.5,
+            strokeWidth=2.1,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("Quantity 12hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+        )
+        if hide_original:
+            if ma4:
+                chart = chart + quantity_line_ma12 + price_line_ma12
+            else:
+                chart = quantity_line_ma12 + price_line_ma12
+        else:
+            chart = chart + quantity_line_ma12 + price_line_ma12
+    
+    
     if ma24:
-        base = alt.Chart(data).encode(x="Time")
-        bar = base.mark_bar().encode(y="Quantity 24hMA")
-        line = base.mark_line(color="red").encode(y="24-hour moving average")
+        price_line_ma24 = alt.Chart(data).mark_line(
+            color = "#ba191c",
+            strokeWidth = 2.2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+        )
+        quantity_line_ma24 = alt.Chart(data).mark_area(
+            color=alt.Gradient(
+                gradient="linear",
+                stops=[alt.GradientStop(color="#ff5169", offset=0),     # bottom color
+                       alt.GradientStop(color="#d71b35", offset=0.4)],  # top color
+                x1=1, x2=1, y1=1, y2=0,
+            ),
+            opacity = 0.5,
+            strokeWidth=2.2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+        )
+        if hide_original:
+            if ma4 or ma12:
+                chart = chart + quantity_line_ma24 + price_line_ma24
+            else:
+                chart = quantity_line_ma24 + price_line_ma24
+        else:
+            chart = chart + quantity_line_ma24 + price_line_ma24
+
+
+    chart = chart.properties(height=600)
+    chart = chart.configure_axisY(
+        grid=True,           gridOpacity=0.2,         tickCount=6,
+        titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
+        titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
+        labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+        labelFontSize=16,    labelFontWeight="bold",
+    )
+    chart = chart.configure_axisX(
+        grid=False,          tickCount="day",        titleOpacity=0,
+        labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+        labelFontSize=20,    labelFontWeight="bold",
+    )
+    chart = chart.configure_view(
+        strokeOpacity=0,    # remove border
+    )
     
-    
-    chart = (bar + line).properties(height=600)
-    
+    if mobile:
+        chart = chart.configure_axisY(
+            grid=True,           gridOpacity=0.2,         tickCount=5,
+            titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
+            titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
+            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
+        )
+        chart = chart.configure_axisX(
+            grid=False,          tickCount="day",        titleOpacity=0,
+            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold", 
+        )
+        
+        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
+        chart.configure_title(
+            fontSize=20,
+            font='Calibri',
+            anchor='start',
+            color='#ffffff',
+            align='center'
+        )
+        
+        chart = chart.properties(height=400)
+
     return chart
-    
 
 
 
