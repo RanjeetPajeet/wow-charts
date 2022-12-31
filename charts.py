@@ -193,7 +193,9 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean(),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean(),
             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+            "4h Avg Quantity":  pd.Series(data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
             "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
+            "24h Avg Quantity": pd.Series(data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
         }
     )
 
@@ -300,6 +302,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             ),
             opacity = 0.5,
             strokeWidth=2,
+            interpolate="monotone",
+            clip=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
@@ -325,9 +329,12 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             ),
             opacity = 0.5,
             strokeWidth=2,
+            interpolate="monotone",
+            clip=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y("Quantity  4hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+            y=alt.Y("Quantity  4hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "4h Avg Quantity"]
         )
         if hide_original:
             chart = quantity_line_ma4 + price_line_ma4
@@ -386,9 +393,12 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             ),
             opacity = 0.5,
             strokeWidth=2.2,
+            interpolate="monotone",
+            clip=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "24h Avg Quantity"]
         )
         if hide_original:
             if ma4 or ma12:
