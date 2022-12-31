@@ -49,13 +49,13 @@ with st.container():
         with faction_col_compare:
             if server_compare is not None:
                 if server_compare == server:
-                    faction_compare = st.selectbox("", [f for f in ["Alliance","Horde"] if f != faction], key="faction_compare", disabled=True)
+                    faction_compare = st.selectbox(" ", [f for f in ["Alliance","Horde"] if f != faction], key="faction_compare", disabled=True)
                 elif server_compare == "Skyfury":
-                    faction_compare = st.selectbox("", ["Alliance","Horde"], key="faction_compare")
+                    faction_compare = st.selectbox(" ", ["Alliance","Horde"], key="faction_compare")
                 else:
-                    faction_compare = st.selectbox("", ["Horde","Alliance"], key="faction_compare")
+                    faction_compare = st.selectbox(" ", ["Horde","Alliance"], key="faction_compare")
             else:
-                faction_compare = st.selectbox("", [None,"Alliance","Horde"], key="faction_compare", disabled=True)
+                faction_compare = st.selectbox(" ", [None,"Alliance","Horde"], key="faction_compare", disabled=True)
 
     st.markdown("#")
     st.markdown("### Moving averages")
