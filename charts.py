@@ -306,7 +306,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             clip=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y("Quantity", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
+            y=alt.Y("Quantity", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
         chart = quantity_line + price_line
         chart = chart.properties(height=600)
@@ -333,7 +333,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             clip=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y("Quantity  4hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims)),
+            y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "4h Avg Quantity"]
         )
         if hide_original:
@@ -364,7 +364,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-            tooltip=["Time", "12h Avg Quantity"]
+#             tooltip=["Time", "12h Avg Quantity"]
+            tooltip=alt.Tooltip(["Time", "12h Avg Quantity"], title="Asdf", format=".0f")
         )
 #         ).interactive()
         if hide_original:
@@ -397,7 +398,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             clip=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims)),
+            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "24h Avg Quantity"]
         )
         if hide_original:
