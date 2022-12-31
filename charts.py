@@ -1,6 +1,7 @@
 import pandas as pd
 import altair as alt
 import streamlit as st
+from misc import map_value
 from data import get_server_history, get_region_history, remove_outliers
 
 
@@ -320,6 +321,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 
     if ma12:
         range_quantity = [data["Quantity 12hMA"].min(), data["Quantity 12hMA"].max()]
+        data["Quantity 12hMA"] = data["Quantity 12hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
         
         price_line_ma12 = alt.Chart(data).mark_line(
             color = "#6029c1",
