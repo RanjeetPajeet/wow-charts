@@ -358,7 +358,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "12h Avg Quantity"]
-        ).interactive()
+        )
+#         ).interactive()
         if hide_original:
             if ma4:
                 chart = chart + quantity_line_ma12 + price_line_ma12
