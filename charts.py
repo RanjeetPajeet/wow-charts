@@ -350,9 +350,10 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
-            strokeWidth=2.1,
+            strokeWidth=1,
             interpolate="monotone",
             line=True,
+            strokeOpacity=0.5,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
