@@ -9,7 +9,7 @@ Functions/classes used elsewhere that didn't have a home.
 
 
 
-def map_value(value: int|float, input_range: list[int|float], output_range: list[int|float]) -> int|float:
+def map_value(value, input_range, output_range):
     """
     Maps a value from some specified range to a new range.
 
