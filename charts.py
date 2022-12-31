@@ -207,7 +207,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     line = base.mark_line(color="red").encode(
         x = alt.X("Time", axis=alt.Axis(title="Date")),
-        y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
+        y = alt.Y(ylabel, axis=alt.Axis(title=ylabel))
     )
 
     #base = alt.Chart(data).encode(x="Time")
