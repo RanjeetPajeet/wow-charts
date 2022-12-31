@@ -195,16 +195,26 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         }
     )
     
-#     base = alt.Chart(data).encode(
-#         x = alt.X("Time", axis=alt.Axis(title="Date")),
-#         y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
-#     )
+    base = alt.Chart(data).encode(
+        x = alt.X("Time", axis=alt.Axis(title="Date")),
+        #y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
+    )
+    
+    bar = base.mark_bar().encode(
+        x = alt.X("Time", axis=alt.Axis(title="Date")),
+        y = alt.Y("Quantity", axis=alt.Axis(title="Quantity"))
+    )
+    
+    line = base.mark_line(color="red").encode(
+        x = alt.X("Time", axis=alt.Axis(title="Date")),
+        y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
+    )
 
-    base = alt.Chart(data).encode(x="Time")
+    #base = alt.Chart(data).encode(x="Time")
     
-    bar = base.mark_bar().encode(y="Quantity:Q")
+    #bar = base.mark_bar().encode(y="Quantity")
     
-    line = base.mark_line(color="red").encode(y=ylabel)
+    #line = base.mark_line(color="red").encode(y=ylabel)
     
     chart = (bar + line).properties(height=600)
     
