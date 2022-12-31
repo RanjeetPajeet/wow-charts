@@ -347,10 +347,12 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 gradient="linear",
                 stops=[alt.GradientStop(color="#9670dc", offset=0),     # bottom color
                        alt.GradientStop(color="#5728ae", offset=0.4)],  # top color
-                x1=0.5, x2=1, y1=1, y2=0,
+                x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
-            strokeWidth=2.1
+            strokeWidth=2.1,
+            interpolate="monotone",
+            line=True,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
