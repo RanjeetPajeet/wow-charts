@@ -13,8 +13,8 @@ st.title("Auction House Data")
 st.markdown("---")
 
 
-if api_offline():
-    st.error("Nexushub API is currently down.", icon="🚨")
+#if api_offline():
+    #st.error("Nexushub API is currently down.", icon="🚨")
 
 
 
@@ -33,7 +33,10 @@ with st.container():
     with server_col:
         server = st.selectbox("Server", ["Skyfury","Faerlina","Whitemane"])
     with faction_col:
-        faction = st.selectbox("Faction", ["Alliance","Horde"])
+        if server == "Skyfury":
+            faction = st.selectbox("Faction", ["Alliance","Horde"])
+        else:
+            faction = st.selectbox("Faction", ["Horde","Alliance"])
     
     st.markdown("##")
 
