@@ -193,7 +193,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean(),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean(),
             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
-            "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().apply(lambda x: int(x)),
+            "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
         }
     )
 
