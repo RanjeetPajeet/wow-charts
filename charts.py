@@ -317,8 +317,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
 
     if ma12:
-        print("Here2")
-        st.write("Here2")
         price_line_ma12 = alt.Chart(data).mark_line(
             color = "#6029c1",
             strokeWidth = 2.1,
@@ -344,7 +342,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 chart = chart + quantity_line_ma12 + price_line_ma12
             else:
                 chart = quantity_line_ma12 + price_line_ma12
-                print("Here")
+                st.write("here3")
         else:
             chart = chart + quantity_line_ma12 + price_line_ma12
     
