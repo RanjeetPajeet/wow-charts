@@ -322,6 +322,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     if ma12:
         range_quantity = [data["Quantity 12hMA"].min(), data["Quantity 12hMA"].max()]
         data["Quantity 12hMA"] = data["Quantity 12hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+        st.write(data["Quantity 12hMA"].min())
         
         price_line_ma12 = alt.Chart(data).mark_line(
             color = "#6029c1",
@@ -337,7 +338,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                        alt.GradientStop(color="#5728ae", offset=0.4)],  # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
-            opacity = 0.5
+            opacity = 0.5,
+            strokeWidth=2.1
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
@@ -363,7 +365,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 #                     y=alt.Y("Quantity 24hMA"),
 # #                     y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
 #         )
-        return quantity_line_ma12 + price_line_ma12
+#         return quantity_line_ma12 + price_line_ma12
+        return price_line_ma12 + quantity_line_ma12
         if hide_original:
             if ma4:
                 chart = chart + quantity_line_ma12 + price_line_ma12
