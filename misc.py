@@ -9,6 +9,36 @@ Functions/classes used elsewhere that didn't have a home.
 
 
 
+def map_value(value: int|float, input_range: list[int|float], output_range: list[int|float]) -> int|float:
+    """
+    Maps a value from some specified range to a new range.
+
+    Parameters
+    ----------
+    `value` :  The value to be mapped.
+    `input_range` :  The range that the initial value is a member of.
+    `output_range` :  The range that the desired output value should be a member of.
+
+    Returns
+    -------
+    The mapped equivalent of the given value as an `int` or `float`.
+
+    Examples
+    --------
+    >>> map_value(10, input_range=[0,100], output_range=[20,50])
+        23
+    >>> map_value(50, input_range=[0,100], output_range=[20,50])
+        35
+    >>> map_value(50, input_range=[0,100], output_range=[100,200])
+        150
+    """
+    return (value - input_range[0]) * (output_range[1] - output_range[0]) / (input_range[1] - input_range[0]) + output_range[0]
+
+
+
+
+
+
 def weighted_average(values: list, weights: list) -> float:
     """
     Returns the weighted average of a list of values and a list of weights.
