@@ -342,7 +342,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 chart = chart + quantity_line_ma12 + price_line_ma12
             else:
                 chart = quantity_line_ma12 + price_line_ma12
-                return price_line_ma12
+                return price_line_ma12 + quantity_line_ma12
         else:
             chart = chart + quantity_line_ma12 + price_line_ma12
     
