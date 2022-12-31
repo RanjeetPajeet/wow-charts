@@ -266,6 +266,21 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     
     
+    if not hide_original:
+        range_quantity = [data["Quantity"].min(), data["Quantity"].max()]
+        data["Quantity"] = data["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+    if ma4:
+        range_quantity = [data["Quantity  4hMA"].min(), data["Quantity  4hMA"].max()]
+        data["Quantity  4hMA"] = data["Quantity  4hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+    if ma12:
+        range_quantity = [data["Quantity 12hMA"].min(), data["Quantity 12hMA"].max()]
+        data["Quantity 12hMA"] = data["Quantity 12hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+    if ma24:
+        range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
+        data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+    
+    
+    
     
     if not hide_original:
         price_line = alt.Chart(data).mark_line(
@@ -320,10 +335,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
 
     if ma12:
-        range_quantity = [data["Quantity 12hMA"].min(), data["Quantity 12hMA"].max()]
-        data["Quantity 12hMA"] = data["Quantity 12hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
-        
-        
         price_line_ma12 = alt.Chart(data).mark_line(
             color = "#6029c1",
             strokeWidth = 2.1,
@@ -336,7 +347,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 gradient="linear",
                 stops=[alt.GradientStop(color="#9670dc", offset=0),     # bottom color
                        alt.GradientStop(color="#5728ae", offset=0.4)],  # top color
-                x1=1, x2=1, y1=0, y2=1,
+                x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
             strokeWidth=2.1
@@ -344,35 +355,11 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
         )
-#         price_line = alt.Chart(data).mark_line(
-#                     color="#6d3fc0",strokeWidth=2.2).encode(
-#                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
-#                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
-#         )
-#         quantity_line = alt.Chart(data).mark_area(
-#                     color=alt.Gradient(
-#                         gradient="linear",
-#                         stops=[alt.GradientStop(color="#3d9df3", offset=0),
-#                                alt.GradientStop(color="#004280", offset=data["Quantity 24hMA"].mean()/data["Quantity 24hMA"].max())],
-#                         x1=1,
-#                         x2=1,
-#                         y1=1,
-#                         y2=0,
-#                     ),
-#                     opacity=0.5,strokeWidth=2).encode(
-#                     x="Time",
-# #                     x=alt.X("Time", axis=alt.Axis(title="Date")),
-#                     y=alt.Y("Quantity 24hMA"),
-# #                     y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
-#         )
-#         return quantity_line_ma12 + price_line_ma12
-        return price_line_ma12 + quantity_line_ma12
         if hide_original:
             if ma4:
                 chart = chart + quantity_line_ma12 + price_line_ma12
             else:
                 chart = quantity_line_ma12 + price_line_ma12
-                return price_line_ma12 + quantity_line_ma12
         else:
             chart = chart + quantity_line_ma12 + price_line_ma12
     
