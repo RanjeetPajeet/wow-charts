@@ -357,7 +357,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                     y="Quantity 24hMA",
 #                     y=alt.Y("Quantity 24hMA", axis=alt.Axis(title="Quantity"), scale=alt.Scale(domain=chart_ylims))
         )
-        return quantity_line
+        return quantity_line + price_line
         if hide_original:
             if ma4:
                 chart = chart + quantity_line_ma12 + price_line_ma12
