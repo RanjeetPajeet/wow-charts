@@ -208,13 +208,28 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 #         y = alt.Y(ylabel, axis=alt.Axis(title=ylabel))
 #     )
 
-    base = alt.Chart(data).encode(x="Time")
-    
+
+#     base = alt.Chart(data).encode(x="Time")
 #     bar = base.mark_bar().encode(y="Quantity")
-    bar = base.mark_bar().encode(y="Quantity 24hMA")
-    
 #     line = base.mark_line(color="red").encode(y=ylabel)
-    line = base.mark_line(color="red").encode(y="24-hour moving average")
+
+    if not hide_original:
+        base = alt.Chart(data).encode(x="Time")
+        bar = base.mark_bar().encode(y="Quantity")
+        line = base.mark_line(color="red").encode(y=ylabel)
+    if ma4:
+        base = alt.Chart(data).encode(x="Time")
+        bar = base.mark_bar().encode(y="Quantity 4hMA")
+        line = base.mark_line(color="red").encode(y="4-hour moving average")
+    if ma12:
+        base = alt.Chart(data).encode(x="Time")
+        bar = base.mark_bar().encode(y="Quantity 12hMA")
+        line = base.mark_line(color="red").encode(y="12-hour moving average")
+    if ma24:
+        base = alt.Chart(data).encode(x="Time")
+        bar = base.mark_bar().encode(y="Quantity 24hMA")
+        line = base.mark_line(color="red").encode(y="24-hour moving average")
+    
     
     chart = (bar + line).properties(height=600)
     
