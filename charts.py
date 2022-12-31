@@ -347,7 +347,9 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 gradient="linear",
                 stops=[alt.GradientStop(color="#9670dc", offset=0),     # bottom color
                        alt.GradientStop(color="#5728ae", offset=0.4)],  # top color
-                x1=1, x2=1, y1=1, y2=0,
+                x1=1, x2=1, y1=1,
+#                 y2=0,
+                y2=chart_ylims[0]/data["Quantity 12hMA"].max(),
             ),
             opacity = 0.5,
             strokeWidth=1,
