@@ -81,41 +81,10 @@ st.markdown("##")
 submit = st.button("Submit")
 
 
+
+
 chart = st.empty()
 
-
-
-# Hides the Submit button if on mobile
-# run_custom_css(""" @media (pointer:none),(pointer:coarse) { button[kind="secondary"] {display: none;} } """)
-
-
-# Hides the "Made with Streamlit" footer element
-hide_element("footer", "class", "css-1lsmgbg egzxvld0")
-
-
-run_custom_javascript(
-"""
-
-var elements = document.querySelectorAll("a[href='https://streamlit.io/cloud']");
-for (var i = 0, l = elements.length; i < l; i++) {
-    var element = elements[i];
-    element.style.visibility = "hidden";
-}
-
-""")
-
-
-# run_custom_javascript(' alert("Hola"); ')
-
-
-# run_custom_css(""" a.viewerBadge_container__1QSob[href='https://streamlit.io/cloud'] { display: none; } """)
-
-
-# hide_element("a", "href", "https://streamlit.io/cloud")
-# hide_element("div", "class", "viewerBadge_link__1S137")
-# hide_element("a", "target", "_blank")
-# hide_element("a", "rel", "noopener noreferrer")
-# hide_element("a", "class", "viewerBadge_container__1QSob")
 
 
 
@@ -139,3 +108,24 @@ if submit:
     elif chart_type == "Price & Region Price":
         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
+
+        
+
+        
+        
+
+        
+# Hides the Submit button if on mobile
+# run_custom_css(""" @media (pointer:none),(pointer:coarse) { button[kind="secondary"] {display: none;} } """)        
+        
+# Hides the "Made with Streamlit" footer element
+hide_element("footer", "class", "css-1lsmgbg egzxvld0")
+        
+# run_custom_javascript(
+# """
+# var elements = document.querySelectorAll("a[href='https://streamlit.io/cloud']");
+# for (var i = 0, l = elements.length; i < l; i++) {
+#     var element = elements[i];
+#     element.style.visibility = "hidden";
+# }
+# """)
