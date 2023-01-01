@@ -92,7 +92,7 @@ def run_custom_css(css: str):
 
     
 def hide_element(element: str, attribute_name: str, attribute_value: str):
-    run_custom_css(f'{element}[{attribute_name}="{attribute_value}"]' + '{display: none;})
+    run_custom_css(f'{element}[{attribute_name}="{attribute_value}"]' + '{display: none;}')
 
 
 # Hides the "Made with Streamlit" footer element
