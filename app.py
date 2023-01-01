@@ -93,16 +93,23 @@ chart = st.empty()
 hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
 
-run_custom_javascript(' alert("Hola"); ')
+run_custom_javascript(
+"""
+
+var elements = document.querySelectorAll("a[href='https://streamlit.io/cloud']");
+for (var i = 0, l = elements.length; i < l; i++) {
+    var element = elements[i];
+    element.style.visibility = "hidden";
+}
+
+""")
 
 
-# my_js = """
-# alert("Hola");
-# """
-# my_html = f"<script>{my_js}</script>"
-# html(my_html)
+# run_custom_javascript(' alert("Hola"); ')
 
-run_custom_css(""" a.viewerBadge_container__1QSob[href='https://streamlit.io/cloud'] { display: none; } """)
+
+# run_custom_css(""" a.viewerBadge_container__1QSob[href='https://streamlit.io/cloud'] { display: none; } """)
+
 
 # hide_element("a", "href", "https://streamlit.io/cloud")
 # hide_element("div", "class", "viewerBadge_link__1S137")
