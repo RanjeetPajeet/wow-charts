@@ -12,6 +12,7 @@ def run_custom_css(css: str):
     """
     Runs the given string as a CSS expression.
     """
+    import streamlit as st
     st.markdown("<style>" + css + "</style>", unsafe_allow_html=True)
 
 def hide_element(element: str, attribute_name: str, attribute_value: str):
