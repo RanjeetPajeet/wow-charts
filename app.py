@@ -1,5 +1,6 @@
 import streamlit as st
 from api import api_offline
+from misc import run_custom_css, hide_element
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison
 
 
@@ -84,34 +85,11 @@ chart = st.empty()
 
 
 # Hides the Submit button if on mobile
-# st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
-
-
-def run_custom_css(css: str):
-    st.markdown("<style>" + css + "</style>", unsafe_allow_html=True)
-
-    
-def hide_element(element: str, attribute_name: str, attribute_value: str):
-    run_custom_css(f'{element}[{attribute_name}="{attribute_value}"]' + '{display: none;}')
+# run_custom_css(""" @media (pointer:none),(pointer:coarse) { button[kind="secondary"] {display: none;} } """)
 
 
 # Hides the "Made with Streamlit" footer element
-                   
 hide_element("footer", "class", "css-1lsmgbg egzxvld0")
-
-# run_custom_css("""
-# footer[class="css-1lsmgbg egzxvld0"] {
-#     display: none;
-# }
-# """)
-
-# st.markdown("""<style>
-
-# footer[class="css-1lsmgbg egzxvld0"] {
-#     display: none;
-# }
-
-# </style>""", unsafe_allow_html=True)
 
 
 
@@ -119,7 +97,7 @@ if submit:
     if mobile:
         st.markdown("#")
         st.markdown("#")
-        st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
+        hide_element("button", "title", "View fullscreen")
     
     if chart_type == "Price":
         if server_compare is not None and faction_compare is not None:
