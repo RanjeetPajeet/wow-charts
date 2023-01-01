@@ -8,6 +8,21 @@ Functions/classes used elsewhere that didn't have a home.
 
 
 
+def run_custom_css(css: str):
+    """
+    Runs the given string as a CSS expression.
+    """
+    st.markdown("<style>" + css + "</style>", unsafe_allow_html=True)
+
+def hide_element(element: str, attribute_name: str, attribute_value: str):
+    """
+    Hides an element with the given identifiers.
+    """
+    run_custom_css(f'{element}[{attribute_name}="{attribute_value}"]' + '{display: none;}')
+
+
+
+
 
 def map_value(value, input_range, output_range):
     """
