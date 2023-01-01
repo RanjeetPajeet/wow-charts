@@ -90,14 +90,20 @@ chart = st.empty()
 def run_custom_css(css: str):
     st.markdown("<style>" + css + "</style>", unsafe_allow_html=True)
 
+    
+def hide_element(element: str, attribute_name: str, attribute_value: str):
+    run_custom_css(f'{element}[{attribute_name}="{attribute_value}"]' + '{display: none;})
+
 
 # Hides the "Made with Streamlit" footer element
+                   
+hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
-run_custom_css("""
-footer[class="css-1lsmgbg egzxvld0"] {
-    display: none;
-}
-""")
+# run_custom_css("""
+# footer[class="css-1lsmgbg egzxvld0"] {
+#     display: none;
+# }
+# """)
 
 # st.markdown("""<style>
 
