@@ -92,7 +92,7 @@ chart = st.empty()
 hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
 
-hide_element("path", "fill", "#D5DAE5")
+hide_element("a", "href", "https://streamlit.io/cloud")
 
 
 
