@@ -93,6 +93,7 @@ hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
 
 hide_element("a", "href", "https://streamlit.io/cloud")
+hide_element("div", "class", "viewerBadge_link__1S137")
 
 
 
