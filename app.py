@@ -94,6 +94,9 @@ hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
 hide_element("a", "href", "https://streamlit.io/cloud")
 hide_element("div", "class", "viewerBadge_link__1S137")
+hide_element("a", "target", "_blank")
+hide_element("a", "rel", "noopener noreferrer")
+hide_element("a", "class", "viewerBadge_container__1QSob")
 
 
 
