@@ -87,14 +87,25 @@ chart = st.empty()
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
 
 
-# Hides the "Made with Streamlit" footer element
-st.markdown("""<style>
+def run_custom_css(css: str):
+    st.markdown("<style>" + css + "</style>", unsafe_allow_html=True)
 
+
+# Hides the "Made with Streamlit" footer element
+
+run_custom_css("""
 footer[class="css-1lsmgbg egzxvld0"] {
     display: none;
 }
+""")
 
-</style>""", unsafe_allow_html=True)
+# st.markdown("""<style>
+
+# footer[class="css-1lsmgbg egzxvld0"] {
+#     display: none;
+# }
+
+# </style>""", unsafe_allow_html=True)
 
 
 
