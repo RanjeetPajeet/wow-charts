@@ -85,8 +85,8 @@ submit = st.button("Submit")
 chart = st.empty()
 
 
-# Hides the Submit button if on mobile
-# st.markdown("""<style>@media (pointer:none),(pointer:coarse) {div[value="0"]{display: none;}}</style>""", unsafe_allow_html=True)
+# Hides the Submit button if on mobile css-1lsmgbg egzxvld0 
+st.markdown("""<style>  footer[class="css-1lsmgbg egzxvld0"] {display: none;}  </style>""", unsafe_allow_html=True)
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
 
 
@@ -110,22 +110,4 @@ if submit:
 
     elif chart_type == "Price & Region Price":
         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-
-
-
-# if submit:
-#     if chart_type == "Price":
-#         if mobile:
-#             st.markdown("#")
-#             st.markdown("#")
-#             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
-#         chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-
-#     elif chart_type == "Price & Region Price":
-#         if mobile:
-#             st.markdown("#")
-#             st.markdown("#")
-#             st.markdown("""<style>button[title="View fullscreen"]{display: none;}</style>""", unsafe_allow_html=True)
-#         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-
 
