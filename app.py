@@ -1,6 +1,6 @@
 import streamlit as st
 from api import api_offline
-from misc import run_custom_css, hide_element
+from misc import run_custom_css, hide_element, run_custom_javascript
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison
 
 from streamlit.components.v1 import html
@@ -92,11 +92,15 @@ chart = st.empty()
 # Hides the "Made with Streamlit" footer element
 hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
-my_js = """
-alert("Hola");
-"""
-my_html = f"<script>{my_js}</script>"
-html(my_html)
+
+run_custom_javascript(' alert("Hola"); ')
+
+
+# my_js = """
+# alert("Hola");
+# """
+# my_html = f"<script>{my_js}</script>"
+# html(my_html)
 
 run_custom_css(""" a.viewerBadge_container__1QSob[href='https://streamlit.io/cloud'] { display: none; } """)
 
