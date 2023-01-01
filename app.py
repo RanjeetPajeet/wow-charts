@@ -92,6 +92,9 @@ chart = st.empty()
 hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 
 
+hide_element("path", "fill", "#D5DAE5")
+
+
 
 if submit:
     if mobile:
