@@ -13,9 +13,6 @@ st.title("Auction House Data")
 st.markdown("---")
 
 
-#if api_offline():
-    #st.error("Nexushub API is currently down.", icon="🚨")
-
 
 
 
@@ -85,9 +82,19 @@ submit = st.button("Submit")
 chart = st.empty()
 
 
-# Hides the Submit button if on mobile css-1lsmgbg egzxvld0 
-st.markdown("""<style>  footer[class="css-1lsmgbg egzxvld0"] {display: none;}  </style>""", unsafe_allow_html=True)
+
+# Hides the Submit button if on mobile
 # st.markdown("""<style>@media (pointer:none),(pointer:coarse) {button[kind="secondary"]{display: none;}}</style>""", unsafe_allow_html=True)
+
+
+# Hides the "Made with Streamlit" footer element
+st.markdown("""<style>
+
+footer[class="css-1lsmgbg egzxvld0"] {
+    display: none;
+}
+
+</style>""", unsafe_allow_html=True)
 
 
 
