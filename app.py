@@ -26,7 +26,7 @@ with st.container():
     with item_col:
         item = st.text_input("Item name", "Titanium Ore")
     with days_col:
-        num_days = st.number_input("Number of days", 1, 90, 30)
+        num_days = st.number_input("Number of days", 1, 365, 30)
 
     server_col, faction_col = st.columns(2)
     with server_col:
