@@ -301,7 +301,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         )
         selectors = alt.Chart(data).mark_point().encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel)),
+            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             opacity=alt.value(0),
         ).add_selection(nearest)
         points = line.mark_point().encode(
