@@ -116,7 +116,36 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             chart = chart + alt.Chart(data).mark_line(color="#bd4043").encode(x=alt.X("Time"), y=alt.Y("24-hour moving average"))
     
 
+    
+    
+    
+    def mouseover_stuff(line: alt.Chart) -> alt.Chart:
+        nearest = alt.selection(
+            type="single",
+            nearest=True,
+            on="mouseover",
+            fields=["Time"],
+            empty="none",
+        )
+        selectors = alt.Chart(data).mark_point().encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            opacity=alt.value(0),
+        ).add_selection(nearest)
+        points = line.mark_point().encode(
+            opacity=alt.condition(nearest, alt.value(1), alt.value(0))
+        )
+        text = line.mark_text(align="left", dx=5, dy=-5, color="#ffffff").encode(
+            text=alt.condition(nearest, ylabel, alt.value(' '))
+        )
+        rules = alt.Chart(data).mark_rule(color="gray").encode(
+            x="Time",
+        ).transform_filter(nearest)
+        return alt.layer(area, line, selectors, points, rules, text)
+    
+    
 
+    
+    
 
     chart = chart.properties(height=600)
 
@@ -287,36 +316,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     
     
-    
-    
-    
-    
-    def mouseover_stuff(area: alt.Chart, line: alt.Chart) -> alt.Chart:
-        nearest = alt.selection(
-            type="single",
-            nearest=True,
-            on="mouseover",
-            fields=["Time"],
-            empty="none",
-        )
-        selectors = alt.Chart(data).mark_point().encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
-            opacity=alt.value(0),
-        ).add_selection(nearest)
-        points = line.mark_point().encode(
-            opacity=alt.condition(nearest, alt.value(1), alt.value(0))
-        ) + area.mark_point().encode(opacity=alt.condition(nearest, alt.value(1), alt.value(0)))
-        text = line.mark_text(align="left", dx=5, dy=-5, color="#ffffff").encode(
-            text=alt.condition(nearest, ylabel, alt.value(' '))
-        )
-        rules = alt.Chart(data).mark_rule(color="gray").encode(
-            x="Time",
-        ).transform_filter(nearest)
-        return alt.layer(area, line, selectors, points, rules, text)
-    
-    
-    
-    
     if not hide_original:
         price_line = alt.Chart(data).mark_line(
             color="#3aa9ff",
@@ -404,8 +403,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             if ma4:
                 chart = chart + quantity_line_ma12 + price_line_ma12
             else:
-                chart = mouseover_stuff(quantity_line_ma12, price_line_ma12)
-#                 chart = quantity_line_ma12 + price_line_ma12
+                chart = quantity_line_ma12 + price_line_ma12
         else:
             chart = chart + quantity_line_ma12 + price_line_ma12
     
