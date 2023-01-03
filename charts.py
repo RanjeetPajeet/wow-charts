@@ -198,6 +198,14 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             "24h Avg Quantity": pd.Series(data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
         }
     )
+    
+    nearest = alt.selection(
+        type="single",
+        nearest=True,
+        on="mouseover",
+        fields=["x"],
+        empty="none",
+    )
 
     
 #     base = alt.Chart(data).encode(x="Time")
