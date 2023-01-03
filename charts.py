@@ -71,7 +71,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         st.markdown(f"**min24 = ** {min(data['24-hour moving average'].dropna().tolist()[1:])}")
         st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
 
-    chart_xlims = (data["Time"][0], data["Time"][-1])
+    chart_xlims = (data["Time"].tolist()[0], data["Time"].tolist()[-1])
         
 
 
