@@ -301,17 +301,17 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         )
         selectors = alt.Chart(data).mark_point().encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
-            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             opacity=alt.value(0),
         ).add_selection(nearest)
         points = line.mark_point().encode(
             opacity=alt.condition(nearest, alt.value(1), alt.value(0))
-        )
+        ) + area.mark_point().encode(opacity=alt.condition(nearest, alt.value(1), alt.value(0)))
         text = line.mark_text(align="left", dx=5, dy=-5).encode(
             text=alt.condition(nearest, ylabel, alt.value(' '))
         )
         rules = alt.Chart(data).mark_rule(color="gray").encode(
             x="Time",
+            y=ylabel,
         ).transform_filter(nearest)
         return alt.layer(area, line, selectors, points, rules, text)
     
