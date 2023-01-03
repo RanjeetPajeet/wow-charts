@@ -396,7 +396,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-            tooltip=["Time", "12h Avg Quantity"]
+#             tooltip=["Time", "12h Avg Quantity"]
 #             tooltip=alt.Tooltip(["Time", "12h Avg Quantity"], title="Asdf", format=".0f")
         )
 #         ).interactive()
@@ -405,7 +405,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                 chart = chart + quantity_line_ma12 + price_line_ma12
             else:
                 chart = mouseover_stuff(quantity_line_ma12, price_line_ma12)
-#                 return chart
 #                 chart = quantity_line_ma12 + price_line_ma12
         else:
             chart = chart + quantity_line_ma12 + price_line_ma12
