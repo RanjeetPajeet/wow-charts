@@ -296,11 +296,12 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             type="single",
             nearest=True,
             on="mouseover",
-            fields=["Time", ylabel],
+            fields=["Time"],
             empty="none",
         )
         selectors = alt.Chart(data).mark_point().encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel)),
             opacity=alt.value(0),
         ).add_selection(nearest)
         points = line.mark_point().encode(
@@ -308,7 +309,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         )
         text = line.mark_text(align="left", dx=5, dy=-5).encode(
             text=alt.condition(nearest, ylabel, alt.value(' '))
-        ) + area.mark_text(align="left", dx=5, dy=-10).encode( text=alt.condition(nearest, ylabel, alt.value(' ')) )
+        )
         rules = alt.Chart(data).mark_rule(color="gray").encode(
             x="Time",
         ).transform_filter(nearest)
