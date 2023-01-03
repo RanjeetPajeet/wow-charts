@@ -79,7 +79,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date") , scale=alt.Scale(domain=chart_xlims)),
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
         chart = chart.properties(height=600)
