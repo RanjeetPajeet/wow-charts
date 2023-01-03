@@ -305,7 +305,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         ).add_selection(nearest)
         points = line.mark_point().encode(
             opacity=alt.condition(nearest, alt.value(1), alt.value(0))
-        )
+        ) + area.mark_point().encode(opacity=alt.condition(nearest, alt.value(1), alt.value(0)))
         text = line.mark_text(align="left", dx=5, dy=-5).encode(
             text=alt.condition(nearest, ylabel, alt.value(' '))
         )
