@@ -81,7 +81,8 @@ st.markdown("##")
 submit = st.button("Submit")
 
 
-
+st.markdown("# ")
+st.markdown("# ")
 
 chart = st.empty()
 
@@ -90,8 +91,6 @@ chart = st.empty()
 
 if submit:
     if mobile:
-        st.markdown("#")
-        st.markdown("#")
         hide_element("button", "title", "View fullscreen")
     
     if chart_type == "Price":
