@@ -39,7 +39,8 @@ with st.container():
     
     st.markdown("##")
 
-    chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
+    chart_type = st.selectbox("Chart type", ["Price & Quantity","Price","Price & Region Price"])
+#     chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
 
     if chart_type == "Price":
         server_col_compare, faction_col_compare = st.columns(2)
