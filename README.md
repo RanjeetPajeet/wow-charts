@@ -6,4 +6,4 @@
 # 
 
 ## Arena stats
-### https://makaufmanui-arena-stats-app-qunxjr.streamlit.app/
+### https://ranjeetpajeet-arena-stats-app-ck2n25.streamlit.app/
