@@ -66,7 +66,7 @@ def fix_missing_data(data: dict) -> dict:
     for i in range(len(missing_quantities)):
         if np.random.random() < 0.5:
 #             missing_quantities[i] = int(missing_quantities[i] * (1 + (np.random.random()*15)*(np.random.random()-0.5)))
-            missing_quantities[i] = int( (np.mean(data["quantities"]))  * (1 + (np.random.random()*15)*(np.random.random()-0.5)))
+            missing_quantities[i] = int( (np.mean(data["quantities"]))  * (1 + (np.random.random())*(np.random.random()-0.5)))
 
 
     fixed_times = data["times"][:last_okay_index+1] + missing_times + data["times"][first_okay_index:]
