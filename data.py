@@ -50,8 +50,8 @@ def fix_missing_data(data: dict) -> dict:
 
     # add a little bit of randomness to the missing prices
     for i in range(len(missing_prices)):
-        if np.random.random() < 0.2:
-            missing_prices[i] = int(missing_prices[i] * (1 + (np.random.random()/15)*(np.random.random()-0.5)))
+        if np.random.random() < 0.3:
+            missing_prices[i] = int(missing_prices[i] * (1 + (np.random.random()/5)*(np.random.random()-0.5)))
 
 
     last_okay_quantity = data["quantities"][last_okay_index]
