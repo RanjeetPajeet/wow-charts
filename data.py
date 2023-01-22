@@ -5,7 +5,7 @@ data.py
 Functions for getting auction data from the NexusHub API and returning it in more useful forms.
 """
 import api
-
+import datetime
 
 
 
