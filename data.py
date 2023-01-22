@@ -10,7 +10,80 @@ import api
 
 
 
-def get_server_history(item: str, server: str = "Skyfury", faction: str = "Alliance", numDays: int = None, avg: bool = True) -> dict:
+
+def fix_missing_data(data: dict) -> dict:
+    """
+    Fixes the data missing from Dec.20 -> Dec.25 and returns a new dictionary.
+    """
+    for i in range(len(data["times"])):
+        # remove the minutes and seconds from the time
+        data["times"][i] = datetime.datetime(data["times"][i].year, data["times"][i].month, data["times"][i].day, data["times"][i].hour)
+    last_okay_index  = -1
+    first_okay_index = -1
+    last_okay_date  = datetime.datetime(2022, 12, 20, 9)
+    first_okay_date = datetime.datetime(2022, 12, 25, 14)
+    missing_times = [last_okay_date + datetime.timedelta(hours=i) for i in range(1, int((first_okay_date - last_okay_date).total_seconds() // 3600))]
+    
+    if data["times"][0] > last_okay_date:
+        return data     # no missing data (all data occurs after the last okay date)
+
+    for i in range(len(data["times"])):
+        if data["times"][i] >= last_okay_date:
+            last_okay_index = i ; break
+    for i in range(len(data["times"])):
+        if data["times"][i] >= first_okay_date:
+            first_okay_index = i ; break
+            
+    if first_okay_index == -1 or last_okay_index == -1:
+        return data     # no missing data (all data occurs before the first okay date)
+    
+    delta_time = first_okay_date - last_okay_date
+
+    last_okay_price = data["prices"][last_okay_index]
+    first_okay_price = data["prices"][first_okay_index]
+
+    delta_price = first_okay_price - last_okay_price
+    price_per_hour = delta_price / (delta_time.total_seconds() / 3600)
+
+    missing_prices = [ int(last_okay_price + price_per_hour*(i+1))  for i in range(len(missing_times)) ]
+
+    # add a little bit of randomness to the missing prices
+    for i in range(len(missing_prices)):
+        if np.random.random() < 0.3:
+            missing_prices[i] = int(missing_prices[i] * (1 + (np.random.random()/15)*(np.random.random()-0.5)))
+
+
+    last_okay_quantity = data["quantities"][last_okay_index]
+    first_okay_quantity = data["quantities"][first_okay_index]
+
+    delta_quantity = first_okay_quantity - last_okay_quantity
+    quantity_per_hour = delta_quantity / (delta_time.total_seconds() / 3600)
+
+    missing_quantities = [ int(last_okay_quantity + quantity_per_hour*(i+1))  for i in range(len(missing_times)) ]
+
+    # add a little bit of randomness to the missing quantities
+    for i in range(len(missing_quantities)):
+        if np.random.random() < 0.3:
+            missing_quantities[i] = int(missing_quantities[i] * (1 + (np.random.random()/15)*(np.random.random()-0.5)))
+
+
+    fixed_times = data["times"][:last_okay_index+1] + missing_times + data["times"][first_okay_index:]
+    fixed_prices = data["prices"][:last_okay_index+1] + missing_prices + data["prices"][first_okay_index:]
+    fixed_quantities = data["quantities"][:last_okay_index+1] + missing_quantities + data["quantities"][first_okay_index:]
+
+    return {
+        "prices": fixed_prices,
+        "quantities": fixed_quantities,
+        "times": fixed_times,
+    }
+
+
+
+
+
+
+
+def get_server_history(item: str, server: str = "Skyfury", faction: str = "Alliance", numDays: int = None, avg: bool = True, fix: bool = True) -> dict:
     """
     Returns the price & quantity history of an item for the specified faction/server.
 
@@ -21,6 +94,7 @@ def get_server_history(item: str, server: str = "Skyfury", faction: str = "Allia
     `faction`: The faction on the given server.  Default is `Alliance`.
     `numDays`: The number of days to get the price history for. If `None`, then the entire history is returned.
     `avg`: Whether or not to average the data over 2 hours.  Default is `True`.
+    `fix`: Whether or not to fix the missing data that occurs between Dec. 20th and Dec. 25th.  Default is `True`.
 
     Returns
     -------
@@ -36,6 +110,7 @@ def get_server_history(item: str, server: str = "Skyfury", faction: str = "Allia
     quantities = [i["quantity"] for i in itemData]
     times = [i["scannedAt"] for i in itemData]
     data = {"prices": prices, "quantities": quantities, "times": times}
+    if fix: data = fix_missing_data(data)
     if avg: data = average(data)
     return data
 
@@ -48,7 +123,7 @@ def get_server_history(item: str, server: str = "Skyfury", faction: str = "Allia
 
 
 
-def get_region_history(item: str, region: str = "US", numDays: int = None, avg: bool = True) -> dict:
+def get_region_history(item: str, region: str = "US", numDays: int = None, avg: bool = True, fix: bool = True) -> dict:
     """
     Returns the price & quantity history of an item for the US region as a whole.
 
@@ -58,6 +133,7 @@ def get_region_history(item: str, region: str = "US", numDays: int = None, avg: 
     `region`: The region to get historical price data for.  Default is `US`.
     `numDays`: The number of days to get the price history for. If `None`, then the entire history is returned.
     `avg`: Whether or not to average the data over 2 hours.  Default is `True`.
+    `fix`: Whether or not to fix the missing data that occurs between Dec. 20th and Dec. 25th.  Default is `True`.
 
     Returns
     -------
@@ -73,6 +149,7 @@ def get_region_history(item: str, region: str = "US", numDays: int = None, avg: 
     quantities = [i["quantity"] for i in itemData]
     times = [i["scannedAt"] for i in itemData]
     data = {"prices": prices, "quantities": quantities, "times": times}
+    if fix: data = fix_missing_data(data)
     if avg: data = average(data)
     return data
 
