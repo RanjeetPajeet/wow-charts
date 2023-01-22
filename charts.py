@@ -519,27 +519,27 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
 
     ###  MIGHT BE ABLE TO GET RID OF ALL THIS LENGTH CHECKING STUFF  ###
 
-    last_time_server = server_data["times"][-1]
-    last_time_region = region_data["times"][-1]
+#     last_time_server = server_data["times"][-1]
+#     last_time_region = region_data["times"][-1]
 
-    if last_time_server != last_time_region:
-        if last_time_server > last_time_region:         # the server_data time is later, so remove the last element of server_data
-            server_prices = server_prices[:-1]
-            server_data["times"] = server_data["times"][:-1]
-        elif last_time_server < last_time_region:       # the region_data time is later, so remove the last element of region_data
-            region_prices = region_prices[:-1]
-            region_data["times"] = region_data["times"][:-1]
+#     if last_time_server != last_time_region:
+#         if last_time_server > last_time_region:         # the server_data time is later, so remove the last element of server_data
+#             server_prices = server_prices[:-1]
+#             server_data["times"] = server_data["times"][:-1]
+#         elif last_time_server < last_time_region:       # the region_data time is later, so remove the last element of region_data
+#             region_prices = region_prices[:-1]
+#             region_data["times"] = region_data["times"][:-1]
 
-    # check that the lengths of the two lists are the same
-    if len(server_data["times"]) != len(region_data["times"]):
-        if len(server_data["times"]) > len(region_data["times"]):
-            diff_len = len(server_data["times"]) - len(region_data["times"])
-            server_data["times"] = server_data["times"][diff_len:]
-            server_prices = server_prices[diff_len:]
-        elif len(server_data["times"]) < len(region_data["times"]):
-            diff_len = len(region_data["times"]) - len(server_data["times"])
-            region_data["times"] = region_data["times"][diff_len:]
-            region_prices = region_prices[diff_len:]
+#     # check that the lengths of the two lists are the same
+#     if len(server_data["times"]) != len(region_data["times"]):
+#         if len(server_data["times"]) > len(region_data["times"]):
+#             diff_len = len(server_data["times"]) - len(region_data["times"])
+#             server_data["times"] = server_data["times"][diff_len:]
+#             server_prices = server_prices[diff_len:]
+#         elif len(server_data["times"]) < len(region_data["times"]):
+#             diff_len = len(region_data["times"]) - len(server_data["times"])
+#             region_data["times"] = region_data["times"][diff_len:]
+#             region_prices = region_prices[diff_len:]
             
     ####################################################################
 
