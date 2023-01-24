@@ -109,7 +109,6 @@ if submit:
         chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
 
-        
 
         
         
