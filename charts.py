@@ -220,6 +220,15 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         TEXT(f"12hr: {mean_12h}")
         TEXT(f"24hr: {mean_24h}")
     
+    with stdev_col:
+        SMALL("Stdev")
+        stdev_4h  = round(np.stdev( data[ '4-hour moving average'].dropna().tolist() ), 2)
+        stdev_12h = round(np.stdev( data['12-hour moving average'].dropna().tolist() ), 2)
+        stdev_24h = round(np.stdev( data['24-hour moving average'].dropna().tolist() ), 2)
+        TEXT(f" 4hr: {mean_4h}")
+        TEXT(f"12hr: {mean_12h}")
+        TEXT(f"24hr: {mean_24h}")
+    
     
     
     
