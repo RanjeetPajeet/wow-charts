@@ -105,7 +105,11 @@ if submit:
         
         st.markdown("# ")
         st.markdown("# ")
-        st.markdown(f"### {item.title()}")
+        
+        a, title, c = st.columns(3)
+        with title:
+            st.markdown(f"### {item.title()}")
+        
         st.markdown("# ")
         chart = st.empty()
         
