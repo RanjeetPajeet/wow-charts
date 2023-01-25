@@ -16,6 +16,17 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     # run the remove_outliers function
     if fix_outliers:
         prices = remove_outliers(prices)
+        
+        
+    upper_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    
+    for i in range(len(prices)):
+        if prices[i] > upper_limit:
+            prices[i] = upper_limit
+        
 
     data = pd.DataFrame(
         {
@@ -25,7 +36,9 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
         }
     )
-
+    
+ 
+    
     if hide_original:
         min4  = min(data["4-hour moving average" ].dropna().tolist()[1:])
         max4  = max(data["4-hour moving average" ].dropna().tolist()[1:])
@@ -243,9 +256,9 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     
     
     
-    upper_limit  =  np.mean(data[ '4-hour moving average'].dropna().tolist())  +  3*np.std(data[ '4-hour moving average'].dropna().tolist())
-    SMALL("Upper Limit")
-    TEXT(round(upper_limit,2))
+#     upper_limit  =  np.mean(data[ '4-hour moving average'].dropna().tolist())  +  3*np.std(data[ '4-hour moving average'].dropna().tolist())
+#     SMALL("Upper Limit")
+#     TEXT(round(upper_limit,2))
     
     
     return chart
