@@ -192,7 +192,8 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         
         chart = chart.properties(height=400)
     
-    print("here")
+    WRITE = st.write
+    WRITE("hi")
     return chart
 
 
