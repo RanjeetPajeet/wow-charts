@@ -238,6 +238,10 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
     )
     
+    for i in range(len(prices)):
+        if prices[i] > upper_limit:
+            prices[i] = upper_limit
+    
     
     data = pd.DataFrame(
         {
