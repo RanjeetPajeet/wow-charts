@@ -235,7 +235,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     upper_limit  =  (
         np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-        4*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
     )
     
     for i in range(len(prices)):
@@ -545,6 +545,27 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     if fix_outliers:
         server_prices = remove_outliers(server_prices)
         region_prices = remove_outliers(region_prices)
+        
+        
+    server_upper_limit  =  (
+        np.mean(pd.Series(server_prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(server_prices).rolling(2).mean().dropna().tolist()) 
+    )
+    
+    for i in range(len(server_prices)):
+        if server_prices[i] > server_upper_limit:
+            server_prices[i] = server_upper_limit
+            
+            
+    region_upper_limit  =  (
+        np.mean(pd.Series(region_prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(region_prices).rolling(2).mean().dropna().tolist()) 
+    )
+    
+    for i in range(len(region_prices)):
+        if region_prices[i] > region_upper_limit:
+            region_prices[i] = region_upper_limit
+    
 
 
     ###  MIGHT BE ABLE TO GET RID OF ALL THIS LENGTH CHECKING STUFF  ###
