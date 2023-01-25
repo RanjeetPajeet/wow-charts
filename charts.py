@@ -192,8 +192,17 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         
         chart = chart.properties(height=400)
     
-    WRITE = st.write
-    WRITE("hi")
+    
+    TEXT   = lambda t: st.markdown(t)
+    SMALL  = lambda t: st.markdown(f"### {t}")
+    MEDIUM = lambda t: st.markdown(f"## {t}")
+    LARGE  = lambda t: st.markdown(f"# {t}")
+    
+    LARGE("LARGE")
+    MEDIUM("MEDIUM")
+    SMALL("SMALL")
+    TEXT("TEXT")
+    
     return chart
 
 
