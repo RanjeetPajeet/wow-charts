@@ -7,6 +7,327 @@ from data import get_server_history, get_region_history, remove_outliers
 
 
 
+
+
+def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
+    gems = {
+        "Scarlet Ruby": get_server_history("Scarlet Ruby", server, faction, num_days),
+        "Bold Scarlet Ruby": get_server_history("Bold Scarlet Ruby", server, faction, num_days),
+        "Runed Scarlet Ruby": get_server_history("Runed Scarlet Ruby", server, faction, num_days),
+        "Monarch Topaz": get_server_history("Monarch Topaz", server, faction, num_days),
+        "Durable Monarch Topaz": get_server_history("Durable Monarch Topaz", server, faction, num_days),
+        "Accurate Monarch Topaz": get_server_history("Accurate Monarch Topaz", server, faction, num_days),
+        "Luminous Monarch Topaz": get_server_history("Luminous Monarch Topaz", server, faction, num_days),
+        "Autumns Glow": get_server_history("Autumns Glow", server, faction, num_days),
+        "Mystic Autumns Glow": get_server_history("Mystic Autumns Glow", server, faction, num_days),
+        "Brilliant Autumns Glow": get_server_history("Brilliant Autumns Glow", server, faction, num_days),
+    }
+    earth = {
+        "Eternal": get_server_history("Eternal Earth", server, faction, num_days),
+        "Crystallized": get_server_history("Crystallized Earth", server, faction, num_days),
+    }
+    de_mats = {
+        "Dream Shard": get_server_history("Dream Shard", server, faction, num_days),
+        "Infinite Dust": get_server_history("Infinite Dust", server, faction, num_days),
+        "Greater Cosmic Essence": get_server_history("Greater Cosmic Essence", server, faction, num_days),
+    }
+    
+    scarlet_ruby_prices = []
+    for i in range( len(gems["Scarlet Ruby"]["prices"]) ):
+        scarlet_ruby_prices.append( (gems["Scarlet Ruby"]["prices"][i] + gems["Bold Scarlet Ruby"]["prices"][i] + gems["Runed Scarlet Ruby"]["prices"][i]) / 3 )
+    monarch_topaz_prices = []
+    for i in range( len(gems["Monarch Topaz"]["prices"]) ):
+        monarch_topaz_prices.append( (gems["Monarch Topaz"]["prices"][i] + gems["Durable Monarch Topaz"]["prices"][i] + gems["Accurate Monarch Topaz"]["prices"][i] + gems["Luminous Monarch Topaz"]["prices"][i]) / 4 )
+    autumns_glow_prices = []
+    for i in range( len(gems["Autumns Glow"]["prices"]) ):
+        autumns_glow_prices.append( (gems["Autumns Glow"]["prices"][i] + gems["Mystic Autumns Glow"]["prices"][i] + gems["Brilliant Autumns Glow"]["prices"][i]) / 3 )
+    
+    crystallized_earth_prices = []
+    for i in range( len(earth["Crystallized"]["prices"]) ):
+        crystallized_earth_prices.append( (earth["Crystallized"]["prices"][i] + (earth["Eternal"]["prices"][i] / 10)) / 2 )
+    
+    dream_shard_prices = [ p for p in de_mats["Dream Shard"]["prices"] ]
+    infinite_dust_prices = [ p for p in de_mats["Infinite Dust"]["prices"] ]
+    greater_cosmic_essence_prices = [ p for p in de_mats["Greater Cosmic Essence"]["prices"] ]
+    
+    values = {
+        "blueGems": [ 0.04 * (scarlet_ruby_prices[i] + autumns_glow_prices[i] + monarch_topaz_prices[i]) + 0.12*(4.5)  for i in range(len(scarlet_ruby_prices)) ],
+        "greenGems": [ 0.72 * ( 1.84*infinite_dust_prices[i] + 0.12*greater_cosmic_essence_prices[i] + 0.008*dream_shard_prices[i] - 2*crystallized_earth_prices[i] ) + 0.072*(1.0) + 0.0288*(0.5)  for i in range(len(infinite_dust_prices)) ],
+    }
+    
+    values_per_prospect = [ values["blueGems"][i] + values["greenGems"][i]  for i in range(len(values["blueGems"][i])) ]
+    values = [ values_per_prospect[i]/5  for i in range(len(values_per_prospect)) ]     # per saronite ore
+    
+    saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
+    scale = 100 if saronite_ore_data["prices"][-1] < 10000 else 10000
+    prices = [round(price/scale,2) for price in saronite_ore_data["prices"]]
+    ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+    
+    if fix_outliers:
+        prices = remove_outliers(prices)
+    
+    upper_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(prices)):
+        if prices[i] > upper_limit:
+            prices[i] = upper_limit
+    
+    saronite_ore_data["times"] = [time.replace(minute=0) for time in saronite_ore_data["times"]]
+    
+    saronite_data = pd.DataFrame(
+        {
+            "Time": saronite_ore_data["times"], ylabel: prices,
+            "4-hour moving average":  pd.Series(prices).rolling(2).mean(),
+            "12-hour moving average": pd.Series(prices).rolling(6).mean(),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+        }
+    )
+    value_data = pd.DataFrame(
+        {
+            "Time": saronite_ore_data["times"], ylabel: values,
+            "4-hour moving average":  pd.Series(values).rolling(2).mean(),
+            "12-hour moving average": pd.Series(values).rolling(6).mean(),
+            "24-hour moving average": pd.Series(values).rolling(12).mean(),
+        }
+    )
+    
+    
+    
+    if hide_original:
+        min4_prices  = min(saronite_data["4-hour moving average" ].dropna().tolist()[1:])
+        min4_values  = min(value_data["4-hour moving average" ].dropna().tolist()[1:])
+        max4_prices  = max(saronite_data["4-hour moving average" ].dropna().tolist()[1:])
+        max4_values  = max(value_data["4-hour moving average" ].dropna().tolist()[1:])
+        min12_prices = min(saronite_data["12-hour moving average"].dropna().tolist()[1:])
+        min12_values = min(value_data["12-hour moving average"].dropna().tolist()[1:])
+        max12_prices = max(saronite_data["12-hour moving average"].dropna().tolist()[1:])
+        max12_values = max(value_data["12-hour moving average"].dropna().tolist()[1:])
+        min24_prices = min(saronite_data["24-hour moving average"].dropna().tolist()[1:])
+        min24_values = min(value_data["24-hour moving average"].dropna().tolist()[1:])
+        max24_prices = max(saronite_data["24-hour moving average"].dropna().tolist()[1:])
+        max24_values = max(value_data["24-hour moving average"].dropna().tolist()[1:])
+        min4  = min(min4_prices,  min4_values )
+        max4  = max(max4_prices,  max4_values )
+        min12 = min(min12_prices, min12_values)
+        max12 = max(max12_prices, max12_values)
+        min24 = min(min24_prices, min24_values)
+        max24 = max(max24_prices, max24_values)
+
+        if ma4 and not ma12 and not ma24:
+            minimum = min4
+            maximum = max4
+        elif ma12 and not ma4 and not ma24:
+            minimum = min12
+            maximum = max12
+        elif ma24 and not ma4 and not ma12:
+            minimum = min24
+            maximum = max24
+        elif ma4 and ma12 and not ma24:
+            minimum = min(min4, min12)
+            maximum = max(max4, max12)
+        elif ma4 and ma24 and not ma12:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma12 and ma24 and not ma4:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma4 and ma12 and ma24:
+            minimum = min(min4, min12, min24)
+            maximum = max(max4, max12, max24)
+        else:
+            minimum = min( min(prices), min(values) )
+            maximum = max( max(prices), max(values) )
+    else:
+        minimum = min( min(prices), min(values) )
+        maximum = max( max(prices), max(values) )
+    
+    try: chart_ylims = (int(minimum/1.25), int(maximum*1.2))
+    except Exception as e:
+        chart_ylims = (
+            int(min( min(prices), min(values) )/1.25),
+            int(max( max(prices), max(values) )*1.20),
+        )
+        st.markdown(f"**Error:** {e}")
+    
+    
+    
+
+
+    
+    if not hide_original:
+        chart = alt.Chart(saronite_data).mark_line(
+            # color="#83c9ff" if not hide_original else "#0e1117",
+            color="#3aa9ff" if not hide_original else "#0e1117",
+            strokeWidth=2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
+        ) + alt.Chart(value_data).mark_line(
+            color="#83c9ff" if not hide_original else "#0e1117",                                            #  <------ NOTE: "#ff6f83" can be changed
+            strokeWidth=2,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
+        )
+        chart = chart.properties(height=600)
+
+        
+    if ma4:
+        if hide_original:
+            chart = alt.Chart(saronite_data).mark_line(
+                        # color="#7defa1",strokeWidth=2).encode(
+                        color="#0ce550",strokeWidth=2).encode(
+                        x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                        y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+            ) + alt.Chart(value_data).mark_line(
+                        color="#7defa1",strokeWidth=2).encode(                     #  <------ NOTE: "#7defa1" can be changed
+                        x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                        y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+            )
+        else:
+            chart = chart + alt.Chart(saronite_data).mark_line(
+                                # color="#7defa1").encode(
+                                color="#0ce550").encode(
+                                x=alt.X("Time"),
+                                y=alt.Y("4-hour moving average")
+            ) + alt.Chart(value_data).mark_line(
+                                color="#7defa1").encode(                                    #  <------ NOTE: "#7defa1" can be changed
+                                x=alt.X("Time"),
+                                y=alt.Y("4-hour moving average"))
+    
+    
+    if ma12:
+        if hide_original:
+            if ma4:
+                chart = chart + alt.Chart(saronite_data).mark_line(
+                                    # color="#6d3fc0",strokeWidth=2.1).encode(
+                                    color="#6029c1",strokeWidth=2.1).encode(
+                                    x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(value_data).mark_line(
+                                    color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
+                                    x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+            else:
+                chart = alt.Chart(saronite_data).mark_line(
+                            # color="#6d3fc0",strokeWidth=2.1).encode(
+                            color="#6029c1",strokeWidth=2.1).encode(
+                            x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(value_data).mark_line(
+                            color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
+                            x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+        else:
+            chart = chart + alt.Chart(saronite_data).mark_line(
+                                # color="#6d3fc0").encode(
+                                color="#6029c1").encode(
+                                x=alt.X("Time"),
+                                y=alt.Y("12-hour moving average")
+            ) + alt.Chart(value_data).mark_line(
+                                color="#9670dc").encode(                                    #  <------ NOTE: "#6d3fc0" can be changed
+                                x=alt.X("Time"),
+                                y=alt.Y("12-hour moving average"))
+
+    
+    if ma24:
+        if hide_original:
+            if ma4 or ma12:
+                chart = chart + alt.Chart(saronite_data).mark_line(
+                                    # color="#bd4043",strokeWidth=2.2).encode(
+                                    color="#ba191c",strokeWidth=2.2).encode(
+                                    x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(value_data).mark_line(
+                                    color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#bd4043" can be changed
+                                    x=alt.X("Time", axis=alt.Axis(title="Date")),
+                                    y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+            else:
+                chart = alt.Chart(saronite_data).mark_line(
+                            # color="#bd4043",strokeWidth=2.2).encode(
+                            color="#ba191c",strokeWidth=2.2).encode(
+                            x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(value_data).mark_line(
+                            color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#ff6f83" can be changed
+                            x=alt.X("Time", axis=alt.Axis(title="Date")),
+                            y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+        else:
+            chart = chart + alt.Chart(saronite_data).mark_line(
+                # color="#bd4043").encode(
+                color="#ba191c").encode(
+                x=alt.X("Time"),
+                y=alt.Y("24-hour moving average")
+            ) + alt.Chart(value_data).mark_line(
+                color="#ff5169").encode(                                    #  <------ NOTE: "#bd4043" can be changed
+                x=alt.X("Time"),
+                y=alt.Y("24-hour moving average"))
+
+
+    chart = chart.properties(height=600)
+    chart = chart.configure_axisY(
+        grid=True,           gridOpacity=0.2,         tickCount=6,
+        titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
+        titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
+        labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+        labelFontSize=16,    labelFontWeight="bold",
+    )
+    chart = chart.configure_axisX(
+        grid=False,          tickCount="day",        titleOpacity=0,
+        labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+        labelFontSize=20,    labelFontWeight="bold",
+    )
+    chart = chart.configure_view(
+        strokeOpacity=0,    # remove border
+    )
+    
+    
+    
+    
+    
+    
+    if mobile:
+        chart = chart.configure_axisY(
+            grid=True,           gridOpacity=0.2,         tickCount=5,
+            titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
+            titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
+            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
+        )
+        chart = chart.configure_axisX(
+            grid=False,          tickCount="day",        titleOpacity=0,
+            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold", 
+        )
+        
+        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
+        chart.configure_title(
+            fontSize=20,
+            font='Calibri',
+            anchor='start',
+            color='#ffffff',
+            align='center'
+        )
+        
+        chart = chart.properties(height=400)
+
+    return chart
+
+            
+            
+            
+            
+            
+            
+            
+
+
 def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     data = get_server_history(item, server, faction, num_days)
     scale = 100 if data["prices"][-1] < 10000 else 10000
