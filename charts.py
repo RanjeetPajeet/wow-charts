@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
@@ -195,13 +196,29 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     
     TEXT   = lambda t: st.markdown(t)
     SMALL  = lambda t: st.markdown(f"### {t}")
-    MEDIUM = lambda t: st.markdown(f"## {t}")
-    LARGE  = lambda t: st.markdown(f"# {t}")
+    MEDIUM = lambda t: st.markdown( f"## {t}")
+    LARGE  = lambda t: st.markdown(  f"# {t}")
     
-    LARGE("LARGE")
+    LARGE( "LARGE" )
     MEDIUM("MEDIUM")
-    SMALL("SMALL")
-    TEXT("TEXT")
+    SMALL( "SMALL" )
+    TEXT(  "TEXT"  )
+    
+    
+    data = pd.DataFrame(
+        {
+            "Time": data["times"], ylabel: prices,
+            "4-hour moving average":  pd.Series(prices).rolling(2).mean(),
+            "12-hour moving average": pd.Series(prices).rolling(6).mean(),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+        }
+    )
+    
+    
+    mean = np.mean( list(data["4-hour moving average"]) )
+    SMALL("Mean")
+    TEXT(mean)
+    
     
     return chart
 
