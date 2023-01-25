@@ -1,7 +1,7 @@
 import streamlit as st
 from api import api_offline
 from misc import run_custom_css, hide_element, run_custom_javascript
-from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison
+from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, plot_saronite_value_history
 
 from streamlit.components.v1 import html
 
