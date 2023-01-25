@@ -87,10 +87,10 @@ st.markdown("##")
 submit = st.button("Submit")
 
 
-st.markdown("# ")
-st.markdown("# ")
+# st.markdown("# ")
+# st.markdown("# ")
 
-chart = st.empty()
+# chart = st.empty()
 
 
 
@@ -102,7 +102,13 @@ if submit:
     if saronite_value:
         chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
     else:
-    
+        
+        st.markdown("# ")
+        st.markdown("# ")
+        st.markdown(f"### {item.title()}")
+        st.markdown("# ")
+        chart = st.empty()
+        
         if chart_type == "Price":
             if server_compare is not None and faction_compare is not None:
                 chart = st.altair_chart(plot_price_history_comparison(item, server, faction, server_compare, faction_compare, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
