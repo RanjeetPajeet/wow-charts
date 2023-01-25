@@ -199,11 +199,6 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     MEDIUM = lambda t: st.markdown( f"## {t}")
     LARGE  = lambda t: st.markdown(  f"# {t}")
     
-    LARGE( "LARGE" )
-    MEDIUM("MEDIUM")
-    SMALL( "SMALL" )
-    TEXT(  "TEXT"  )
-    
     
 #     data = pd.DataFrame(
 #         {
@@ -214,10 +209,18 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
 #         }
 #     )
     
+    mean_col, stdev_col, bounds_col = st.columns(3)
     
-    mean = np.mean( data['4-hour moving average'].dropna().tolist() )
-    SMALL("Mean")
-    TEXT(mean)
+    with mean_col:
+        SMALL("Mean")
+        mean_4h  = round(np.mean( data[ '4-hour moving average'].dropna().tolist() ), 2)
+        mean_12h = round(np.mean( data['12-hour moving average'].dropna().tolist() ), 2)
+        mean_24h = round(np.mean( data['24-hour moving average'].dropna().tolist() ), 2)
+        TEXT(f" 4hr: {mean_4h}")
+        TEXT(f"12hr: {mean_12h}")
+        TEXT(f"24hr: {mean_24h}")
+    
+    
     
     
     return chart
