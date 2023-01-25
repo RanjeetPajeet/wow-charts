@@ -205,17 +205,17 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     TEXT(  "TEXT"  )
     
     
-    data = pd.DataFrame(
-        {
-            "Time": data["times"], ylabel: prices,
-            "4-hour moving average":  pd.Series(prices).rolling(2).mean(),
-            "12-hour moving average": pd.Series(prices).rolling(6).mean(),
-            "24-hour moving average": pd.Series(prices).rolling(12).mean(),
-        }
-    )
+#     data = pd.DataFrame(
+#         {
+#             "Time": data["times"], ylabel: prices,
+#             "4-hour moving average":  pd.Series(prices).rolling(2).mean(),
+#             "12-hour moving average": pd.Series(prices).rolling(6).mean(),
+#             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+#         }
+#     )
     
     
-    mean = np.mean( list(data["4-hour moving average"]) )
+    mean = np.mean( data['4-hour moving average'].dropna().tolist() )
     SMALL("Mean")
     TEXT(mean)
     
