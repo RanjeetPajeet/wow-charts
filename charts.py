@@ -231,9 +231,9 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         
     with bounds_col:
         SMALL("Upper Bound")
-        upper_4h  = mean_4h + stdev_4h
-        upper_12h  = mean_12h + stdev_12h
-        upper_24h  = mean_24h + stdev_24h
+        upper_4h  = mean_4h + 3*stdev_4h
+        upper_12h  = mean_12h + 3*stdev_12h
+        upper_24h  = mean_24h + 3*stdev_24h
 #         upper_4h  = round(np.std( data[ '4-hour moving average'].dropna().tolist() ), 2)
 #         upper_12h = round(np.std( data['12-hour moving average'].dropna().tolist() ), 2)
 #         upper_24h = round(np.std( data['24-hour moving average'].dropna().tolist() ), 2)
