@@ -79,6 +79,11 @@ st.markdown("#")
 
 mobile = st.checkbox("Mobile", value=False)
 st.markdown("##")
+
+saronite_value = st.checkbox("Saronite Value", value=False)
+st.markdown("##")
+
+
 submit = st.button("Submit")
 
 
@@ -93,6 +98,10 @@ chart = st.empty()
 if submit:
     if mobile:
         hide_element("button", "title", "View fullscreen")
+    
+    if saronite_value:
+        chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+        return
     
     if chart_type == "Price":
         if server_compare is not None and faction_compare is not None:
