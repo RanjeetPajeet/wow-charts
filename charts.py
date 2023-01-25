@@ -207,59 +207,10 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         chart = chart.properties(height=400)
     
     
-    TEXT   = lambda t: st.markdown(t)
-    SMALL  = lambda t: st.markdown(f"### {t}")
-    MEDIUM = lambda t: st.markdown( f"## {t}")
-    LARGE  = lambda t: st.markdown(  f"# {t}")
-    
-    
-#     data = pd.DataFrame(
-#         {
-#             "Time": data["times"], ylabel: prices,
-#             "4-hour moving average":  pd.Series(prices).rolling(2).mean(),
-#             "12-hour moving average": pd.Series(prices).rolling(6).mean(),
-#             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
-#         }
-#     )
-    
-    mean_col, stdev_col, bounds_col = st.columns(3)
-    
-    with mean_col:
-        SMALL("Mean")
-        mean_4h  = round(np.mean( data[ '4-hour moving average'].dropna().tolist() ), 2)
-        mean_12h = round(np.mean( data['12-hour moving average'].dropna().tolist() ), 2)
-        mean_24h = round(np.mean( data['24-hour moving average'].dropna().tolist() ), 2)
-        TEXT(f" 4hr: {mean_4h}")
-        TEXT(f"12hr: {mean_12h}")
-        TEXT(f"24hr: {mean_24h}")
-    
-    with stdev_col:
-        SMALL("Stdev")
-        stdev_4h  = round(np.std( data[ '4-hour moving average'].dropna().tolist() ), 2)
-        stdev_12h = round(np.std( data['12-hour moving average'].dropna().tolist() ), 2)
-        stdev_24h = round(np.std( data['24-hour moving average'].dropna().tolist() ), 2)
-        TEXT(f" 4hr: {stdev_4h}")
-        TEXT(f"12hr: {stdev_12h}")
-        TEXT(f"24hr: {stdev_24h}")
-        
-    with bounds_col:
-        SMALL("Upper Bound")
-        upper_4h  = mean_4h + 3*stdev_4h
-        upper_12h  = mean_12h + 3*stdev_12h
-        upper_24h  = mean_24h + 3*stdev_24h
-#         upper_4h  = round(np.std( data[ '4-hour moving average'].dropna().tolist() ), 2)
-#         upper_12h = round(np.std( data['12-hour moving average'].dropna().tolist() ), 2)
-#         upper_24h = round(np.std( data['24-hour moving average'].dropna().tolist() ), 2)
-        TEXT(f" 4hr: {upper_4h}")
-        TEXT(f"12hr: {upper_12h}")
-        TEXT(f"24hr: {upper_24h}")
-    
-    
-    
-#     upper_limit  =  np.mean(data[ '4-hour moving average'].dropna().tolist())  +  3*np.std(data[ '4-hour moving average'].dropna().tolist())
-#     SMALL("Upper Limit")
-#     TEXT(round(upper_limit,2))
-    
+#     TEXT   = lambda t: st.markdown(t)
+#     SMALL  = lambda t: st.markdown(f"### {t}")
+#     MEDIUM = lambda t: st.markdown( f"## {t}")
+#     LARGE  = lambda t: st.markdown(  f"# {t}")
     
     return chart
 
@@ -280,6 +231,13 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     if fix_outliers:
         prices = remove_outliers(prices)
+        
+    
+    upper_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    
     
     data = pd.DataFrame(
         {
