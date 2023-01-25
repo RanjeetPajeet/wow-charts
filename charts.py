@@ -243,6 +243,10 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     
     
     
+    upper_limit  =  np.mean(data[ '4-hour moving average'].dropna().tolist())  +  3*np.std(data[ '4-hour moving average'].dropna().tolist())
+    SMALL("Upper Limit")
+    TEXT(round(upper_limit,2))
+    
     
     return chart
 
