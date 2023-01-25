@@ -235,7 +235,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     upper_limit  =  (
         np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+        4*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
     )
     
     for i in range(len(prices)):
