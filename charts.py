@@ -687,11 +687,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
     
     
-    color = alt.condition(selection,
-                      alt.Color('Origin:N', legend=None),
-                      alt.value('red'))
-    opacity = alt.condition(selection, alt.value(1.0), alt.value(0.5))
-    
     
     if not hide_original:
         price_line = alt.Chart(data).mark_line(
@@ -765,7 +760,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                        alt.GradientStop(color="#5728ae", offset=0.7)],  # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
-            opacity = 0.5,
+            opacity = 0.1,
             strokeWidth=1,
             interpolate="monotone",
             clip=True,
@@ -773,7 +768,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "12h Avg Quantity"],
-            opacity=opacity,
 #             tooltip=alt.Tooltip(["Time", "12h Avg Quantity"], title="Asdf", format=".0f")
         )
 #         ).interactive()
