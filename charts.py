@@ -455,12 +455,13 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
             else:
                 chart = alt.Chart(data).mark_area(
-                    color=alt.Gradient(
-                        gradient="linear",
-                        stops=[alt.GradientStop(color="#6d3fc0", offset=0),
-                               alt.GradientStop(color="#6d3fc0", offset=1)],
-                        x1=1, x2=1, y1=1, y2=0,
-                    ),
+                    fill='red',
+#                     color=alt.Gradient(
+#                         gradient="linear",
+#                         stops=[alt.GradientStop(color="#6d3fc0", offset=0),
+#                                alt.GradientStop(color="#6d3fc0", offset=1)],
+#                         x1=1, x2=1, y1=1, y2=0,
+#                     ),
                     opacity = 0,
                     strokeWidth=2,
                     interpolate="monotone",
