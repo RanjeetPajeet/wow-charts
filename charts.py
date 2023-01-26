@@ -760,7 +760,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                        alt.GradientStop(color="#5728ae", offset=0.7)],  # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
-            opacity = 0.1,
+            opacity = 0,
             strokeWidth=1,
             interpolate="monotone",
             clip=True,
