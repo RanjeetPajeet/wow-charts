@@ -454,9 +454,25 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
                                     x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
             else:
-                chart = alt.Chart(data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
-                            x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
-                            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+                chart = alt.Chart(data).mark_area(
+                    color=alt.Gradient(
+                        gradient="linear",
+                        stops=[alt.GradientStop(color="#83c9ff", offset=0),
+                               alt.GradientStop(color="#0068c9", offset=1)],
+                        x1=1, x2=1, y1=1, y2=0,
+                    ),
+                    opacity = 0.5,
+                    strokeWidth=2,
+                    interpolate="monotone",
+                    clip=True,
+                ).encode(
+                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                    y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+                
+#                 chart = alt.Chart(data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
+#                         x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
+#                         y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
         else:
             chart = chart + alt.Chart(data).mark_line(color="#6d3fc0").encode(x=alt.X("Time"), y=alt.Y("12-hour moving average"))
     if ma24:
@@ -760,7 +776,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                        alt.GradientStop(color="#5728ae", offset=0.7)],  # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
-            opacity = 0,
+            opacity = 0.5,
             strokeWidth=1,
             interpolate="monotone",
             clip=True,
