@@ -757,8 +757,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         quantity_line_ma12 = alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
-                stops=[alt.GradientStop(color="#9670dc", offset=0.3, opacity=0.1),     # bottom color
-                       alt.GradientStop(color="#5728ae", offset=0.7, opacity=0.1)],  # top color
+                stops=[alt.GradientStop(color="#9670dc", offset=0.3),     # bottom color
+                       alt.GradientStop(color="#5728ae", offset=0.7)],  # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
@@ -768,7 +768,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date")),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-            tooltip=["Time", "12h Avg Quantity"]
+            tooltip=["Time", "12h Avg Quantity"],
+            opacity=0.1,
 #             tooltip=alt.Tooltip(["Time", "12h Avg Quantity"], title="Asdf", format=".0f")
         )
 #         ).interactive()
