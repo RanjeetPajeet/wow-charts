@@ -407,6 +407,26 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
 
         
+        
+        
+#     quantity_line = alt.Chart(data).mark_area(
+#             color=alt.Gradient(
+#                 gradient="linear",
+#                 stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
+#                        alt.GradientStop(color="#0068c9", offset=1)],  # top color
+#                 x1=1, x2=1, y1=1, y2=0,
+#             ),
+#             opacity = 0.5,
+#             strokeWidth=2,
+#             interpolate="monotone",
+#             clip=True,
+#         ).encode(
+#             x=alt.X("Time", axis=alt.Axis(title="Date")),
+#             y=alt.Y("Quantity", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+#         )
+        
+        
+        
 
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
         
@@ -737,8 +757,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         quantity_line_ma12 = alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
-                stops=[alt.GradientStop(color="#9670dc", offset=0.3),     # bottom color
-                       alt.GradientStop(color="#5728ae", offset=0.7)],  # top color
+                stops=[alt.GradientStop(color="#9670dc", offset=0.3, alpha=0.1),     # bottom color
+                       alt.GradientStop(color="#5728ae", offset=0.7, alpha=0.1)],  # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
