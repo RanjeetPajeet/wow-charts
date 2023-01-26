@@ -464,7 +464,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
                 ).encode(
                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-                    color=alt.value('red')
+                    color=alt.value("#6d3fc0")
                 )
                 
 #                 chart = alt.Chart(data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
