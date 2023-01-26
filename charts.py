@@ -496,7 +496,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     chart = chart.configure_axisX(
         grid=False,          tickCount="day",        titleOpacity=0,
         labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-        labelFontSize=20,    labelFontWeight="bold", ticks=True, tickOpacity=0.9,
+        labelFontSize=20,    labelFontWeight="bold",  tickOpacity=0.9,
     )
     chart = chart.configure_view(
         strokeOpacity=0,    # remove border
