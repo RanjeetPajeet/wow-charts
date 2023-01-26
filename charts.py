@@ -415,7 +415,6 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-#             x=alt.X("Time", axis=alt.Axis(title="Date")),
             x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
@@ -495,7 +494,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         labelFontSize=16,    labelFontWeight="bold",
     )
     chart = chart.configure_axisX(
-        grid=False,          tickCount="day",        titleOpacity=0,
+        grid=True,          tickCount="day",        titleOpacity=0,    gridOpacity=0.1,
         labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
         labelFontSize=20,    labelFontWeight="bold",
     )
