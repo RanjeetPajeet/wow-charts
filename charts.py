@@ -692,7 +692,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             color="#3aa9ff",
             strokeWidth = 2,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
         quantity_line = alt.Chart(data).mark_area(
@@ -745,10 +745,13 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
 
     if ma12:
-        price_line_ma12 = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
-                                color=alt.value("#6029c1"),
-                                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                                y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+        price_line_ma24 = alt.Chart(data).mark_line(
+            color = "#6029c1",
+            strokeWidth = 2.1,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+        )
         quantity_line_ma12 = alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
