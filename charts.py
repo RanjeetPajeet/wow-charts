@@ -707,7 +707,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             interpolate="monotone",
             clip=True,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("Quantity", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
         chart = quantity_line + price_line
@@ -719,7 +719,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             color="#0ce550",
             strokeWidth = 2,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
         quantity_line_ma4 = alt.Chart(data).mark_area(
@@ -734,7 +734,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             interpolate="monotone",
             clip=True,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "4h Avg Quantity"]
         )
@@ -749,7 +749,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             color = "#6029c1",
             strokeWidth = 2.1,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
         quantity_line_ma12 = alt.Chart(data).mark_area(
@@ -764,7 +764,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             interpolate="monotone",
             clip=True,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "12h Avg Quantity"],
 #             tooltip=alt.Tooltip(["Time", "12h Avg Quantity"], title="Asdf", format=".0f")
@@ -784,7 +784,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             color = "#ba191c",
             strokeWidth = 2.2,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
         quantity_line_ma24 = alt.Chart(data).mark_area(
@@ -799,7 +799,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             interpolate="monotone",
             clip=True,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "24h Avg Quantity"]
         )
