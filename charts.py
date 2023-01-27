@@ -352,9 +352,9 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     data = pd.DataFrame(
         {
             "Time": data["times"], ylabel: prices,
-            "4-hour moving average":  pd.Series(prices).rolling(2).mean(),
-            "12-hour moving average": pd.Series(prices).rolling(6).mean(),
-            "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+            "4-hour moving average":  pd.Series(prices).rolling(2).mean().round(2),
+            "12-hour moving average": pd.Series(prices).rolling(6).mean().round(2),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
         }
     )
     
@@ -588,9 +588,9 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             "Quantity  4hMA": pd.Series(data["quantities"]).rolling( 2).mean(),
             "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean(),
             "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean(),
-            "4-hour moving average":  pd.Series(prices).rolling( 2).mean(),
+            "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
-            "24-hour moving average": pd.Series(prices).rolling(12).mean(),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
             "4h Avg Quantity":  pd.Series(data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
             "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
             "24h Avg Quantity": pd.Series(data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
@@ -943,17 +943,17 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     server_data = pd.DataFrame(
         {
             "Time": server_data["times"], ylabel: server_prices,
-            "4-hour moving average":  pd.Series(server_prices).rolling(2).mean(),
-            "12-hour moving average": pd.Series(server_prices).rolling(6).mean(),
-            "24-hour moving average": pd.Series(server_prices).rolling(12).mean(),
+            "4-hour moving average":  pd.Series(server_prices).rolling(2).mean().round(2),
+            "12-hour moving average": pd.Series(server_prices).rolling(6).mean().round(2),
+            "24-hour moving average": pd.Series(server_prices).rolling(12).mean().round(2),
         }
     )
     region_data = pd.DataFrame(
         {
             "Time": region_data["times"], ylabel: region_prices,
-            "4-hour moving average":  pd.Series(region_prices).rolling(2).mean(),
-            "12-hour moving average": pd.Series(region_prices).rolling(6).mean(),
-            "24-hour moving average": pd.Series(region_prices).rolling(12).mean(),
+            "4-hour moving average":  pd.Series(region_prices).rolling(2).mean().round(2),
+            "12-hour moving average": pd.Series(region_prices).rolling(6).mean().round(2),
+            "24-hour moving average": pd.Series(region_prices).rolling(12).mean().round(2),
         }
     )
 
