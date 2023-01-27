@@ -749,7 +749,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
                                 color=alt.value("#6029c1"),
                                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
 #                                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
-                                y =alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+                                y =alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                                 y2=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
 #         price_line_ma12 = alt.Chart(data).mark_line(
 #             color = "#6029c1",
