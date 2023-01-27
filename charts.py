@@ -589,7 +589,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean(),
             "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean(),
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean(),
-            "12-hour moving average": pd.Series(prices).rolling( 6).mean(),
+            "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean(),
             "4h Avg Quantity":  pd.Series(data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
             "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
@@ -720,7 +720,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             strokeWidth = 2,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-            y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+            y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "4-hour moving average"],
         )
         quantity_line_ma4 = alt.Chart(data).mark_area(
             color=alt.Gradient(
@@ -786,7 +787,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             strokeWidth = 2.2,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-            y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+            y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "24-hour moving average"],
         )
         quantity_line_ma24 = alt.Chart(data).mark_area(
             color=alt.Gradient(
