@@ -425,7 +425,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             chart = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
                         color=alt.value("#7defa1"),
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                        y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+                        y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
 #             chart = alt.Chart(data).mark_line(color="#7defa1",strokeWidth=2).encode(
 #                         x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
 #                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
@@ -461,7 +461,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
                 chart = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
                             color=alt.value("#bd4043"),
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+                            y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
 #                 chart = alt.Chart(data).mark_line(color="#bd4043",strokeWidth=2.2).encode(
 #                             x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
 #                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
