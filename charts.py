@@ -750,7 +750,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             strokeWidth = 2.1,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "12-hour moving average"],
         )
         quantity_line_ma12 = alt.Chart(data).mark_area(
             color=alt.Gradient(
