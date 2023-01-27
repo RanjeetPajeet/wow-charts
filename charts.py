@@ -745,7 +745,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
 
     if ma12:
-        price_line_ma24 = alt.Chart(data).mark_line(
+        price_line_ma12 = alt.Chart(data).mark_line(
             color = "#6029c1",
             strokeWidth = 2.1,
         ).encode(
