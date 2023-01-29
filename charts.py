@@ -1055,19 +1055,24 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     # For the following colors, the region price is always the lighter-shade version of any two colors
 
     
+    XAXIS_DATETIME_FORMAT = ( "%b %d" )
+    
+    
     if not hide_original:
         chart = alt.Chart(server_data).mark_line(
             # color="#83c9ff" if not hide_original else "#0e1117",
             color="#3aa9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+#             x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         ) + alt.Chart(region_data).mark_line(
             color="#83c9ff" if not hide_original else "#0e1117",                                            #  <------ NOTE: "#ff6f83" can be changed
             strokeWidth=2,
         ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
+#             x=alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
         chart = chart.properties(height=600)
@@ -1078,11 +1083,13 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
             chart = alt.Chart(server_data).mark_line(
                         # color="#7defa1",strokeWidth=2).encode(
                         color="#0ce550",strokeWidth=2).encode(
-                        x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                         x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                        x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
             ) + alt.Chart(region_data).mark_line(
                         color="#7defa1",strokeWidth=2).encode(                     #  <------ NOTE: "#7defa1" can be changed
-                        x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                         x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                        x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
             )
         else:
@@ -1103,22 +1110,26 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
                 chart = chart + alt.Chart(server_data).mark_line(
                                     # color="#6d3fc0",strokeWidth=2.1).encode(
                                     color="#6029c1",strokeWidth=2.1).encode(
-                                    x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
                                     color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
-                                    x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
             else:
                 chart = alt.Chart(server_data).mark_line(
                             # color="#6d3fc0",strokeWidth=2.1).encode(
                             color="#6029c1",strokeWidth=2.1).encode(
-                            x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
                             color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
-                            x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
         else:
@@ -1139,22 +1150,26 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
                 chart = chart + alt.Chart(server_data).mark_line(
                                     # color="#bd4043",strokeWidth=2.2).encode(
                                     color="#ba191c",strokeWidth=2.2).encode(
-                                    x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
                                     color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#bd4043" can be changed
-                                    x=alt.X("Time", axis=alt.Axis(title="Date")),
+#                                     x=alt.X("Time", axis=alt.Axis(title="Date")),
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
             else:
                 chart = alt.Chart(server_data).mark_line(
                             # color="#bd4043",strokeWidth=2.2).encode(
                             color="#ba191c",strokeWidth=2.2).encode(
-                            x=alt.X("Time", axis=alt.Axis(title="Date")), 
+#                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
                             color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#ff6f83" can be changed
-                            x=alt.X("Time", axis=alt.Axis(title="Date")),
+#                             x=alt.X("Time", axis=alt.Axis(title="Date")),
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
         else:
