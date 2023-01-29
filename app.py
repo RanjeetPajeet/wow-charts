@@ -26,7 +26,7 @@ with st.container():
     with item_col:
         item = st.text_input("Item name", "Saronite Ore")
     with days_col:
-        num_days = st.number_input("Number of days", 1, 365, 60)
+        num_days = st.number_input("Number of days", 1, 365, 90)
 
     server_col, faction_col = st.columns(2)
     with server_col:
@@ -60,6 +60,8 @@ with st.container():
     st.markdown("#")
     st.markdown("### Moving averages")
     st.markdown("###")
+    
+    hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
 
     ma_col4, ma_col12, ma_col24, hide_og_col = st.columns(4)
     with ma_col4:
@@ -69,7 +71,8 @@ with st.container():
     with ma_col24:
         ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
     with hide_og_col:
-        hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
+        pass
+#         hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
 
 
 
