@@ -73,7 +73,8 @@ with st.container():
     with ma_col48:
         ma48 = st.checkbox("48 hour", value=False, key="ma48_checkbox")
     with hide_og_col:
-        hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
+        hide_original = st.checkbox("Hide raw", value=True, key="hide_original_checkbox")
+#         hide_original = st.checkbox("Hide raw data", value=True, key="hide_original_checkbox")
 
 
 
