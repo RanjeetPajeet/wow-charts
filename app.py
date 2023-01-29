@@ -85,8 +85,8 @@ st.markdown("#")
 mobile = st.checkbox("Mobile", value=False)
 st.markdown("##")
 
-saronite_value = st.checkbox("Saronite Value", value=False)
-st.markdown("##")
+# saronite_value = st.checkbox("Saronite Value", value=False)
+# st.markdown("##")
 
 
 submit = st.button("Submit")
