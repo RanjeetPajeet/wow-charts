@@ -1337,6 +1337,9 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             int(max( max(server1_prices), max(server2_prices) )*1.20),
         )
         st.markdown(f"**Error:** {e}")
+        
+        
+    XAXIS_DATETIME_FORMAT = ( "%b %d" )
 
 
     if not hide_original:
@@ -1344,13 +1347,15 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             color="#3aa9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-            x = alt.X("Time", axis=alt.Axis(title="Date")),
+#             x = alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims))
         ) + alt.Chart(server2_data).mark_line(
             color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-            x = alt.X("Time", axis=alt.Axis(title="Date")),
+#             x = alt.X("Time", axis=alt.Axis(title="Date")),
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims))
         )
         chart = chart.properties(height=600)
@@ -1360,11 +1365,13 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
         if hide_original:
             chart = alt.Chart(server1_data).mark_line(
                         color="#0ce550",strokeWidth=2).encode(
-                        x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                         x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                        x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
             ) + alt.Chart(server2_data).mark_line(
                         color="#7defa1",strokeWidth=2).encode(
-                        x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                         x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                        x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
             )
         else:
@@ -1383,21 +1390,25 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             if ma4:
                 chart = chart + alt.Chart(server1_data).mark_line(
                                     color="#6029c1",strokeWidth=2.1).encode(
-                                    x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                                     x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(server2_data).mark_line(
                                     color="#9670dc",strokeWidth=2.1).encode(
-                                    x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                                     x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
             else:
                 chart = alt.Chart(server1_data).mark_line(
                             color="#6029c1",strokeWidth=2.1).encode(
-                            x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                             x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(server2_data).mark_line(
                             color="#9670dc",strokeWidth=2.1).encode(
-                            x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                             x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
         else:
@@ -1416,21 +1427,25 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             if ma4 or ma12:
                 chart = chart + alt.Chart(server1_data).mark_line(
                                     color="#ba191c",strokeWidth=2.2).encode(
-                                    x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                                     x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(server2_data).mark_line(
                                     color="#ff5169",strokeWidth=2.2).encode(
-                                    x = alt.X("Time", axis=alt.Axis(title="Date")),
+#                                     x = alt.X("Time", axis=alt.Axis(title="Date")),
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
             else:
                 chart = alt.Chart(server1_data).mark_line(
                             color="#ba191c",strokeWidth=2.2).encode(
-                            x = alt.X("Time", axis=alt.Axis(title="Date")), 
+#                             x = alt.X("Time", axis=alt.Axis(title="Date")), 
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(server2_data).mark_line(
                             color="#ff5169",strokeWidth=2.2).encode(
-                            x = alt.X("Time", axis=alt.Axis(title="Date")),
+#                             x = alt.X("Time", axis=alt.Axis(title="Date")),
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
         else:
