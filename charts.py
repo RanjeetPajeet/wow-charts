@@ -890,24 +890,43 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         region_prices = remove_outliers(region_prices)
         
         
-    server_upper_limit  =  (
-        np.mean(pd.Series(server_prices).rolling(2).mean().dropna().tolist())  +  
-        3*np.std(pd.Series(server_prices).rolling(2).mean().dropna().tolist()) 
-    )
+    server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
+    region_std_mean = np.mean( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
+    
+    server_std_dev = np.std( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
+    region_std_dev = np.std( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
+        
+    std_dev = min(server_std_dev, region_std_dev)
+    server_upper_limit  =  server_std_mean + 3*std_dev
+    region_upper_limit  =  region_std_mean + 3*std_dev
     
     for i in range(len(server_prices)):
         if server_prices[i] > server_upper_limit:
             server_prices[i] = server_upper_limit
             
-            
-    region_upper_limit  =  (
-        np.mean(pd.Series(region_prices).rolling(2).mean().dropna().tolist())  +  
-        3*np.std(pd.Series(region_prices).rolling(2).mean().dropna().tolist()) 
-    )
-    
     for i in range(len(region_prices)):
         if region_prices[i] > region_upper_limit:
             region_prices[i] = region_upper_limit
+        
+        
+#     server_upper_limit  =  (
+#         np.mean(pd.Series(server_prices).rolling(2).mean().dropna().tolist())  +  
+#         3*np.std(pd.Series(server_prices).rolling(2).mean().dropna().tolist()) 
+#     )
+    
+#     for i in range(len(server_prices)):
+#         if server_prices[i] > server_upper_limit:
+#             server_prices[i] = server_upper_limit
+            
+            
+#     region_upper_limit  =  (
+#         np.mean(pd.Series(region_prices).rolling(2).mean().dropna().tolist())  +  
+#         3*np.std(pd.Series(region_prices).rolling(2).mean().dropna().tolist()) 
+#     )
+    
+#     for i in range(len(region_prices)):
+#         if region_prices[i] > region_upper_limit:
+#             region_prices[i] = region_upper_limit
     
 
 
