@@ -1,6 +1,6 @@
 import streamlit as st
 from api import api_offline
-from misc import run_custom_css, hide_element, run_custom_javascript
+from misc import run_custom_css, hide_element, run_custom_javascript, titleize
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, plot_saronite_value_history
 
 from streamlit.components.v1 import html
@@ -133,10 +133,10 @@ if submit:
     st.markdown("# ")
     st.markdown("# ")
 
-#     a, title, c = st.columns(3)
-#     with title:
-    st.markdown(f"### {item.title()}")
+    
+    st.markdown(f"### {titleize(item)} - {chart_type} History - Last {num_days} Days")
 
+    
     st.markdown("# ")
     chart = st.empty()
 
