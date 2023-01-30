@@ -22,48 +22,70 @@ with st.container():
     st.markdown("### Parameters")
     st.markdown("###")
     
+    
+    
+    
     item_col, days_col = st.columns(2)
+    
     with item_col:
         item = st.text_input("Item name", "Saronite Ore")
+    
     with days_col:
         num_days = st.number_input("Number of days", 1, 365, 90)
 
+        
+        
+        
     server_col, faction_col = st.columns(2)
+    
     with server_col:
         server = st.selectbox("Server", ["Skyfury","Atiesh","Faerlina","Whitemane"])
+    
     with faction_col:
         if server == "Skyfury" or server == "Atiesh":
             faction = st.selectbox("Faction", ["Alliance","Horde"])
         else:
             faction = st.selectbox("Faction", ["Horde","Alliance"])
     
+    
+    
+    
     st.markdown("##")
 
+    
+    
     chart_type = st.selectbox("Chart type", ["Price & Quantity","Price","Price & Region Price"])
-#     chart_type = st.selectbox("Chart type", ["Price","Price & Quantity","Price & Region Price"])
 
+
+    
     if chart_type == "Price":
         server_col_compare, faction_col_compare = st.columns(2)
+        
         with server_col_compare:
             server_compare = st.selectbox("Compare with", [None,"Atiesh","Skyfury","Faerlina","Whitemane"], key="server_compare")
+        
         with faction_col_compare:
             if server_compare is not None:
                 if server_compare == server:
                     faction_compare = st.selectbox(" ", [f for f in ["Alliance","Horde"] if f != faction], key="faction_compare", disabled=True)
-                elif server_compare == "Skyfury":
+                elif server_compare == "Skyfury" or server_compare == "Atiesh":
                     faction_compare = st.selectbox(" ", ["Alliance","Horde"], key="faction_compare")
-                elif server_compare == "Atiesh":
-                    faction_compare = st.selectbox(" ", ["Alliance","Horde"], key="faction_compare")
+#                 elif server_compare == "Atiesh":
+#                     faction_compare = st.selectbox(" ", ["Alliance","Horde"], key="faction_compare")
                 else:
                     faction_compare = st.selectbox(" ", ["Horde","Alliance"], key="faction_compare")
             else:
                 faction_compare = st.selectbox(" ", [None,"Alliance","Horde"], key="faction_compare", disabled=True)
 
+                
+                
+                
     st.markdown("#")
     st.markdown("### Moving averages")
     st.markdown("###")
     
 
+    
 #     ma_col4, ma_col12, ma_col24, hide_og_col = st.columns(4)
     ma_col4, ma_col12, ma_col24, ma_col48, hide_og_col = st.columns(5)
     with ma_col4:
