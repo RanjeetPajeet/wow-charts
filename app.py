@@ -113,8 +113,8 @@ st.markdown("#")
 mobile = st.checkbox("Mobile", value=False)
 st.markdown("##")
 
-# saronite_value = st.checkbox("Saronite Value", value=False)
-# st.markdown("##")
+saronite_value = st.checkbox("Saronite Value", value=False)
+st.markdown("##")
 
 
 submit = st.button("Submit")
@@ -126,38 +126,38 @@ if submit:
 #     if mobile:
 #         hide_element("button", "title", "View fullscreen")
     
-#     if saronite_value:
-#         chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-#     else:
+    if saronite_value:
+        chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+    else:
         
     
-    st.markdown("# ")
-    st.markdown("# ")
-
-    
-    st.markdown(f"### [{titleize(item)}] {chart_type} History -- Last {num_days} Days")
-
-    
-    st.markdown("## ")
-    chart = st.empty()
-
-    
-    if chart_type == "Price":
-        if server_compare is not None and faction_compare is not None:
-            chart = st.altair_chart(plot_price_history_comparison(item, server, faction, server_compare, faction_compare, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-        else:
-            chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+        st.markdown("# ")
+        st.markdown("# ")
 
 
-    elif chart_type == "Price & Quantity":
-        chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+        st.markdown(f"### [{titleize(item)}] {chart_type} History -- Last {num_days} Days")
 
 
-    elif chart_type == "Price & Region Price":
-        chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+        st.markdown("## ")
+        chart = st.empty()
 
-    if mobile:
-        hide_element("button", "title", "View fullscreen")
+
+        if chart_type == "Price":
+            if server_compare is not None and faction_compare is not None:
+                chart = st.altair_chart(plot_price_history_comparison(item, server, faction, server_compare, faction_compare, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+            else:
+                chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+
+
+        elif chart_type == "Price & Quantity":
+            chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+
+
+        elif chart_type == "Price & Region Price":
+            chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+
+        if mobile:
+            hide_element("button", "title", "View fullscreen")
 
         
         
