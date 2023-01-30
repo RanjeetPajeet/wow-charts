@@ -33,29 +33,31 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     }
     
     scarlet_ruby_prices = []
-    for i in range( len(gems["Scarlet Ruby"]["prices"]) ):
+    for i in range( min(  len(gems["Scarlet Ruby"]["prices"]), len(gems["Bold Scarlet Ruby"]["prices"]), len(gems["Runed Scarlet Ruby"]["prices"])  ) ):
         scarlet_ruby_prices.append( (gems["Scarlet Ruby"]["prices"][i] + gems["Bold Scarlet Ruby"]["prices"][i] + gems["Runed Scarlet Ruby"]["prices"][i]) / 3 )
     monarch_topaz_prices = []
-    for i in range( len(gems["Monarch Topaz"]["prices"]) ):
+    for i in range( min(  len(gems["Monarch Topaz"]["prices"]), len(gems["Durable Monarch Topaz"]["prices"]), len(gems["Accurate Monarch Topaz"]["prices"]), len(gems["Luminous Monarch Topaz"]["prices"]) )  ):
         monarch_topaz_prices.append( (gems["Monarch Topaz"]["prices"][i] + gems["Durable Monarch Topaz"]["prices"][i] + gems["Accurate Monarch Topaz"]["prices"][i] + gems["Luminous Monarch Topaz"]["prices"][i]) / 4 )
     autumns_glow_prices = []
-    for i in range( len(gems["Autumns Glow"]["prices"]) ):
+    for i in range( min(  len(gems["Autumns Glow"]["prices"]), len(gems["Mystic Autumns Glow"]["prices"]), len(gems["Brilliant Autumns Glow"]["prices"])  ) ):
         autumns_glow_prices.append( (gems["Autumns Glow"]["prices"][i] + gems["Mystic Autumns Glow"]["prices"][i] + gems["Brilliant Autumns Glow"]["prices"][i]) / 3 )
-    
+
     crystallized_earth_prices = []
-    for i in range( len(earth["Crystallized"]["prices"]) ):
+    for i in range( min(  len(earth["Crystallized"]["prices"]), len(earth["Eternal"]["prices"])  ) ):
         crystallized_earth_prices.append( (earth["Crystallized"]["prices"][i] + (earth["Eternal"]["prices"][i] / 10)) / 2 )
     
     dream_shard_prices = [ p for p in de_mats["Dream Shard"]["prices"] ]
     infinite_dust_prices = [ p for p in de_mats["Infinite Dust"]["prices"] ]
     greater_cosmic_essence_prices = [ p for p in de_mats["Greater Cosmic Essence"]["prices"] ]
     
+    shortest_list = min(  len(scarlet_ruby_prices), len(monarch_topaz_prices), len(autumns_glow_prices), len(crystallized_earth_prices), len(dream_shard_prices), len(infinite_dust_prices), len(greater_cosmic_essence_prices)  )
+    
     values = {
-        "blueGems": [ 0.04 * (scarlet_ruby_prices[i] + autumns_glow_prices[i] + monarch_topaz_prices[i]) + 0.12*(4.5)  for i in range(len(scarlet_ruby_prices)) ],
-        "greenGems": [ 0.72 * ( 1.84*infinite_dust_prices[i] + 0.12*greater_cosmic_essence_prices[i] + 0.008*dream_shard_prices[i] - 2*crystallized_earth_prices[i] ) + 0.072*(1.0) + 0.0288*(0.5)  for i in range(len(infinite_dust_prices)) ],
+        "blueGems": [ 0.04 * (scarlet_ruby_prices[i] + autumns_glow_prices[i] + monarch_topaz_prices[i]) + 0.12*(4.5)  for i in range(shortest_list) ],
+        "greenGems": [ 0.72 * ( 1.84*infinite_dust_prices[i] + 0.12*greater_cosmic_essence_prices[i] + 0.008*dream_shard_prices[i] - 2*crystallized_earth_prices[i] ) + 0.072*(1.0) + 0.0288*(0.5)  for i in range(shortest_list) ],
     }
     
-    values_per_prospect = [ values["blueGems"][i] + values["greenGems"][i]  for i in range(len(values["blueGems"][i])) ]
+    values_per_prospect = [ values["blueGems"][i] + values["greenGems"][i]  for i in range(len(values["blueGems"])) ]
     values = [ values_per_prospect[i]/5  for i in range(len(values_per_prospect)) ]     # per saronite ore
     
     saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
