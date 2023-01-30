@@ -890,6 +890,7 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         region_prices = remove_outliers(region_prices)
         
         
+        
     server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
     region_std_mean = np.mean( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
     
@@ -907,6 +908,7 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     for i in range(len(region_prices)):
         if region_prices[i] > region_upper_limit:
             region_prices[i] = region_upper_limit
+        
         
         
 #     server_upper_limit  =  (
