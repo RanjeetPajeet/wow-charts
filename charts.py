@@ -77,6 +77,7 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
             prices[i] = upper_limit
             
     st.write(len(prices))
+    st.write(len(prices[10:]))
     st.write(len(values))
     
     saronite_ore_data["times"] = [time.replace(minute=0) for time in saronite_ore_data["times"]]
