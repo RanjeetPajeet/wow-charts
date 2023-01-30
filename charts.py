@@ -59,6 +59,7 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     
     values_per_prospect = [ values["blueGems"][i] + values["greenGems"][i]  for i in range(len(values["blueGems"])) ]
     values = [ values_per_prospect[i]/5  for i in range(len(values_per_prospect)) ]     # per saronite ore
+    values = [ value/100 for value in values ]  # gold -> silver
     
     saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
     scale = 100 if saronite_ore_data["prices"][-1] < 10000 else 10000
