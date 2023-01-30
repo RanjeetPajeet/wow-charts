@@ -134,7 +134,7 @@ if submit:
     st.markdown("# ")
 
     
-    st.markdown(f"### {titleize(item)} - {chart_type} History - Last {num_days} Days")
+    st.markdown(f"### [{titleize(item)}] {chart_type} History - Last {num_days} Days")
 
     
     st.markdown("# ")
