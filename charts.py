@@ -75,13 +75,11 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     for i in range(len(prices)):
         if prices[i] > upper_limit:
             prices[i] = upper_limit
-            
-    st.write(len(prices))
-    st.write(len(prices[11:]))
-    st.write(len(prices[-len(values):]))
-    st.write(len(values))
+    
+    prices = [-len(values):]
     
     saronite_ore_data["times"] = [time.replace(minute=0) for time in saronite_ore_data["times"]]
+    saronite_ore_data["times"] = saronite_ore_data["times"][-len(prices):]
     
     saronite_data = pd.DataFrame(
         {
