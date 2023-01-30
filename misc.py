@@ -8,6 +8,27 @@ Functions/classes used elsewhere that didn't have a home.
 
 
 
+def titleize(string: str):
+    """
+    "Titleizes" the given string.
+    
+    Basically the built-in `string.title()` method,
+    but forces any `s` characters following an `'` character to lower case.
+    
+    Example:
+        string = "mekgineer's chopper"
+        string = titleize(string)
+        >>> string
+            Mekgineer's Chopper
+    """
+    string = string.title()
+    string = string.replace("'S", "'s")
+    return string
+    
+
+
+
+
 def run_custom_css(css: str):
     """
     Runs the given string as a CSS expression.
