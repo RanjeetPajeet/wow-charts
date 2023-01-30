@@ -32,7 +32,7 @@ with st.container():
     with server_col:
         server = st.selectbox("Server", ["Skyfury","Atiesh","Faerlina","Whitemane"])
     with faction_col:
-        if server == "Skyfury":
+        if server == "Skyfury" or server == "Atiesh":
             faction = st.selectbox("Faction", ["Alliance","Horde"])
         else:
             faction = st.selectbox("Faction", ["Horde","Alliance"])
