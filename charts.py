@@ -75,6 +75,8 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
         np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  -  
         num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
     )
+    st.write(lower_limit)
+    st.write(np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()))
     for i in range(len(prices)):
         if prices[i] < lower_limit:
             prices[i] = lower_limit
