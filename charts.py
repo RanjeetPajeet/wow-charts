@@ -784,10 +784,15 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "4h Avg Quantity"]
         )
+        # make a second price line but with zero opacity
+        # to assist in tooltip visibility when mousing over
+        price_line_mouseover = mouseover_line(data=data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         if hide_original:
-            chart = quantity_line_ma4 + price_line_ma4
+#             chart = quantity_line_ma4 + price_line_ma4
+            chart = quantity_line_ma4 + price_line_ma4 + price_line_mouseover
         else:
-            chart = chart + quantity_line_ma4 + price_line_ma4
+#             chart = chart + quantity_line_ma4 + price_line_ma4
+            chart = chart + quantity_line_ma4 + price_line_ma4 + price_line_mouseover
     
 
     if ma12:
