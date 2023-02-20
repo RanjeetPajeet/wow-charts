@@ -675,7 +675,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     
     st.write(chart_ylims)
-    if minimum < 1 and maximum < 2:
+    if minimum < 1 and maximum < 2 and scale != 100:
         st.write("here")
         try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
         except: pass
