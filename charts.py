@@ -133,6 +133,8 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
 #         if prices[i] > upper_limit:
 #             prices[i] = upper_limit
     
+    prices = enforce_upper_limit(prices)
+  
     prices = prices[-len(values):]
     
     saronite_ore_data["times"] = [time.replace(minute=0) for time in saronite_ore_data["times"]]
