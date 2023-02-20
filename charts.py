@@ -1178,6 +1178,11 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
+        # make a second price line but with zero opacity
+        # to assist in tooltip visibility when mousing over
+        price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+        price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+        chart = chart + price_line_mouseover1 + price_line_mouseover2
         chart = chart.properties(height=600)
 
         
