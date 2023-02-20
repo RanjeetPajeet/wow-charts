@@ -444,7 +444,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             price_line_ma12_mouseover = alt.Chart(data).mark_line(
                 color = "#7defa1",
                 strokeWidth = MOUSEOVER_LINE_THICKNESS,
-                opacity = 0,
+                opacity = 0.3,
             ).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
