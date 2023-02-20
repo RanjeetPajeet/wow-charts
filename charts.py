@@ -816,7 +816,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
 #             tooltip=["Time", "12-hour moving average"],
-            tooltip=alt.Tooltip(["Time", "12-hour moving average"], title="Asdf")
+            tooltip=alt.Tooltip(["Time", "12-hour moving average"], title=["Asdf","Asdf2"])
         )
         
         
