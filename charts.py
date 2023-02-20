@@ -413,6 +413,14 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
         
         
+    
+    # fix the issue with chart y-limit scaling when
+    # the price of something is barely over a gold (saronite ore)
+    if minimum < 1 and maximum < 2 and scale != 100:
+        try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
+        except: pass
+        
+        
 
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
         
@@ -674,17 +682,12 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         st.markdown(f"**Error:** {e}")
     
     
-    st.write(chart_ylims)
+    # fix the issue with chart y-limit scaling when
+    # the price of something is barely over a gold (saronite ore)
     if minimum < 1 and maximum < 2 and scale != 100:
-        st.write("here")
         try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
         except: pass
     
-    
-    
-    st.write(chart_ylims)
-    st.write(min12)
-    st.write(max12)
     
     if not hide_original:
         range_quantity = [data["Quantity"].min(), data["Quantity"].max()]
