@@ -10,6 +10,20 @@ from data import get_server_history, get_region_history, remove_outliers
 MOUSEOVER_LINE_THICKNESS = 15.0     # the stroke width of the zero opacity line added to charts to assist in tooltip visibility when mousing over price lines
 
 
+def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: str, chart_ylimits: tuple, opacity: float = 0.0, xaxis_datetime_format: tuple = ("%b %d")):
+    return alt.Chart(data).mark_line(
+        color = color,
+        strokeWidth = MOUSEOVER_LINE_THICKNESS,
+        opacity = opacity,
+    ).encode(
+        x=alt.X("Time", axis=alt.Axis(title="Date", format=xaxis_datetime_format)),
+        y=alt.Y(y_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
+        tooltip=["Time", y_label],
+    )
+
+
+
+
 
 
 def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
