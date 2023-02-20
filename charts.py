@@ -10,7 +10,13 @@ from data import get_server_history, get_region_history, remove_outliers
 MOUSEOVER_LINE_THICKNESS = 15.0     # the stroke width of the zero opacity line added to charts to assist in tooltip visibility when mousing over price lines
 
 
-def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: str, chart_ylimits: tuple, opacity: float = 0.0, xaxis_datetime_format: tuple = ("%b %d")):
+def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: str, 
+                   chart_ylimits: tuple, opacity: float = 0.0, xaxis_datetime_format: tuple = ("%b %d")) -> alt.Chart:
+    """
+    Generates a line equivalent to what is used for an item's price,
+    except the stroke width (thickness) is much larger and it has zero opacity.
+    This creates a region around the visible line where the mouse will generate a tooltip.
+    """
     return alt.Chart(data).mark_line(
         color = color,
         strokeWidth = MOUSEOVER_LINE_THICKNESS,
@@ -20,6 +26,39 @@ def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: st
         y=alt.Y(y_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
         tooltip=["Time", y_label],
     )
+
+
+
+
+
+
+
+def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
+    """
+    Defines an upper limit as `mean(prices) + num_std_deviations*std_dev(prices)`,
+    then iterates through the given list of prices, setting any values larger than this value equal to it.
+    
+    Parameters
+    ----------
+    `prices`: The list to set an upper limit on.
+    `num_std_deviations`: The number of standard deviations away from the mean to define the upper limit as.
+    
+    Returns
+    -------
+    A new list with any values too high replaced with the upper limit.
+    """
+    upper_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+        num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(prices)):
+        if prices[i] > upper_limit:
+            prices[i] = upper_limit
+    return prices
+        
+    
+
+
 
 
 
@@ -86,13 +125,13 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     if fix_outliers:
         prices = remove_outliers(prices)
     
-    upper_limit  =  (
-        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
-    )
-    for i in range(len(prices)):
-        if prices[i] > upper_limit:
-            prices[i] = upper_limit
+#     upper_limit  =  (
+#         np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+#         3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+#     )
+#     for i in range(len(prices)):
+#         if prices[i] > upper_limit:
+#             prices[i] = upper_limit
     
     prices = prices[-len(values):]
     
