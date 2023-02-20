@@ -24,7 +24,7 @@ def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: st
     ).encode(
         x=alt.X("Time", axis=alt.Axis(title="Date", format=xaxis_datetime_format)),
         y=alt.Y(y_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
-        tooltip=["Time", y_label],
+        tooltip=["Test", "Time", y_label],
     )
 
 
