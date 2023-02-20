@@ -673,6 +673,14 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         )
         st.markdown(f"**Error:** {e}")
     
+    
+    st.write(chart_ylims)
+    if minimum < 1 and maximum < 2:
+        try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
+        except: pass
+    
+    
+    
     st.write(chart_ylims)
     st.write(min12)
     st.write(max12)
