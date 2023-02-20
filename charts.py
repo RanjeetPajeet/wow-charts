@@ -75,8 +75,6 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
         np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  -  
         num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
     )
-    st.write(lower_limit)
-    st.write(np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()))
     for i in range(len(prices)):
         if prices[i] < lower_limit:
             prices[i] = lower_limit
@@ -144,7 +142,7 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     values = [ value/100 for value in values ]  # gold -> silver
     
     values = enforce_upper_limit(values)
-    values = enforce_lower_limit(values)
+    values = enforce_lower_limit(values,2)
     
     saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
     scale = 100 if saronite_ore_data["prices"][-1] < 10000 else 10000
