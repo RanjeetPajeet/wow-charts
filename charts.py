@@ -690,7 +690,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     
     
     
-    XAXIS_DATETIME_FORMAT = ( "%b %d" )
+    XAXIS_DATETIME_FORMAT = ( "%b %D" )
     
     
     if not hide_original:
