@@ -1410,6 +1410,27 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
         server2_prices = remove_outliers(server2_prices)
     
     
+    
+    upper_limit1  =  (
+        np.mean(pd.Series(server1_prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(server1_prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(server1_prices)):
+        if server1_prices[i] > upper_limit1:
+            server1_prices[i] = upper_limit1
+    
+    
+    upper_limit2  =  (
+        np.mean(pd.Series(server2_prices).rolling(2).mean().dropna().tolist())  +  
+        3*np.std(pd.Series(server2_prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(server2_prices)):
+        if server2_prices[i] > upper_limit2:
+            server2_prices[i] = upper_limit2
+    
+    
+    
+    
     server1_data = pd.DataFrame(
         {
             "Time": server1_data["times"], ylabel: server1_prices,
