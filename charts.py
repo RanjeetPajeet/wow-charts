@@ -754,7 +754,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         )
         # make a second price line but with zero opacity
         # to assist in tooltip visibility when mousing over
-        price_line_mouseover = mouseover_line(data=data, color="#3aa9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.5)
+        price_line_mouseover = mouseover_line(data=data, color="#3aa9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         chart = quantity_line + price_line + price_line_mouseover
         chart = chart.properties(height=600)
             
