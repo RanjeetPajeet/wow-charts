@@ -7,6 +7,9 @@ from data import get_server_history, get_region_history, remove_outliers
 
 
 
+MOUSEOVER_LINE_THICKNESS = 15.0     # the stroke width of the zero opacity line added to charts to assist in tooltip visibility when mousing over price lines
+
+
 
 
 def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
@@ -780,7 +783,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         # to assist in tooltip visibility when mousing over
         price_line_ma12_mouseover = alt.Chart(data).mark_line(
             color = "#6029c1",
-            strokeWidth = 15.1,
+            strokeWidth = MOUSEOVER_LINE_THICKNESS,
             opacity = 0,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
