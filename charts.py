@@ -1506,6 +1506,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims))
         )
+        # make a second price line but with zero opacity
+        # to assist in tooltip visibility when mousing over
+        price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+        price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+        chart = chart + price_line_mouseover1 + price_line_mouseover2
         chart = chart.properties(height=600)
 
         
@@ -1522,6 +1527,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
             )
+            # make a second price line but with zero opacity
+            # to assist in tooltip visibility when mousing over
+            price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            chart = chart + price_line_mouseover1 + price_line_mouseover2
         else:
             chart = chart + alt.Chart(server1_data).mark_line(
                                 color="#0ce550").encode(
@@ -1531,6 +1541,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                                 color="#7defa1").encode(
                                 x = alt.X("Time"),
                                 y = alt.Y("4-hour moving average"))
+            # make a second price line but with zero opacity
+            # to assist in tooltip visibility when mousing over
+            price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            chart = chart + price_line_mouseover1 + price_line_mouseover2
     
     
     if ma12:
@@ -1547,6 +1562,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
+                # make a second price line but with zero opacity
+                # to assist in tooltip visibility when mousing over
+                price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                chart = chart + price_line_mouseover1 + price_line_mouseover2
             else:
                 chart = alt.Chart(server1_data).mark_line(
                             color="#6029c1",strokeWidth=2.1).encode(
@@ -1559,6 +1579,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
+                # make a second price line but with zero opacity
+                # to assist in tooltip visibility when mousing over
+                price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                chart = chart + price_line_mouseover1 + price_line_mouseover2
         else:
             chart = chart + alt.Chart(server1_data).mark_line(
                                 color="#6029c1").encode(
@@ -1568,6 +1593,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                                 color="#9670dc").encode(
                                 x = alt.X("Time"),
                                 y = alt.Y("12-hour moving average"))
+            # make a second price line but with zero opacity
+            # to assist in tooltip visibility when mousing over
+            price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            chart = chart + price_line_mouseover1 + price_line_mouseover2
     
     
     if ma24:
@@ -1584,6 +1614,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
+                # make a second price line but with zero opacity
+                # to assist in tooltip visibility when mousing over
+                price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                chart = chart + price_line_mouseover1 + price_line_mouseover2
             else:
                 chart = alt.Chart(server1_data).mark_line(
                             color="#ba191c",strokeWidth=2.2).encode(
@@ -1596,6 +1631,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("24-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
+                # make a second price line but with zero opacity
+                # to assist in tooltip visibility when mousing over
+                price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                chart = chart + price_line_mouseover1 + price_line_mouseover2
         else:
             chart = chart + alt.Chart(server1_data).mark_line(
                 color="#ba191c").encode(
@@ -1605,6 +1645,11 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                 color="#ff5169").encode(
                 x = alt.X("Time"),
                 y = alt.Y("24-hour moving average"))
+            # make a second price line but with zero opacity
+            # to assist in tooltip visibility when mousing over
+            price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            price_line_mouseover2 = mouseover_line(data=server2_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            chart = chart + price_line_mouseover1 + price_line_mouseover2
     
     
     chart = chart.properties(
