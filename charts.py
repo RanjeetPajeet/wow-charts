@@ -460,16 +460,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         if hide_original:
             # make a second price line but with zero opacity
             # to assist in tooltip visibility when mousing over
-            price_line_mouseover = mouseover_line(data=data, color="#7defa1", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.8)
-#             price_line_mouseover = alt.Chart(data).mark_line(
-#                 color = "#7defa1",
-#                 strokeWidth = MOUSEOVER_LINE_THICKNESS,
-#                 opacity = 0.3,
-#             ).encode(
-#                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-#                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-#                 tooltip=["Time", "4-hour moving average"],
-#             )
+            price_line_mouseover = mouseover_line(data=data, color="#7defa1", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.0)
             chart = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
                         color=alt.value("#7defa1"),
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -761,7 +752,10 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("Quantity", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
-        chart = quantity_line + price_line
+        # make a second price line but with zero opacity
+        # to assist in tooltip visibility when mousing over
+        price_line_mouseover = mouseover_line(data=data, color="#3aa9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.5)
+        chart = quantity_line + price_line + price_line_mouseover
         chart = chart.properties(height=600)
             
         
