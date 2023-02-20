@@ -875,7 +875,11 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
 #             tooltip=["Time", "12-hour moving average"],
-            tooltip=[alt.Tooltip("Time",title="da time",format=("%b %d %I:%M %p")), alt.Tooltip("12-hour moving average",title="da price",format=".1f")],
+#             tooltip=[alt.Tooltip("Time",title="Time",format=("%b %d  %I %p")), alt.Tooltip("12-hour moving average",title="Price (12h avg)",format=".2f")],
+            tooltip=(
+              [alt.Tooltip("Time",title="Time",format=("%b %d  %I %p")), alt.Tooltip("12-hour moving average",title="Price (12h avg)",format=".2f")] if
+              scale!=100 else [alt.Tooltip("Time",title="Time",format=("%b %d  %I %p")), alt.Tooltip("12-hour moving average",title="Price (12h avg)",format=".0f")]
+            ),
         )
 #         price_line_ma12_shadow = alt.Chart(data).mark_line(
 #             color = "#CCCCCC",
