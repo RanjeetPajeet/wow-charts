@@ -876,15 +876,15 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "12-hour moving average"],
         )
-        price_line_ma12_shadow = alt.Chart(data).mark_line(
-            color = "#CCCCCC",
-            strokeWidth = 4.1,
-            opacity = 0.1,
-        ).encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-            tooltip=["Time", "12-hour moving average"],
-        )
+#         price_line_ma12_shadow = alt.Chart(data).mark_line(
+#             color = "#CCCCCC",
+#             strokeWidth = 4.1,
+#             opacity = 0.1,
+#         ).encode(
+#             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+#             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+#             tooltip=["Time", "12-hour moving average"],
+#         )
         
         
         quantity_line_ma12 = alt.Chart(data).mark_area(
@@ -907,11 +907,11 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 #         ).interactive()
         if hide_original:
             if ma4:
-                chart = chart + quantity_line_ma12 + price_line_ma12 + price_line_ma12_mouseover + price_line_ma12_shadow
+                chart = chart + quantity_line_ma12 + price_line_ma12 + price_line_ma12_mouseover
             else:
-                chart = quantity_line_ma12 + price_line_ma12 + price_line_ma12_mouseover + price_line_ma12_shadow
+                chart = quantity_line_ma12 + price_line_ma12 + price_line_ma12_mouseover
         else:
-            chart = chart + quantity_line_ma12 + price_line_ma12 + price_line_ma12_mouseover + price_line_ma12_shadow
+            chart = chart + quantity_line_ma12 + price_line_ma12 + price_line_ma12_mouseover
     
     
     if ma24:
