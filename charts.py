@@ -117,6 +117,8 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     values = [ values_per_prospect[i]/5  for i in range(len(values_per_prospect)) ]     # per saronite ore
     values = [ value/100 for value in values ]  # gold -> silver
     
+    values = enforce_upper_limit(values)
+    
     saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
     scale = 100 if saronite_ore_data["prices"][-1] < 10000 else 10000
     prices = [round(price/scale,2) for price in saronite_ore_data["prices"]]
@@ -125,16 +127,7 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     if fix_outliers:
         prices = remove_outliers(prices)
     
-#     upper_limit  =  (
-#         np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-#         3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
-#     )
-#     for i in range(len(prices)):
-#         if prices[i] > upper_limit:
-#             prices[i] = upper_limit
-    
     prices = enforce_upper_limit(prices)
-  
     prices = prices[-len(values):]
     
     saronite_ore_data["times"] = [time.replace(minute=0) for time in saronite_ore_data["times"]]
