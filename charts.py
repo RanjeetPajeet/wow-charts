@@ -453,7 +453,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
 #             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
 #             tooltip=["Time", ylabel],
 #         )
-        price_line_mouseover = mouseover_line(data=data, color="#83c9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.5)
+        price_line_mouseover = mouseover_line(data=data, color="#83c9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.0)
         chart = alt.Chart(data).mark_line(
             color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
