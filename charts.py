@@ -674,6 +674,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         st.markdown(f"**Error:** {e}")
     
     st.write(chart_ylims)
+    st.write(min12)
+    st.write(max12)
     
     if not hide_original:
         range_quantity = [data["Quantity"].min(), data["Quantity"].max()]
