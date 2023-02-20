@@ -31,8 +31,6 @@ def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: st
 
 
 
-
-
 def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
     """
     Defines an upper limit as `mean(prices) + num_std_deviations*std_dev(prices)`,
@@ -54,6 +52,32 @@ def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
     for i in range(len(prices)):
         if prices[i] > upper_limit:
             prices[i] = upper_limit
+    return prices
+
+  
+
+
+def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
+    """
+    Defines a lower limit as `mean(prices) - num_std_deviations*std_dev(prices)`,
+    then iterates through the given list of prices, setting any values smaller than this value equal to it.
+    
+    Parameters
+    ----------
+    `prices`: The list to set an upper limit on.
+    `num_std_deviations`: The number of standard deviations away from the mean to define the lower limit as.
+    
+    Returns
+    -------
+    A new list with any values too low replaced with the lower limit.
+    """
+    lower_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  -  
+        num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(prices)):
+        if prices[i] < lower_limit:
+            prices[i] = lower_limit
     return prices
         
     
@@ -118,6 +142,7 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     values = [ value/100 for value in values ]  # gold -> silver
     
     values = enforce_upper_limit(values)
+    values = enforce_lower_limit(values)
     
     saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
     scale = 100 if saronite_ore_data["prices"][-1] < 10000 else 10000
