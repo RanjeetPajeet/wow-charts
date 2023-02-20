@@ -760,6 +760,18 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "12-hour moving average"],
         )
+        
+        # make a second price line but with zero opacity (invisible)
+        price_line_ma12_2 = alt.Chart(data).mark_line(
+            color = "#6029c1",
+            strokeWidth = 5.1,
+            opacity = 0,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+            y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "12-hour moving average"],
+        )
+        
         quantity_line_ma12 = alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
@@ -782,7 +794,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             if ma4:
                 chart = chart + quantity_line_ma12 + price_line_ma12
             else:
-                chart = quantity_line_ma12 + price_line_ma12
+                chart = quantity_line_ma12 + price_line_ma12 + price_line_ma12_2
         else:
             chart = chart + quantity_line_ma12 + price_line_ma12
     
