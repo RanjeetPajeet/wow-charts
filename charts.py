@@ -765,7 +765,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         price_line_ma12_2 = alt.Chart(data).mark_line(
             color = "#6029c1",
             strokeWidth = 10.1,
-            opacity = 0.5,
+            opacity = 0.1,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
