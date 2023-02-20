@@ -1082,6 +1082,17 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         # st.markdown(f"**max12 = ** {max(data['12-hour moving average'].dropna().tolist()[1:])}")
         # st.markdown(f"**min24 = ** {min(data['24-hour moving average'].dropna().tolist()[1:])}")
         # st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
+        
+        
+        
+        
+    # fix the issue with chart y-limit scaling when
+    # the price of something is barely over a gold (saronite ore)
+    if minimum < 1 and maximum < 2 and scale != 100:
+        try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
+        except: pass
+        
+        
     
 
     # if not hide_original:
