@@ -428,6 +428,17 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
         
     if not hide_original:
+        # make a second price line but with zero opacity
+        # to assist in tooltip visibility when mousing over
+        price_line_mouseover = alt.Chart(data).mark_line(
+            color = "#7defa1",
+            strokeWidth = MOUSEOVER_LINE_THICKNESS,
+            opacity = 0.3,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+            y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "4-hour moving average"],
+        )
         chart = alt.Chart(data).mark_line(
             color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
@@ -435,6 +446,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
+        chart = chart + price_line_mouseover
         chart = chart.properties(height=600)
 
     if ma4:
