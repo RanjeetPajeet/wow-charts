@@ -877,7 +877,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             tooltip=["Time", "12-hour moving average"],
         )
         price_line_ma12_shadow = alt.Chart(data).mark_line(
-            color = "#6029c1",
+            color = "#CCCCCC",
             strokeWidth = 4.1,
             opacity = 0.5,
         ).encode(
