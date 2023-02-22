@@ -135,7 +135,7 @@ if submit:
         chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
     elif candlestick:
         ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
-        chart = create_OHLC_chart(ohlc_data, data_min, data_max)
+        chart = st.altair_chart(create_OHLC_chart(ohlc_data, data_min, data_max))
     else:
         
     
