@@ -2,6 +2,7 @@ import streamlit as st
 from api import api_offline
 from data import get_server_history_OHLC
 from misc import run_custom_css, hide_element, run_custom_javascript, titleize
+from charts import create_OHLC_chart
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, plot_saronite_value_history
 
 from streamlit.components.v1 import html
@@ -114,6 +115,9 @@ st.markdown("#")
 mobile = st.checkbox("Mobile", value=False)
 st.markdown("##")
 
+candlestick = st.checkbox("Candlestick", value=False)
+st.markdown("##")
+
 saronite_value = st.checkbox("Saronite Value", value=False)
 st.markdown("##")
 
@@ -129,6 +133,9 @@ if submit:
     
     if saronite_value:
         chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+    elif candlestick:
+        ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
+        chart = create_OHLC_chart(ohlc_data, data_min, data_max)
     else:
         
     
