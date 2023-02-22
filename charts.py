@@ -157,7 +157,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y='open_price',
         y2='close_price',
-        size=alt.value(8),
+        # size=alt.value(8),
         # stroke=alt.value('black'), strokeWidth=alt.value(0.25),
         color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),
         tooltip=[
