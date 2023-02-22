@@ -82,6 +82,116 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
         
     
 
+    
+    
+    
+    
+    
+    
+def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Chart:
+    """
+    `OHLC_data`, `minimum`, and `maximum` come from `data.get_server_history_OHLC()`.
+    """
+    df = pd.DataFrame({
+        'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data],
+    })
+    SCALE = 100 if df["median_price"].mean() < 10000 else 10000
+    YLABEL = "Price (silver)" if SCALE==100 else "Price (gold)"
+    chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.1/SCALE))
+    if minimum < 1 and maximum < 2 and SCALE != 100:
+        chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
+
+    OHLC_df = pd.DataFrame({
+        'date': list(OHLC_data.keys()),
+        'open_price': [round(OHLC_data[date]["open"]["price"]/SCALE,2) for date in OHLC_data],
+        'close_price': [round(OHLC_data[date]["close"]["price"]/SCALE,2) for date in OHLC_data],
+        'high_price': [round(OHLC_data[date]["high"]["price"]/SCALE,2) for date in OHLC_data],
+        'low_price': [round(OHLC_data[date]["low"]["price"]/SCALE,2) for date in OHLC_data],
+        'open_quantity': [OHLC_data[date]["open"]["quantity"] for date in OHLC_data],
+        'close_quantity': [OHLC_data[date]["close"]["quantity"] for date in OHLC_data],
+        'high_quantity': [OHLC_data[date]["high"]["quantity"] for date in OHLC_data],
+        'low_quantity': [OHLC_data[date]["low"]["quantity"] for date in OHLC_data],
+        'mean_price': [round(OHLC_data[date]["mean"]["price"]/SCALE,2) for date in OHLC_data],
+        'mean_quantity': [OHLC_data[date]["mean"]["quantity"] for date in OHLC_data],
+        'median_price': [round(OHLC_data[date]["median"]["price"]/SCALE,2) for date in OHLC_data],
+        'median_quantity': [OHLC_data[date]["median"]["quantity"] for date in OHLC_data],
+        'pct_change_mean_price': [OHLC_data[date]["pct_change"]["mean"]["price"] for date in OHLC_data],
+        'pct_change_mean_quantity': [OHLC_data[date]["pct_change"]["mean"]["quantity"] for date in OHLC_data],
+        'pct_change_median_price': [OHLC_data[date]["pct_change"]["median"]["price"] for date in OHLC_data],
+        'pct_change_median_quantity': [OHLC_data[date]["pct_change"]["median"]["quantity"] for date in OHLC_data],
+    })
+    OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
+    OHLC_df = OHLC_df.sort_values(by='date')
+    OHLC_df = OHLC_df.reset_index(drop=True)
+    OHLC_df['pct_change_mean_price'] = OHLC_df['pct_change_mean_price'].apply(lambda x: x / 100)
+    OHLC_df['pct_change_mean_quantity'] = OHLC_df['pct_change_mean_quantity'].apply(lambda x: x / 100)
+    OHLC_df['pct_change_median_price'] = OHLC_df['pct_change_median_price'].apply(lambda x: x / 100)
+    OHLC_df['pct_change_median_quantity'] = OHLC_df['pct_change_median_quantity'].apply(lambda x: x / 100)
+
+    # set the scale to 100 if the mean of the median prices is less than 10000, else set the scale to 10000
+    
+
+
+
+    XAXIS_DATETIME_FORMAT = ( "%b %d" )
+    chart = alt.Chart(OHLC_df).mark_rule().encode(
+        x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+        y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
+        y2='high_price',
+        color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),    # color green (#06982d) if open <= close, else red (#ae1325)
+        tooltip=[
+            alt.Tooltip('date' , title='Date'),
+            alt.Tooltip('open_price' , title='Open' , format='.2f',),
+            alt.Tooltip('close_price', title='Close', format='.2f',),
+            alt.Tooltip('high_price' , title='High' , format='.2f',),
+            alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
+            alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
+            # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
+            alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+        ]
+    ).properties(
+        width=600,
+        height=600
+    )
+    chart += alt.Chart(OHLC_df).mark_bar().encode(
+        x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+        y='open_price',
+        y2='close_price',
+        size=alt.value(8),
+        # stroke=alt.value('black'), strokeWidth=alt.value(0.25),
+        color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),
+        tooltip=[
+            alt.Tooltip('date' , title='Date'),
+            alt.Tooltip('open_price' , title='Open' , format='.2f',),
+            alt.Tooltip('close_price', title='Close', format='.2f',),
+            alt.Tooltip('high_price' , title='High' , format='.2f',),
+            alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
+            alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
+            # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
+            alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+        ]
+    ).properties(
+        width=600,
+        height=600
+    )
+    chart = chart.properties(height=600)
+    chart = chart.configure_axisY(
+        grid=True,           gridOpacity=0.2,         tickCount=6,
+        titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
+        titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
+        labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+        labelFontSize=16,    labelFontWeight="bold",
+    )
+    chart = chart.configure_axisX(
+        grid=False,          tickCount="day",        titleOpacity=0,
+        labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+        labelFontSize=20,    labelFontWeight="bold",
+    )
+    return chart
+    
+    
+    
+    
 
 
 
