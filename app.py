@@ -1,5 +1,6 @@
 import streamlit as st
 from api import api_offline
+from data import get_server_history_OHLC
 from misc import run_custom_css, hide_element, run_custom_javascript, titleize
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, plot_saronite_value_history
 
