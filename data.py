@@ -127,6 +127,157 @@ def get_server_history(item: str, server: str = "Skyfury", faction: str = "Allia
 
 
 
+def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "Alliance", numDays: int = None, avg: bool = True, fix: bool = True) -> tuple[dict, float, float]:
+    """
+    Returns the price & quantity history of an item for the specified faction/server,
+    for the specified number of days, formatted for the creation of an OHLC-style chart, along with the min and max prices for setting the y-axis limits.
+
+    Parameters
+    ----------
+    `item`: The name of the item.
+    `server`: The name of the server.  Default is `Skyfury`.
+    `faction`: The faction on the given server.  Default is `Alliance`.
+    `numDays`: The number of days to get the price history for. If `None`, then the entire history is returned.
+    `avg`: Whether or not to average the data over 2 hours.  Default is `True`.
+    `fix`: Whether or not to fix the missing data that occurs between Dec. 20th and Dec. 25th.  Default is `True`.
+
+    Returns
+    -------
+    Dictionary of dictionaries of the form:
+    ```
+    {
+        "2023-01-23": {
+            "open":   {"price": 0, "quantity": 0},
+            "close":  {"price": 0, "quantity": 0},
+            "high":   {"price": 0, "quantity": 0},
+            "low":    {"price": 0, "quantity": 0},
+            "mean":   {"price": 0, "quantity": 0},
+            "median": {"price": 0, "quantity": 0},
+            "stdev":  {"price": 0, "quantity": 0},
+            "pct_change": {
+                "open":   {"price": 0, "quantity": 0},
+                "close":  {"price": 0, "quantity": 0},
+                "high":   {"price": 0, "quantity": 0},
+                "low":    {"price": 0, "quantity": 0},
+                "mean":   {"price": 0, "quantity": 0},
+                "median": {"price": 0, "quantity": 0},
+                "stdev":  {"price": 0, "quantity": 0},
+            }
+        },
+        "2023-01-24": {
+            ...
+        },
+        ...
+    }
+    ```
+    """
+    import data
+    import datetime
+    import numpy as np
+    d = data.get_server_history(item, server, faction, numDays, avg, fix)
+    
+    prices = d["prices"]                        # Get the prices
+    upper_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+        5*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    lower_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  -
+        5*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist())
+    )
+    for i in range(len(d["prices"])):
+        if d["prices"][i] > upper_limit: d["prices"][i] = upper_limit
+        if d["prices"][i] < lower_limit: d["prices"][i] = lower_limit
+    
+    minimum = min(d["prices"])                  # Get the minimum price
+    maximum = max(d["prices"])                  # Get the maximum price
+            
+    t = d["times"]                              # Get the times
+    t = [t[i].date() for i in range(len(t))]    # Get the dates from the times
+    dates = list(set(t))                        # Get the unique dates
+    dates.sort()                                # Order the dates
+    locs = {}
+    for i in range(len(dates)):
+        locs[dates[i]] = []
+        for j in range(len(t)):
+            if t[j] == dates[i]:
+                locs[dates[i]].append(j)        # Get the locations of the times that are for this date
+    d1 = {}
+    for date in dates:
+        d1[date] = {
+            "prices": [],
+            "quantities": [],
+        }
+        for loc in locs[date]:
+            d1[date]["prices"].append(d["prices"][loc])
+            d1[date]["quantities"].append(d["quantities"][loc])
+    d2 = {}
+    n = -1
+    for date in dates:
+        n += 1
+        d2[date] = {
+            "open":   {"price": 0, "quantity": 0},
+            "close":  {"price": 0, "quantity": 0},
+            "high":   {"price": 0, "quantity": 0},
+            "low":    {"price": 0, "quantity": 0},
+            "mean":   {"price": 0, "quantity": 0},
+            "median": {"price": 0, "quantity": 0},
+            "stdev":  {"price": 0, "quantity": 0},
+            "pct_change": {
+                "open":   {"price": 0, "quantity": 0},
+                "close":  {"price": 0, "quantity": 0},
+                "high":   {"price": 0, "quantity": 0},
+                "low":    {"price": 0, "quantity": 0},
+                "mean":   {"price": 0, "quantity": 0},
+                "median": {"price": 0, "quantity": 0},
+                "stdev":  {"price": 0, "quantity": 0},
+            }
+        }
+        d2[date]["open"]["price"]      = round(d1[date]["prices"][0], 2)
+        d2[date]["open"]["quantity"]   = round(d1[date]["quantities"][0])
+        d2[date]["close"]["price"]     = round(d1[date]["prices"][-1], 2)
+        d2[date]["close"]["quantity"]  = round(d1[date]["quantities"][-1])
+        d2[date]["high"]["price"]      = round(max(d1[date]["prices"]), 2)
+        d2[date]["high"]["quantity"]   = round(max(d1[date]["quantities"]))
+        d2[date]["low"]["price"]       = round(min(d1[date]["prices"]), 2)
+        d2[date]["low"]["quantity"]    = round(min(d1[date]["quantities"]))
+        d2[date]["mean"]["price"]      = round(np.mean(d1[date]["prices"]), 2)
+        d2[date]["mean"]["quantity"]   = round(np.mean(d1[date]["quantities"]))
+        d2[date]["median"]["price"]    = round(np.median(d1[date]["prices"]), 2)
+        d2[date]["median"]["quantity"] = round(np.median(d1[date]["quantities"]))
+        d2[date]["stdev"]["price"]     = round(np.std(d1[date]["prices"]), 2)
+        d2[date]["stdev"]["quantity"]  = round(np.std(d1[date]["quantities"]))
+        try:
+            if n > 0:
+                d2[date]["pct_change"]["open"]["price"]      = round((d2[date]["open"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["open"]["quantity"]   = round((d2[date]["open"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+                d2[date]["pct_change"]["close"]["price"]     = round((d2[date]["close"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["close"]["quantity"]  = round((d2[date]["close"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+                d2[date]["pct_change"]["high"]["price"]      = round((d2[date]["high"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["high"]["quantity"]   = round((d2[date]["high"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+                d2[date]["pct_change"]["low"]["price"]       = round((d2[date]["low"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["low"]["quantity"]    = round((d2[date]["low"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+                d2[date]["pct_change"]["mean"]["price"]      = round((d2[date]["mean"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["mean"]["quantity"]   = round((d2[date]["mean"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+                d2[date]["pct_change"]["median"]["price"]    = round((d2[date]["median"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["median"]["quantity"] = round((d2[date]["median"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+                d2[date]["pct_change"]["stdev"]["price"]     = round((d2[date]["stdev"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
+                d2[date]["pct_change"]["stdev"]["quantity"]  = round((d2[date]["stdev"]["quantity"] - d2[dates[n-1]]["close"]["quantity"]) / d2[dates[n-1]]["close"]["quantity"] * 100, 2)
+        except:
+            pass
+            # print("error on date", date)
+    return d2, minimum, maximum
+
+
+
+
+
+
+
+
+
+
+
 def get_region_history(item: str, region: str = "US", numDays: int = None, avg: bool = True, fix: bool = True) -> dict:
     """
     Returns the price & quantity history of an item for the US region as a whole.
