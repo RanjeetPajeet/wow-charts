@@ -7,6 +7,7 @@ Functions for getting auction data from the NexusHub API and returning it in mor
 import api
 import datetime
 import numpy as np
+import pandas as pd
 
 
 
