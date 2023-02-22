@@ -171,10 +171,7 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
     }
     ```
     """
-    import data
-    import datetime
-    import numpy as np
-    d = data.get_server_history(item, server, faction, numDays, avg, fix)
+    d = get_server_history(item, server, faction, numDays, avg, fix)
     
     prices = d["prices"]                        # Get the prices
     upper_limit  =  (
