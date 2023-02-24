@@ -150,7 +150,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
     ).properties(
-        #width=600,
+        width=600,
         height=600
     )
     chart += alt.Chart(OHLC_df).mark_bar().encode(
@@ -171,7 +171,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
     ).properties(
-        #width=600,
+        width=600,
         height=600
     )
     chart = chart.properties(height=600)
