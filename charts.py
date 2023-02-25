@@ -123,7 +123,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     
     
     range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
-    quantities = [ map_value(x, range_quantity, [chart_ylims[0]-10,minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
+    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
     
     #range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
     #quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
@@ -194,8 +194,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     quantity_chart = alt.Chart(OHLC_df).mark_area(
           color=alt.Gradient(
               gradient="linear",
-              stops=[alt.GradientStop(color="#7defa1", offset=0),     # bottom color
-                     alt.GradientStop(color="#29b09d", offset=0.4)],  # top color
+              stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
+                     alt.GradientStop(color="#0068c9", offset=0.4)],  # top color
               x1=1, x2=1, y1=1, y2=0,
           ),
           opacity = 0.2,
@@ -207,7 +207,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
           y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
           tooltip=[
               alt.Tooltip('date' , title='Date'),
-              alt.Tooltip('mean_quantity' , title='Quantity' , format='.2f')
+              alt.Tooltip('mean_quantity' , title='Quantity')
           ]
       )
     
