@@ -128,10 +128,12 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     OHLC_df['pct_change_median_price'] = OHLC_df['pct_change_median_price'].apply(lambda x: x / 100)
     OHLC_df['pct_change_median_quantity'] = OHLC_df['pct_change_median_quantity'].apply(lambda x: x / 100)
 
-    # set the scale to 100 if the mean of the median prices is less than 10000, else set the scale to 10000
     
+    
+    range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
+    OHLC_df["Quantity"] = OHLC_df["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
 
-
+    
 
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
     chart = alt.Chart(OHLC_df).mark_rule().encode(
