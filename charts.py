@@ -205,7 +205,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
           ]
       )
     
-    
+    chart = chart + quantity_chart
     
     
     chart = chart.properties(height=600)
