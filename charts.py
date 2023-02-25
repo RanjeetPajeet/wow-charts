@@ -140,7 +140,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         y2='high_price',
         color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),    # color green (#06982d) if open <= close, else red (#ae1325)
         tooltip=[
-            alt.Tooltip('date' , title='Date'),
+            alt.Tooltip('date' , title='Date', format='%b %d, %I %p'),
             alt.Tooltip('open_price' , title='Open' , format='.2f',),
             alt.Tooltip('close_price', title='Close', format='.2f',),
             alt.Tooltip('high_price' , title='High' , format='.2f',),
@@ -150,7 +150,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
     ).properties(
-        width=600,
+        #width=600,
         height=600
     )
     chart += alt.Chart(OHLC_df).mark_bar().encode(
@@ -171,7 +171,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
     ).properties(
-        width=600,
+        #width=600,
         height=600
     )
     chart = chart.properties(height=600)
