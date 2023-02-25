@@ -131,7 +131,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     
     
     range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
-    OHLC_df["Quantity"] = OHLC_df["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
+    #OHLC_df["Quantity"] = OHLC_df["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
 
     
 
