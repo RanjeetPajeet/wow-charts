@@ -185,7 +185,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     
     
     
-    quantity_chart = alt.Chart(data).mark_area(
+    quantity_chart = alt.Chart(OHLC_df).mark_area(
           color=alt.Gradient(
               gradient="linear",
               stops=[alt.GradientStop(color="#7defa1", offset=0),     # bottom color
@@ -198,8 +198,11 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
           clip=True,
       ).encode(
           x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-          y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-          tooltip=["Time", "4h Avg Quantity"]
+          y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
+          tooltip=[
+              alt.Tooltip('date' , title='Date'),
+              alt.Tooltip('quantities' , title='Quantity' , format='.2f')
+          ]
       )
     
     
