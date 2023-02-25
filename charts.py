@@ -140,12 +140,12 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         y2='high_price',
         color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),    # color green (#06982d) if open <= close, else red (#ae1325)
         tooltip=[
-            alt.Tooltip('date' , title='Date', format='%b %d, %I %p'),
+            alt.Tooltip('date' , title='Date'),
             alt.Tooltip('open_price' , title='Open' , format='.2f',),
             alt.Tooltip('close_price', title='Close', format='.2f',),
             alt.Tooltip('high_price' , title='High' , format='.2f',),
             alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
-            alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
+            # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
@@ -166,7 +166,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
             alt.Tooltip('close_price', title='Close', format='.2f',),
             alt.Tooltip('high_price' , title='High' , format='.2f',),
             alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
-            alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
+            # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
@@ -175,7 +175,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         height=600
     )
     chart = chart.properties(height=600)
-    chart = chart.properties(width=1600)
+    chart = chart.properties(width=600)
     chart = chart.configure_axisY(
         grid=True,           gridOpacity=0.2,         tickCount=6,
         titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
