@@ -207,7 +207,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
           y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
           tooltip=[
               alt.Tooltip('date' , title='Date'),
-              alt.Tooltip('quantities' , title='Quantity' , format='.2f')
+              alt.Tooltip('mean_quantity' , title='Quantity' , format='.2f')
           ]
       )
     
