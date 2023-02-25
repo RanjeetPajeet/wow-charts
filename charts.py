@@ -88,9 +88,10 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
     
     
     
-def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Chart:
+def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = False) -> alt.Chart:
     """
     `OHLC_data`, `minimum`, and `maximum` come from `data.get_server_history_OHLC()`.
+    `show_quantity` determines whether or not an area is drawn to the plot showing quantities.
     """
     df = pd.DataFrame({
         'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data],
@@ -124,15 +125,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     
     range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
     quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
-    
-    #range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
-    #quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
-    #quantities = [ ((x+minimum)/SCALE) for x in quantities ]
-    #st.write(minimum)
-    #st.write(chart_ylims[0])
-    
     OHLC_df.insert(2, "quantities", quantities, True)
-    #st.write(quantities)
+
     
     OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
     OHLC_df = OHLC_df.sort_values(by='date')
@@ -190,28 +184,28 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     )
     
     
+    if show_quantity:
+        quantity_chart = alt.Chart(OHLC_df).mark_area(
+              color=alt.Gradient(
+                  gradient="linear",
+                  stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
+                        alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
+                  x1=1, x2=1, y1=1, y2=0,
+              ),
+              opacity = 0.2,
+              strokeWidth=2,
+              interpolate="monotone",
+              clip=True,
+          ).encode(
+              x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+              y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
+              tooltip=[
+                  alt.Tooltip('date' , title='Date'),
+                  alt.Tooltip('mean_quantity' , title='Quantity')
+              ]
+          )
+        chart = chart + quantity_chart
     
-    quantity_chart = alt.Chart(OHLC_df).mark_area(
-          color=alt.Gradient(
-              gradient="linear",
-              stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
-                     alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
-              x1=1, x2=1, y1=1, y2=0,
-          ),
-          opacity = 0.2,
-          strokeWidth=2,
-          interpolate="monotone",
-          clip=True,
-      ).encode(
-          x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-          y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
-          tooltip=[
-              alt.Tooltip('date' , title='Date'),
-              alt.Tooltip('mean_quantity' , title='Quantity')
-          ]
-      )
-    
-    chart = chart + quantity_chart
     
     
     chart = chart.properties(height=600)
