@@ -120,6 +120,12 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         'pct_change_median_price': [OHLC_data[date]["pct_change"]["median"]["price"] for date in OHLC_data],
         'pct_change_median_quantity': [OHLC_data[date]["pct_change"]["median"]["quantity"] for date in OHLC_data],
     })
+    
+    range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
+    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
+    quantities = [ x/SCALE for x in quantities ]
+    st.write(quantities)
+    
     OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
     OHLC_df = OHLC_df.sort_values(by='date')
     OHLC_df = OHLC_df.reset_index(drop=True)
@@ -130,10 +136,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
 
     
     
-    range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
-    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
-    quantities = [ x/SCALE for x in quantities ]
-    st.write(quantities)
+    
     
 
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
@@ -177,6 +180,29 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         #width=600,
         height=600
     )
+    
+    
+    
+    quantity_chart = alt.Chart(data).mark_area(
+          color=alt.Gradient(
+              gradient="linear",
+              stops=[alt.GradientStop(color="#7defa1", offset=0),     # bottom color
+                     alt.GradientStop(color="#29b09d", offset=0.4)],  # top color
+              x1=1, x2=1, y1=1, y2=0,
+          ),
+          opacity = 0.5,
+          strokeWidth=2,
+          interpolate="monotone",
+          clip=True,
+      ).encode(
+          x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+          y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+          tooltip=["Time", "4h Avg Quantity"]
+      )
+    
+    
+    
+    
     chart = chart.properties(height=600)
     chart = chart.properties(width=700)
     chart = chart.configure_axisY(
