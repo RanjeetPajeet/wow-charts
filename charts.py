@@ -121,11 +121,15 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
         'pct_change_median_quantity': [OHLC_data[date]["pct_change"]["median"]["quantity"] for date in OHLC_data],
     })
     
+    
     range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
-    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
-    quantities = [ ((x+minimum)/SCALE) for x in quantities ]
-    st.write(minimum)
-    st.write(chart_ylims[0])
+    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
+    
+    #range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
+    #quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
+    #quantities = [ ((x+minimum)/SCALE) for x in quantities ]
+    #st.write(minimum)
+    #st.write(chart_ylims[0])
     
     OHLC_df.insert(2, "quantities", quantities, True)
     #st.write(quantities)
