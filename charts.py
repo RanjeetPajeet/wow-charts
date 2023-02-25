@@ -195,7 +195,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
           color=alt.Gradient(
               gradient="linear",
               stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
-                     alt.GradientStop(color="#0068c9", offset=0.4)],  # top color
+                     alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
               x1=1, x2=1, y1=1, y2=0,
           ),
           opacity = 0.2,
