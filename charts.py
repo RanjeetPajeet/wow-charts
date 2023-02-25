@@ -124,7 +124,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float) -> alt.Ch
     range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
     quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum]) for x in OHLC_df["mean_quantity"] ]
     quantities = [ x/SCALE for x in quantities ]
-    OHCL_df['quantities'] = quantities
+    
+    OHLC_df.insert(2, "quantities", quantities, True)
     #st.write(quantities)
     
     OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
