@@ -142,18 +142,11 @@ if submit:
         ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
         chart = st.altair_chart(create_OHLC_chart(ohlc_data, data_min, data_max))
     else:
-        
-    
         st.markdown("# ")
         st.markdown("# ")
-
-
         st.markdown(f"### [{titleize(item)}] {chart_type} History -- Last {num_days} Days")
-
-
         st.markdown("## ")
         chart = st.empty()
-
 
         if chart_type == "Price":
             if server_compare is not None and faction_compare is not None:
@@ -161,10 +154,8 @@ if submit:
             else:
                 chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
 
-
         elif chart_type == "Price & Quantity":
-            chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-
+            chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
 
         elif chart_type == "Price & Region Price":
             chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
