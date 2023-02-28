@@ -238,25 +238,17 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             
 
 
-def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
+def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     data = get_server_history(item, server, faction, num_days)
     scale = 100 if data["prices"][-1] < 10000 else 10000
     prices = [round(price/scale,2) for price in data["prices"]]
     ylabel = "Price (silver)" if scale==100 else "Price (gold)"
     
-    # run the remove_outliers function
     if fix_outliers:
         prices = remove_outliers(prices)
         
-        
-    upper_limit  =  (
-        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
-    )
-    
-    for i in range(len(prices)):
-        if prices[i] > upper_limit:
-            prices[i] = upper_limit
+    prices = enforce_upper_limit(prices)
+    prices = enforce_lower_limit(prices)
         
 
     data = pd.DataFrame(
@@ -265,10 +257,10 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             "4-hour moving average":  pd.Series(prices).rolling(2).mean().round(2),
             "12-hour moving average": pd.Series(prices).rolling(6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
+            # "72-hour moving average": pd.Series(prices).rolling(36).mean().round(2),
         }
     )
-    
- 
     
     if hide_original:
         min4  = min(data["4-hour moving average" ].dropna().tolist()[1:])
@@ -277,47 +269,76 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         max12 = max(data["12-hour moving average"].dropna().tolist()[1:])
         min24 = min(data["24-hour moving average"].dropna().tolist()[1:])
         max24 = max(data["24-hour moving average"].dropna().tolist()[1:])
-        if ma4 and not ma12 and not ma24:
+        min48 = min(data["48-hour moving average"].dropna().tolist()[1:])
+        max48 = max(data["48-hour moving average"].dropna().tolist()[1:])
+        if ma4 and not ma12 and not ma24 and not ma48:
             minimum = min4
             maximum = max4
-        elif ma12 and not ma4 and not ma24:
+        elif ma12 and not ma4 and not ma24 and not ma48:
             minimum = min12
             maximum = max12
-        elif ma24 and not ma4 and not ma12:
+        elif ma24 and not ma4 and not ma12 and not ma48:
             minimum = min24
             maximum = max24
-        elif ma4 and ma12 and not ma24:
+        elif ma48 and not ma4 and not ma12 and not ma24:
+            minimum = min48
+            maximum = max48
+        elif ma4 and ma12 and not ma24 and not ma48:
             minimum = min(min4, min12)
             maximum = max(max4, max12)
-        elif ma4 and ma24 and not ma12:
+        elif ma4 and ma24 and not ma12 and not ma48:
             minimum = min(min4, min24)
             maximum = max(max4, max24)
-        elif ma12 and ma24 and not ma4:
+        elif ma12 and ma24 and not ma4 and not ma48:
             minimum = min(min12, min24)
             maximum = max(max12, max24)
-        elif ma4 and ma12 and ma24:
+        elif ma4 and ma12 and ma24 and not ma48:
             minimum = min(min4, min12, min24)
             maximum = max(max4, max12, max24)
+        elif ma4 and ma12 and ma24 and ma48:
+            minimum = min(min4, min12, min24, min48)
+            maximum = max(max4, max12, max24, max48)
+        elif ma4 and not ma12 and ma24 and not ma48:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma4 and not ma12 and not ma24 and ma48:
+            minimum = min(min4, min48)
+            maximum = max(max4, max48)
+        elif ma12 and not ma4 and ma24 and not ma48:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma12 and not ma4 and not ma24 and ma48:
+            minimum = min(min12, min48)
+            maximum = max(max12, max48)
+        elif ma24 and not ma4 and not ma12 and ma48:
+            minimum = min(min24, min48)
+            maximum = max(max24, max48)
+        elif ma4 and not ma12 and ma24 and ma48:
+            minimum = min(min4, min24, min48)
+            maximum = max(max4, max24, max48)
+        elif ma12 and not ma4 and ma24 and ma48:
+            minimum = min(min12, min24, min48)
+            maximum = max(max12, max24, max48)
+        elif ma4 and ma12 and not ma24 and ma48:
+            minimum = min(min4, min12, min48)
+            maximum = max(max4, max12, max48)
         else:
             minimum = min(prices)
             maximum = max(prices)
     else:
         minimum = min(prices)
         maximum = max(prices)
-        
-    try: chart_ylims = (int(minimum/1.25), int(maximum*1.2))
+
+
+    try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
     except Exception as e:
-        chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.2))
+        chart_ylims = (
+            int(min(prices)/1.25),
+            int(max(prices)*1.10),
+        )
         st.markdown(f"**Error:** {e}")
-        st.markdown(f"**min4  = ** {min(data['4-hour moving average'].dropna().tolist()[1:])}")
-        st.markdown(f"**max4  = ** {max(data['4-hour moving average'].dropna().tolist()[1:])}")
-        st.markdown(f"**min12 = ** {min(data['12-hour moving average'].dropna().tolist()[1:])}")
-        st.markdown(f"**max12 = ** {max(data['12-hour moving average'].dropna().tolist()[1:])}")
-        st.markdown(f"**min24 = ** {min(data['24-hour moving average'].dropna().tolist()[1:])}")
-        st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
         
         
-    
     # fix the issue with chart y-limit scaling when
     # the price of something is barely over a gold (saronite ore)
     if minimum < 1 and maximum < 2 and scale != 100:
@@ -329,10 +350,6 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
         
     if not hide_original:
-        # make a second price line but with zero opacity
-        # to assist in tooltip visibility when mousing over
-        price_line_mouseover = mouseover_line(data=data, color="#83c9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.0)
-        
         chart = alt.Chart(data).mark_line(
             color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
@@ -340,20 +357,21 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
             x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
+        price_line_mouseover = mouseover_line(data=data, color="#83c9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.0)
         chart = chart + price_line_mouseover
         chart = chart.properties(height=600)
 
     if ma4:
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
+        price_line_mouseover = mouseover_line(data=data, color="#7defa1", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.0)
         if hide_original:
-            # make a second price line but with zero opacity
-            # to assist in tooltip visibility when mousing over
-            price_line_mouseover = mouseover_line(data=data, color="#7defa1", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0.0)
             chart = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
                         color=alt.value("#7defa1"),
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))) + price_line_mouseover
         else:
-            chart = chart + alt.Chart(data).mark_line(color="#7defa1").encode(x=alt.X("Time"), y=alt.Y("4-hour moving average"))
+            chart = chart + alt.Chart(data).mark_line(color="#7defa1").encode(x=alt.X("Time"), y=alt.Y("4-hour moving average")) + price_line_mouseover
     if ma12:
         if hide_original:
             if ma4:
@@ -361,17 +379,11 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
                                     color=alt.value("#6d3fc0"),
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
-#                 chart = chart + alt.Chart(data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
-#                                     x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
-#                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
             else:
                 chart = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
                             color=alt.value("#6d3fc0"),
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
-#                 chart = alt.Chart(data).mark_line(color="#6d3fc0",strokeWidth=2.1).encode(
-#                         x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
-#                         y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
         else:
             chart = chart + alt.Chart(data).mark_line(color="#6d3fc0").encode(x=alt.X("Time"), y=alt.Y("12-hour moving average"))
     if ma24:
@@ -385,43 +397,23 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
                             color=alt.value("#bd4043"),
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
-#                 chart = alt.Chart(data).mark_line(color="#bd4043",strokeWidth=2.2).encode(
-#                             x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
-#                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
         else:
             chart = chart + alt.Chart(data).mark_line(color="#bd4043").encode(x=alt.X("Time"), y=alt.Y("24-hour moving average"))
+    if ma48:
+        if hide_original:
+            if ma4 or ma12 or ma24:
+                chart = chart + alt.Chart(data).mark_line(color="#f5c500",strokeWidth=2.2).encode(
+                                    x=alt.X("Time", axis=alt.Axis(  title="Date", format=XAXIS_DATETIME_FORMAT  )), 
+                                    y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+            else:
+                chart = alt.Chart(data).mark_area(fill='red', opacity=0, strokeWidth=2, clip=True, line=True).encode(
+                            color=alt.value("#f5c500"),
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                            y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)))
+        else:
+            chart = chart + alt.Chart(data).mark_line(color="#f5c500").encode(x=alt.X("Time"), y=alt.Y("48-hour moving average"))
     
 
-    
-    
-    
-    def mouseover_stuff(line: alt.Chart) -> alt.Chart:
-        nearest = alt.selection(
-            type="single",
-            nearest=True,
-            on="mouseover",
-            fields=["Time"],
-            empty="none",
-        )
-        selectors = alt.Chart(data).mark_point().encode(
-            x=alt.X("Time", axis=alt.Axis(title="Date")),
-            opacity=alt.value(0),
-        ).add_selection(nearest)
-        points = line.mark_point().encode(
-            opacity=alt.condition(nearest, alt.value(1), alt.value(0))
-        )
-        text = line.mark_text(align="left", dx=5, dy=-5, color="#ffffff").encode(
-            text=alt.condition(nearest, ylabel, alt.value(' '))
-        )
-        rules = alt.Chart(data).mark_rule(color="gray").encode(
-            x="Time",
-        ).transform_filter(nearest)
-        return alt.layer(area, line, selectors, points, rules, text)
-    
-    
-
-    
-    
 
     chart = chart.properties(height=600)
 
@@ -466,12 +458,6 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
         )
         
         chart = chart.properties(height=400)
-    
-    
-#     TEXT   = lambda t: st.markdown(t)
-#     SMALL  = lambda t: st.markdown(f"### {t}")
-#     MEDIUM = lambda t: st.markdown( f"## {t}")
-#     LARGE  = lambda t: st.markdown(  f"# {t}")
     
     return chart
 
