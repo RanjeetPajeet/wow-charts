@@ -1474,8 +1474,8 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims)),
             tooltip=(
-              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1}-{faction1} Price",format=".2f")] if
-              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1}-{faction1} Price",format=".0f")]
+              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1} Price",format=".2f")] if
+              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1} Price",format=".0f")]
             ),
         ) + alt.Chart(server2_data).mark_line(
             color="#83c9ff" if not hide_original else "#0e1117",
@@ -1484,8 +1484,8 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims)),
             tooltip=(
-              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("48-hour moving average",title=f"{server2}-{faction2} Price (48h avg)",format=".2f")] if
-              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("48-hour moving average",title=f"{server2}-{faction2} Price (48h avg)",format=".0f")]
+              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("48-hour moving average",title=f"{server2} Price (48h avg)",format=".2f")] if
+              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("48-hour moving average",title=f"{server2} Price (48h avg)",format=".0f")]
             ),
         )
         # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
@@ -1497,8 +1497,8 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims)),
             tooltip=(
-              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1}-{faction1} Price",format=".2f")] if
-              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1}-{faction1} Price",format=".0f")]
+              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1} Price",format=".2f")] if
+              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1} Price",format=".0f")]
             ),
         )
         price_line_mouseover2 = alt.Chart(server2_data).mark_line(
@@ -1509,8 +1509,8 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y = alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale = alt.Scale(domain=chart_ylims)),
             tooltip=(
-              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server2}-{faction2} Price",format=".2f")] if
-              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server2}-{faction2} Price",format=".0f")]
+              [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server2} Price",format=".2f")] if
+              scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server2} Price",format=".0f")]
             ),
         )
         #price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
@@ -1526,16 +1526,16 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims)),
                         tooltip=(
-                          [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".2f")] if
-                          scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".0f")]
+                          [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1} Price (4h avg)",format=".2f")] if
+                          scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1} Price (4h avg)",format=".0f")]
                         ),
             ) + alt.Chart(server2_data).mark_line(
                         color="#7defa1",strokeWidth=2).encode(
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims)),
                         tooltip=(
-                          [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2}-{faction2} Price (4h avg)",format=".2f")] if
-                          scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2}-{faction2} Price (4h avg)",format=".0f")]
+                          [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2} Price (4h avg)",format=".2f")] if
+                          scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2} Price (4h avg)",format=".0f")]
                         ),
             )
             # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
@@ -1547,8 +1547,8 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims)),
                 tooltip=(
-                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".2f")] if
-                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".0f")]
+                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1} Price (4h avg)",format=".2f")] if
+                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1} Price (4h avg)",format=".0f")]
                 ),
             )
             price_line_mouseover2 = alt.Chart(server2_data).mark_line(
@@ -1559,8 +1559,8 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims)),
                 tooltip=(
-                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2}-{faction2} Price (4h avg)",format=".2f")] if
-                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2}-{faction2} Price (4h avg)",format=".0f")]
+                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2} Price (4h avg)",format=".2f")] if
+                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2} Price (4h avg)",format=".0f")]
                 ),
             )
             #price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
@@ -1572,16 +1572,16 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                                 x = alt.X("Time"),
                                 y = alt.Y("4-hour moving average"),
                                 tooltip=(
-                                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".2f")] if
-                                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".0f")]
+                                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1} Price (4h avg)",format=".2f")] if
+                                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1} Price (4h avg)",format=".0f")]
                                 ),
             ) + alt.Chart(server2_data).mark_line(
                                 color="#7defa1").encode(
                                 x = alt.X("Time"),
                                 y = alt.Y("4-hour moving average"),
                                 tooltip=(
-                                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".2f")] if
-                                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server1}-{faction1} Price (4h avg)",format=".0f")]
+                                  [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2} Price (4h avg)",format=".2f")] if
+                                  scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip("4-hour moving average",title=f"{server2} Price (4h avg)",format=".0f")]
                                 ))
             # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
             price_line_mouseover1 = mouseover_line(data=server1_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
