@@ -151,8 +151,6 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         color=alt.value('#FB00FF'),
         opacity=alt.value(0.5),
         size=alt.value(4),
-        # strokeDash=alt.value([5,5]),    # dashed line
-        # strokeWidth=alt.value(5),       # line width
         tooltip=[
             alt.Tooltip('date' , title='Date'),
             alt.Tooltip('open_price' , title='Open' , format='.2f',),
@@ -190,6 +188,13 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         height=600
     )
     
+    
+    
+    # add mouseover helper
+    chart += mouseover
+    
+    
+    
     # candle bodies
     chart += alt.Chart(OHLC_df).mark_bar().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -213,8 +218,6 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         height=600
     )
 
-    # add mouseover helper
-    chart += mouseover
     
     
     if show_quantity:
