@@ -142,6 +142,34 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
     
 
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
+
+    # wick line mouseover helper
+    mouseover = alt.Chart(OHLC_df).mark_rule().encode(
+        x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+        y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
+        y2='high_price',
+        color='#FB00FF',
+        opacity=alt.value(0.5),
+        size=alt.value(5),
+        # strokeDash=alt.value([5,5]),    # dashed line
+        strokeWidth=alt.value(5),       # line width
+        tooltip=[
+            alt.Tooltip('date' , title='Date'),
+            alt.Tooltip('open_price' , title='Open' , format='.2f',),
+            alt.Tooltip('close_price', title='Close', format='.2f',),
+            alt.Tooltip('high_price' , title='High' , format='.2f',),
+            alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
+            # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
+            # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
+            alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+        ]
+    ).properties(
+        #width=600,
+        height=600
+    )
+
+    
+    # wick lines
     chart = alt.Chart(OHLC_df).mark_rule().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
@@ -161,6 +189,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         #width=600,
         height=600
     )
+    
+    # candle bodies
     chart += alt.Chart(OHLC_df).mark_bar().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y='open_price',
@@ -182,6 +212,9 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         #width=600,
         height=600
     )
+
+    # add mouseover helper
+    chart += mouseover
     
     
     if show_quantity:
