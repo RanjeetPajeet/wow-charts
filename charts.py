@@ -1489,7 +1489,7 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
             ),
         )
         # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
-        price_line_mouseover1 = alt.Chart(data).mark_line(
+        price_line_mouseover1 = alt.Chart(server1_data).mark_line(
             color = "#3aa9ff",
             strokeWidth = MOUSEOVER_LINE_THICKNESS,
             opacity = 0,
@@ -1501,7 +1501,7 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
               scale!=100 else [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(ylabel,title=f"{server1}-{faction1} Price",format=".0f")]
             ),
         )
-        price_line_mouseover2 = alt.Chart(data).mark_line(
+        price_line_mouseover2 = alt.Chart(server2_data).mark_line(
             color = "#3aa9ff",
             strokeWidth = MOUSEOVER_LINE_THICKNESS,
             opacity = 0,
