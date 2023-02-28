@@ -926,7 +926,7 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     if fix_outliers:
         server_prices = remove_outliers(server_prices)
         region_prices = remove_outliers(region_prices)
-    
+      
     server_prices = enforce_upper_limit(server_prices)
     server_prices = enforce_lower_limit(server_prices)
     region_prices = enforce_upper_limit(region_prices)
