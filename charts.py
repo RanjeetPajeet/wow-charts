@@ -771,7 +771,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 
     if ma48:
         price_line_ma48 = alt.Chart(data).mark_line(
-            color = "#00C536",      #6029c1
+            color = "#F5C500",      #00C536
             strokeWidth = 2.3,
         ).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -780,7 +780,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         )
         # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
         price_line_ma48_mouseover = alt.Chart(data).mark_line(
-            color = "#00C536",      #6029c1
+            color = "#F5C500",      #00C536
             strokeWidth = MOUSEOVER_LINE_THICKNESS,
             opacity = 0,
         ).encode(
@@ -794,8 +794,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         quantity_line_ma48 = alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
-                stops=[alt.GradientStop(color="#1CD14E", offset=0.3),   # bottom color  #9670dc
-                       alt.GradientStop(color="#00B030", offset=0.7)],  # top color     #5728ae
+                stops=[alt.GradientStop(color="#FCD32A", offset=0.3),   # bottom color  #1CD14E
+                       alt.GradientStop(color="#E3B600", offset=0.7)],  # top color     #00B030
                 x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
