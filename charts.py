@@ -51,7 +51,7 @@ def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
     )
     for i in range(len(prices)):
         if prices[i] > upper_limit:
-            st.write(f"Replacing {prices[i]} with {upper_limit}")
+#             st.write(f"Replacing {prices[i]} with {upper_limit}")
             prices[i] = upper_limit
     return prices
 
@@ -78,7 +78,7 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
     )
     for i in range(len(prices)):
         if prices[i] < lower_limit:
-            st.write(f"Replacing {prices[i]} with {lower_limit}")
+#             st.write(f"Replacing {prices[i]} with {lower_limit}")
             prices[i] = lower_limit
     return prices
         
@@ -932,8 +932,30 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     region_prices = enforce_upper_limit(region_prices)
     region_prices = enforce_lower_limit(region_prices)
 
+    
+    
+    
+    server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
+    region_std_mean = np.mean( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
+    
+    server_std_dev = np.std( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
+    region_std_dev = np.std( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
+        
+    std_dev = min(server_std_dev, region_std_dev)
+    server_upper_limit  =  server_std_mean + 3*std_dev
+    region_upper_limit  =  region_std_mean + 3*std_dev
+    
+    for i in range(len(server_prices)):
+        if server_prices[i] > server_upper_limit:
+            server_prices[i] = server_upper_limit
+            
+    for i in range(len(region_prices)):
+        if region_prices[i] > region_upper_limit:
+            region_prices[i] = region_upper_limit
 
-
+            
+            
+            
     server_data = pd.DataFrame(
         {
             "Time": server_data["times"], ylabel: server_prices,
