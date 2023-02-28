@@ -148,7 +148,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
         y2='high_price',
-        color='#FB00FF',
+        color=alt.value('#FB00FF'),
         opacity=alt.value(0.5),
         # size=alt.value(5),
         # strokeDash=alt.value([5,5]),    # dashed line
