@@ -150,7 +150,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         y2='high_price',
         color=alt.value('#FB00FF'),
         opacity=alt.value(0.01),
-        size=alt.value(5),
+        size=alt.value(6),
         tooltip=[
             alt.Tooltip('date' , title='Date'),
             alt.Tooltip('open_price' , title='Open' , format='.2f',),
