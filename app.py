@@ -158,7 +158,7 @@ if submit:
             chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
 
         elif chart_type == "Price & Region Price":
-            chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+            chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
 
         if mobile:
             hide_element("button", "title", "View fullscreen")
