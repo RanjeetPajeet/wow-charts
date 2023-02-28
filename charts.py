@@ -150,7 +150,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         y2='high_price',
         color=alt.value('#FB00FF'),
         opacity=alt.value(0.5),
-        size=alt.value(5),
+        size=alt.value(4),
         # strokeDash=alt.value([5,5]),    # dashed line
         # strokeWidth=alt.value(5),       # line width
         tooltip=[
