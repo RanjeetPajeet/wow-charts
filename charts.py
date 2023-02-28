@@ -904,7 +904,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 
 
 
-def plot_price_and_region_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
+def plot_price_and_region_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     server_data = get_server_history(item, server, faction, num_days)
     region_data = get_region_history(item, numDays=num_days)
     if server_data["prices"][-1] < 10000 or region_data["prices"][-1] < 10000:
@@ -924,76 +924,11 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     if fix_outliers:
         server_prices = remove_outliers(server_prices)
         region_prices = remove_outliers(region_prices)
-        
-        
-        
-    server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
-    region_std_mean = np.mean( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
     
-    server_std_dev = np.std( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
-    region_std_dev = np.std( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
-        
-    std_dev = min(server_std_dev, region_std_dev)
-    server_upper_limit  =  server_std_mean + 3*std_dev
-    region_upper_limit  =  region_std_mean + 3*std_dev
-    
-    for i in range(len(server_prices)):
-        if server_prices[i] > server_upper_limit:
-            server_prices[i] = server_upper_limit
-            
-    for i in range(len(region_prices)):
-        if region_prices[i] > region_upper_limit:
-            region_prices[i] = region_upper_limit
-        
-        
-        
-#     server_upper_limit  =  (
-#         np.mean(pd.Series(server_prices).rolling(2).mean().dropna().tolist())  +  
-#         3*np.std(pd.Series(server_prices).rolling(2).mean().dropna().tolist()) 
-#     )
-    
-#     for i in range(len(server_prices)):
-#         if server_prices[i] > server_upper_limit:
-#             server_prices[i] = server_upper_limit
-            
-            
-#     region_upper_limit  =  (
-#         np.mean(pd.Series(region_prices).rolling(2).mean().dropna().tolist())  +  
-#         3*np.std(pd.Series(region_prices).rolling(2).mean().dropna().tolist()) 
-#     )
-    
-#     for i in range(len(region_prices)):
-#         if region_prices[i] > region_upper_limit:
-#             region_prices[i] = region_upper_limit
-    
-
-
-    ###  MIGHT BE ABLE TO GET RID OF ALL THIS LENGTH CHECKING STUFF  ###
-
-#     last_time_server = server_data["times"][-1]
-#     last_time_region = region_data["times"][-1]
-
-#     if last_time_server != last_time_region:
-#         if last_time_server > last_time_region:         # the server_data time is later, so remove the last element of server_data
-#             server_prices = server_prices[:-1]
-#             server_data["times"] = server_data["times"][:-1]
-#         elif last_time_server < last_time_region:       # the region_data time is later, so remove the last element of region_data
-#             region_prices = region_prices[:-1]
-#             region_data["times"] = region_data["times"][:-1]
-
-#     # check that the lengths of the two lists are the same
-#     if len(server_data["times"]) != len(region_data["times"]):
-#         if len(server_data["times"]) > len(region_data["times"]):
-#             diff_len = len(server_data["times"]) - len(region_data["times"])
-#             server_data["times"] = server_data["times"][diff_len:]
-#             server_prices = server_prices[diff_len:]
-#         elif len(server_data["times"]) < len(region_data["times"]):
-#             diff_len = len(region_data["times"]) - len(server_data["times"])
-#             region_data["times"] = region_data["times"][diff_len:]
-#             region_prices = region_prices[diff_len:]
-            
-    ####################################################################
-
+    server_prices = enforce_upper_limit(server_prices)
+    server_prices = enforce_lower_limit(server_prices)
+    region_prices = enforce_upper_limit(region_prices)
+    region_prices = enforce_lower_limit(region_prices)
 
 
 
@@ -1003,6 +938,7 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
             "4-hour moving average":  pd.Series(server_prices).rolling(2).mean().round(2),
             "12-hour moving average": pd.Series(server_prices).rolling(6).mean().round(2),
             "24-hour moving average": pd.Series(server_prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(server_prices).rolling(24).mean().round(2),
         }
     )
     region_data = pd.DataFrame(
@@ -1011,14 +947,9 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
             "4-hour moving average":  pd.Series(region_prices).rolling(2).mean().round(2),
             "12-hour moving average": pd.Series(region_prices).rolling(6).mean().round(2),
             "24-hour moving average": pd.Series(region_prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(region_prices).rolling(24).mean().round(2),
         }
     )
-
-    # make sure server_data and region_data have the same number of rows
-    #if len(server_data) > len(region_data):
-    #    server_data = server_data.iloc[-len(region_data):]
-    #elif len(region_data) > len(server_data):
-    #    aregion_data = region_data.iloc[-len(server_data):]
 
     
     if hide_original:
@@ -1034,34 +965,70 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         min24_region = min(region_data["24-hour moving average"].dropna().tolist()[1:])
         max24_server = max(server_data["24-hour moving average"].dropna().tolist()[1:])
         max24_region = max(region_data["24-hour moving average"].dropna().tolist()[1:])
+        min48_server = min(server_data["48-hour moving average"].dropna().tolist()[1:])
+        min48_region = min(region_data["48-hour moving average"].dropna().tolist()[1:])
+        max48_server = max(server_data["48-hour moving average"].dropna().tolist()[1:])
+        max48_region = max(region_data["48-hour moving average"].dropna().tolist()[1:])
         min4  = min(min4_server,  min4_region )
         max4  = max(max4_server,  max4_region )
         min12 = min(min12_server, min12_region)
         max12 = max(max12_server, max12_region)
         min24 = min(min24_server, min24_region)
         max24 = max(max24_server, max24_region)
+        min48 = min(min48_server, min48_region)
+        max48 = max(max48_server, max48_region)
 
-        if ma4 and not ma12 and not ma24:
+        if ma4 and not ma12 and not ma24 and not ma48:
             minimum = min4
             maximum = max4
-        elif ma12 and not ma4 and not ma24:
+        elif ma12 and not ma4 and not ma24 and not ma48:
             minimum = min12
             maximum = max12
-        elif ma24 and not ma4 and not ma12:
+        elif ma24 and not ma4 and not ma12 and not ma48:
             minimum = min24
             maximum = max24
-        elif ma4 and ma12 and not ma24:
+        elif ma48 and not ma4 and not ma12 and not ma24:
+            minimum = min48
+            maximum = max48
+        elif ma4 and ma12 and not ma24 and not ma48:
             minimum = min(min4, min12)
             maximum = max(max4, max12)
-        elif ma4 and ma24 and not ma12:
+        elif ma4 and ma24 and not ma12 and not ma48:
             minimum = min(min4, min24)
             maximum = max(max4, max24)
-        elif ma12 and ma24 and not ma4:
+        elif ma12 and ma24 and not ma4 and not ma48:
             minimum = min(min12, min24)
             maximum = max(max12, max24)
-        elif ma4 and ma12 and ma24:
+        elif ma4 and ma12 and ma24 and not ma48:
             minimum = min(min4, min12, min24)
             maximum = max(max4, max12, max24)
+        elif ma4 and ma12 and ma24 and ma48:
+            minimum = min(min4, min12, min24, min48)
+            maximum = max(max4, max12, max24, max48)
+        elif ma4 and not ma12 and ma24 and not ma48:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma4 and not ma12 and not ma24 and ma48:
+            minimum = min(min4, min48)
+            maximum = max(max4, max48)
+        elif ma12 and not ma4 and ma24 and not ma48:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma12 and not ma4 and not ma24 and ma48:
+            minimum = min(min12, min48)
+            maximum = max(max12, max48)
+        elif ma24 and not ma4 and not ma12 and ma48:
+            minimum = min(min24, min48)
+            maximum = max(max24, max48)
+        elif ma4 and not ma12 and ma24 and ma48:
+            minimum = min(min4, min24, min48)
+            maximum = max(max4, max24, max48)
+        elif ma12 and not ma4 and ma24 and ma48:
+            minimum = min(min12, min24, min48)
+            maximum = max(max12, max24, max48)
+        elif ma4 and ma12 and not ma24 and ma48:
+            minimum = min(min4, min12, min48)
+            maximum = max(max4, max12, max48)
         else:
             minimum = min( min(server_prices), min(region_prices) )
             maximum = max( max(server_prices), max(region_prices) )
@@ -1069,22 +1036,14 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         minimum = min( min(server_prices), min(region_prices) )
         maximum = max( max(server_prices), max(region_prices) )
     
-    
-    try: chart_ylims = (int(minimum/1.25), int(maximum*1.2))
+
+    try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
     except Exception as e:
         chart_ylims = (
             int(min( min(server_prices), min(region_prices) )/1.25),
-            int(max( max(server_prices), max(region_prices) )*1.20),
+            int(max( max(server_prices), max(region_prices) )*1.10),
         )
         st.markdown(f"**Error:** {e}")
-        # st.markdown(f"**min4  = ** {min(data['4-hour moving average'].dropna().tolist()[1:])}")
-        # st.markdown(f"**max4  = ** {max(data['4-hour moving average'].dropna().tolist()[1:])}")
-        # st.markdown(f"**min12 = ** {min(data['12-hour moving average'].dropna().tolist()[1:])}")
-        # st.markdown(f"**max12 = ** {max(data['12-hour moving average'].dropna().tolist()[1:])}")
-        # st.markdown(f"**min24 = ** {min(data['24-hour moving average'].dropna().tolist()[1:])}")
-        # st.markdown(f"**max24 = ** {max(data['24-hour moving average'].dropna().tolist()[1:])}")
-        
-        
         
         
     # fix the issue with chart y-limit scaling when
@@ -1092,35 +1051,7 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     if minimum < 1 and maximum < 2 and scale != 100:
         try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
         except: pass
-        
-        
-    
 
-    # if not hide_original:
-    #     ... server = #83c9ff, region = #ff6f83
-    # if ma4:
-    #     if hide_original:
-    #         ... server = #7defa1, region = #7defa1 (#ff8700)
-    #     else:
-    #         ... server = #7defa1, region = #7defa1 (#ff8700)
-    # if ma12:
-    #     if hide_original:
-    #         # if ma4:
-    #               ... server = #6d3fc0, region = #6d3fc0
-    #         # else:
-    #               ... server = #6d3fc0, region = #6d3fc0
-    #     else:
-    #         ... server = #6d3fc0, region = #6d3fc0
-    # if ma24:
-    #     if hide_original:
-    #         # if ma4 or ma12:
-    #               ... server = #bd4043, region = #bd4043
-    #         # else:
-    #               ... server = #bd4043, region = #bd4043
-    #     else:
-    #         ... server = #bd4043, region = #bd4043
-
-    # For the following colors, the region price is always the lighter-shade version of any two colors
 
     
     XAXIS_DATETIME_FORMAT = ( "%b %d" )
@@ -1128,23 +1059,19 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     
     if not hide_original:
         chart = alt.Chart(server_data).mark_line(
-            # color="#83c9ff" if not hide_original else "#0e1117",
             color="#3aa9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-#             x=alt.X("Time", axis=alt.Axis(title="Date")),
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         ) + alt.Chart(region_data).mark_line(
-            color="#83c9ff" if not hide_original else "#0e1117",                                            #  <------ NOTE: "#ff6f83" can be changed
+            color="#83c9ff" if not hide_original else "#0e1117",
             strokeWidth=2,
         ).encode(
-#             x=alt.X("Time", axis=alt.Axis(title="Date")),
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y(ylabel, axis=alt.Axis(title=ylabel) , scale=alt.Scale(domain=chart_ylims))
         )
-        # make a second price line but with zero opacity
-        # to assist in tooltip visibility when mousing over
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
         price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         chart = chart + price_line_mouseover1 + price_line_mouseover2
@@ -1154,34 +1081,28 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
     if ma4:
         if hide_original:
             chart = alt.Chart(server_data).mark_line(
-                        # color="#7defa1",strokeWidth=2).encode(
                         color="#0ce550",strokeWidth=2).encode(
-#                         x=alt.X("Time", axis=alt.Axis(title="Date")), 
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
             ) + alt.Chart(region_data).mark_line(
-                        color="#7defa1",strokeWidth=2).encode(                     #  <------ NOTE: "#7defa1" can be changed
-#                         x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                        color="#7defa1",strokeWidth=2).encode(
                         x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                         y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
             )
-            # make a second price line but with zero opacity
-            # to assist in tooltip visibility when mousing over
+            # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
             price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             chart = chart + price_line_mouseover1 + price_line_mouseover2
         else:
             chart = chart + alt.Chart(server_data).mark_line(
-                                # color="#7defa1").encode(
                                 color="#0ce550").encode(
                                 x=alt.X("Time"),
                                 y=alt.Y("4-hour moving average")
             ) + alt.Chart(region_data).mark_line(
-                                color="#7defa1").encode(                                    #  <------ NOTE: "#7defa1" can be changed
+                                color="#7defa1").encode(
                                 x=alt.X("Time"),
                                 y=alt.Y("4-hour moving average"))
-            # make a second price line but with zero opacity
-            # to assist in tooltip visibility when mousing over
+            # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
             price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             chart = chart + price_line_mouseover1 + price_line_mouseover2
@@ -1191,52 +1112,42 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         if hide_original:
             if ma4:
                 chart = chart + alt.Chart(server_data).mark_line(
-                                    # color="#6d3fc0",strokeWidth=2.1).encode(
                                     color="#6029c1",strokeWidth=2.1).encode(
-#                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
-                                    color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
-#                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                                    color="#9670dc",strokeWidth=2.1).encode(
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
-                # make a second price line but with zero opacity
-                # to assist in tooltip visibility when mousing over
+                # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
                 price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 chart = chart + price_line_mouseover1 + price_line_mouseover2
             else:
                 chart = alt.Chart(server_data).mark_line(
-                            # color="#6d3fc0",strokeWidth=2.1).encode(
                             color="#6029c1",strokeWidth=2.1).encode(
-#                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
-                            color="#9670dc",strokeWidth=2.1).encode(                 #  <------ NOTE: "#6d3fc0" can be changed
-#                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
+                            color="#9670dc",strokeWidth=2.1).encode(
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
-                # make a second price line but with zero opacity
-                # to assist in tooltip visibility when mousing over
+                # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
                 price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 chart = chart + price_line_mouseover1 + price_line_mouseover2
         else:
             chart = chart + alt.Chart(server_data).mark_line(
-                                # color="#6d3fc0").encode(
                                 color="#6029c1").encode(
                                 x=alt.X("Time"),
                                 y=alt.Y("12-hour moving average")
             ) + alt.Chart(region_data).mark_line(
-                                color="#9670dc").encode(                                    #  <------ NOTE: "#6d3fc0" can be changed
+                                color="#9670dc").encode(
                                 x=alt.X("Time"),
                                 y=alt.Y("12-hour moving average"))
-            # make a second price line but with zero opacity
-            # to assist in tooltip visibility when mousing over
+            # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
             price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="12-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             chart = chart + price_line_mouseover1 + price_line_mouseover2
@@ -1246,54 +1157,88 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         if hide_original:
             if ma4 or ma12:
                 chart = chart + alt.Chart(server_data).mark_line(
-                                    # color="#bd4043",strokeWidth=2.2).encode(
                                     color="#ba191c",strokeWidth=2.2).encode(
-#                                     x=alt.X("Time", axis=alt.Axis(title="Date")), 
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
-                                    color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#bd4043" can be changed
-#                                     x=alt.X("Time", axis=alt.Axis(title="Date")),
+                                    color="#ff5169",strokeWidth=2.2).encode(
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
-                # make a second price line but with zero opacity
-                # to assist in tooltip visibility when mousing over
+                # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
                 price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 chart = chart + price_line_mouseover1 + price_line_mouseover2
             else:
                 chart = alt.Chart(server_data).mark_line(
-                            # color="#bd4043",strokeWidth=2.2).encode(
                             color="#ba191c",strokeWidth=2.2).encode(
-#                             x=alt.X("Time", axis=alt.Axis(title="Date")), 
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(region_data).mark_line(
-                            color="#ff5169",strokeWidth=2.2).encode(                 #  <------ NOTE: "#ff6f83" can be changed
-#                             x=alt.X("Time", axis=alt.Axis(title="Date")),
+                            color="#ff5169",strokeWidth=2.2).encode(
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
                 )
-                # make a second price line but with zero opacity
-                # to assist in tooltip visibility when mousing over
+                # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
                 price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
                 chart = chart + price_line_mouseover1 + price_line_mouseover2
         else:
             chart = chart + alt.Chart(server_data).mark_line(
-                # color="#bd4043").encode(
                 color="#ba191c").encode(
                 x=alt.X("Time"),
                 y=alt.Y("24-hour moving average")
             ) + alt.Chart(region_data).mark_line(
-                color="#ff5169").encode(                                    #  <------ NOTE: "#bd4043" can be changed
+                color="#ff5169").encode(
                 x=alt.X("Time"),
                 y=alt.Y("24-hour moving average"))
-            # make a second price line but with zero opacity
-            # to assist in tooltip visibility when mousing over
+            # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
             price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            chart = chart + price_line_mouseover1 + price_line_mouseover2
+    
+    if ma48:
+        if hide_original:
+            if ma4 or ma12 or ma24:
+                chart = chart + alt.Chart(server_data).mark_line(
+                                    color="#ba191c",strokeWidth=2.2).encode(
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                                    y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(region_data).mark_line(
+                                    color="#ff5169",strokeWidth=2.2).encode(
+                                    x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                                    y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+                # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
+                price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="48-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="48-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                chart = chart + price_line_mouseover1 + price_line_mouseover2
+            else:
+                chart = alt.Chart(server_data).mark_line(
+                            color="#F5C500",strokeWidth=2.2).encode(
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                            y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                ) + alt.Chart(region_data).mark_line(
+                            color="#FFE060",strokeWidth=2.2).encode(
+                            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                            y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
+                )
+                # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
+                price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="48-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="48-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+                chart = chart + price_line_mouseover1 + price_line_mouseover2
+        else:
+            chart = chart + alt.Chart(server_data).mark_line(
+                color="#F5C500").encode(
+                x=alt.X("Time"),
+                y=alt.Y("48-hour moving average")
+            ) + alt.Chart(region_data).mark_line(
+                color="#FFE060").encode(
+                x=alt.X("Time"),
+                y=alt.Y("48-hour moving average"))
+            # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
+            price_line_mouseover1 = mouseover_line(data=server_data, color="#0ce550", y_label="48-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
+            price_line_mouseover2 = mouseover_line(data=region_data, color="#0ce550", y_label="48-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
             chart = chart + price_line_mouseover1 + price_line_mouseover2
 
 
@@ -1314,11 +1259,8 @@ def plot_price_and_region_history(item: str, server: str, faction: str, num_days
         strokeOpacity=0,    # remove border
     )
     
-    
-    
-    
-    
-    
+
+
     if mobile:
         chart = chart.configure_axisY(
             grid=True,           gridOpacity=0.2,         tickCount=5,
