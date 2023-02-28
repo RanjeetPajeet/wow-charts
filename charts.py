@@ -801,7 +801,7 @@ def plot_price_history(item: str, server: str, faction: str, num_days: int, ma4:
 
 
 
-def plot_price_and_quantity_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
+def plot_price_and_quantity_history(item: str, server: str, faction: str, num_days: int, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers = False) -> alt.Chart:
     data = get_server_history(item, server, faction, num_days)
     scale = 100 if data["prices"][-1] < 10000 else 10000
     prices = [round(price/scale,2) for price in data["prices"]]
@@ -810,15 +810,8 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     if fix_outliers:
         prices = remove_outliers(prices)
         
-    
-    upper_limit  =  (
-        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-        3*np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
-    )
-    
-    for i in range(len(prices)):
-        if prices[i] > upper_limit:
-            prices[i] = upper_limit
+    prices = enforce_upper_limit(prices)
+    prices = enforce_lower_limit(prices)
     
     
     data = pd.DataFrame(
@@ -828,40 +821,21 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             "Quantity  4hMA": pd.Series(data["quantities"]).rolling( 2).mean(),
             "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean(),
             "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean(),
+            "Quantity 48hMA": pd.Series(data["quantities"]).rolling(24).mean(),
+            # "Quantity 72hMA": pd.Series(data["quantities"]).rolling(36).mean(),
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
+            # "72-hour moving average": pd.Series(prices).rolling(36).mean().round(2),
             "4h Avg Quantity":  pd.Series(data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
             "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
             "24h Avg Quantity": pd.Series(data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
+            "48h Avg Quantity": pd.Series(data["quantities"]).rolling(24).mean().dropna().apply(lambda x: int(x)),
+            # "72h Avg Quantity": pd.Series(data["quantities"]).rolling(36).mean().dropna().apply(lambda x: int(x)),
         }
     )
     
-    
-
-    
-#     base = alt.Chart(data).encode(x="Time")
-#     bar = base.mark_bar().encode(y="Quantity")
-#     line = base.mark_line(color="red").encode(y=ylabel)
-#     if not hide_original:
-#         base = alt.Chart(data).encode(x="Time")
-#         bar = base.mark_bar().encode(y="Quantity")
-#         line = base.mark_line(color="red").encode(y=ylabel)
-#     if ma4:
-#         base = alt.Chart(data).encode(x="Time")
-#         bar = base.mark_bar().encode(y="Quantity 4hMA")
-#         line = base.mark_line(color="red").encode(y="4-hour moving average")
-#     if ma12:
-#         base = alt.Chart(data).encode(x="Time")
-#         bar = base.mark_bar().encode(y="Quantity 12hMA")
-#         line = base.mark_line(color="red").encode(y="12-hour moving average")
-#     if ma24:
-#         base = alt.Chart(data).encode(x="Time")
-#         bar = base.mark_bar().encode(y="Quantity 24hMA")
-#         line = base.mark_line(color="red").encode(y="24-hour moving average")
-#     chart = (bar + line).properties(height=600)
-#     return chart
-
 
     if hide_original:
         min4  = min(data["4-hour moving average" ].dropna().tolist()[1:])
@@ -870,27 +844,59 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
         max12 = max(data["12-hour moving average"].dropna().tolist()[1:])
         min24 = min(data["24-hour moving average"].dropna().tolist()[1:])
         max24 = max(data["24-hour moving average"].dropna().tolist()[1:])
-        if ma4 and not ma12 and not ma24:
+        min48 = min(data["48-hour moving average"].dropna().tolist()[1:])
+        max48 = max(data["48-hour moving average"].dropna().tolist()[1:])
+        if ma4 and not ma12 and not ma24 and not ma48:
             minimum = min4
             maximum = max4
-        elif ma12 and not ma4 and not ma24:
+        elif ma12 and not ma4 and not ma24 and not ma48:
             minimum = min12
             maximum = max12
-        elif ma24 and not ma4 and not ma12:
+        elif ma24 and not ma4 and not ma12 and not ma48:
             minimum = min24
             maximum = max24
-        elif ma4 and ma12 and not ma24:
+        elif ma48 and not ma4 and not ma12 and not ma24:
+            minimum = min48
+            maximum = max48
+        elif ma4 and ma12 and not ma24 and not ma48:
             minimum = min(min4, min12)
             maximum = max(max4, max12)
-        elif ma4 and ma24 and not ma12:
+        elif ma4 and ma24 and not ma12 and not ma48:
             minimum = min(min4, min24)
             maximum = max(max4, max24)
-        elif ma12 and ma24 and not ma4:
+        elif ma12 and ma24 and not ma4 and not ma48:
             minimum = min(min12, min24)
             maximum = max(max12, max24)
-        elif ma4 and ma12 and ma24:
+        elif ma4 and ma12 and ma24 and not ma48:
             minimum = min(min4, min12, min24)
             maximum = max(max4, max12, max24)
+        elif ma4 and ma12 and ma24 and ma48:
+            minimum = min(min4, min12, min24, min48)
+            maximum = max(max4, max12, max24, max48)
+        elif ma4 and not ma12 and ma24 and not ma48:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma4 and not ma12 and not ma24 and ma48:
+            minimum = min(min4, min48)
+            maximum = max(max4, max48)
+        elif ma12 and not ma4 and ma24 and not ma48:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma12 and not ma4 and not ma24 and ma48:
+            minimum = min(min12, min48)
+            maximum = max(max12, max48)
+        elif ma24 and not ma4 and not ma12 and ma48:
+            minimum = min(min24, min48)
+            maximum = max(max24, max48)
+        elif ma4 and not ma12 and ma24 and ma48:
+            minimum = min(min4, min24, min48)
+            maximum = max(max4, max24, max48)
+        elif ma12 and not ma4 and ma24 and ma48:
+            minimum = min(min12, min24, min48)
+            maximum = max(max12, max24, max48)
+        elif ma4 and ma12 and not ma24 and ma48:
+            minimum = min(min4, min12, min48)
+            maximum = max(max4, max12, max48)
         else:
             minimum = min(prices)
             maximum = max(prices)
@@ -927,6 +933,9 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
     if ma24:
         range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
         data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+    if ma48:
+        range_quantity = [data["Quantity 48hMA"].min(), data["Quantity 48hMA"].max()]
+        data["Quantity 48hMA"] = data["Quantity 48hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
     
     
     
@@ -945,7 +954,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             color=alt.Gradient(
                 gradient="linear",
                 stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
-                       alt.GradientStop(color="#0068c9", offset=1)],  # top color
+                       alt.GradientStop(color="#0068c9", offset=1)],    # top color
                 x1=1, x2=1, y1=1, y2=0,
             ),
             opacity = 0.5,
@@ -956,8 +965,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
             y=alt.Y("Quantity", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims))
         )
-        # make a second price line but with zero opacity
-        # to assist in tooltip visibility when mousing over
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
         price_line_mouseover = mouseover_line(data=data, color="#3aa9ff", y_label=ylabel, yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         chart = quantity_line + price_line + price_line_mouseover
         chart = chart.properties(height=600)
@@ -988,14 +996,11 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "4h Avg Quantity"]
         )
-        # make a second price line but with zero opacity
-        # to assist in tooltip visibility when mousing over
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
         price_line_mouseover = mouseover_line(data=data, color="#0ce550", y_label="4-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         if hide_original:
-#             chart = quantity_line_ma4 + price_line_ma4
             chart = quantity_line_ma4 + price_line_ma4 + price_line_mouseover
         else:
-#             chart = chart + quantity_line_ma4 + price_line_ma4
             chart = chart + quantity_line_ma4 + price_line_ma4 + price_line_mouseover
     
 
@@ -1008,10 +1013,7 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "12-hour moving average"],
         )
-        
-        
-        # make a second price line but with zero opacity
-        # to assist in tooltip visibility when mousing over
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
         price_line_ma12_mouseover = alt.Chart(data).mark_line(
             color = "#6029c1",
             strokeWidth = MOUSEOVER_LINE_THICKNESS,
@@ -1035,8 +1037,6 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
 #             y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
 #             tooltip=["Time", "12-hour moving average"],
 #         )
-        
-        
         quantity_line_ma12 = alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
@@ -1089,19 +1089,63 @@ def plot_price_and_quantity_history(item: str, server: str, faction: str, num_da
             y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
             tooltip=["Time", "24h Avg Quantity"]
         )
-        # make a second price line but with zero opacity
-        # to assist in tooltip visibility when mousing over
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
         price_line_mouseover = mouseover_line(data=data, color="#ba191c", y_label="24-hour moving average", yaxis_title=ylabel, chart_ylimits=chart_ylims, opacity=0)
         if hide_original:
             if ma4 or ma12:
-#                 chart = chart + quantity_line_ma24 + price_line_ma24
                 chart = chart + quantity_line_ma24 + price_line_ma24 + price_line_mouseover
             else:
-#                 chart = quantity_line_ma24 + price_line_ma24
                 chart = quantity_line_ma24 + price_line_ma24 + price_line_mouseover
         else:
-#             chart = chart + quantity_line_ma24 + price_line_ma24
             chart = chart + quantity_line_ma24 + price_line_ma24 + price_line_mouseover
+    
+
+    if ma48:
+        price_line_ma48 = alt.Chart(data).mark_line(
+            color = "#00C536",      #6029c1
+            strokeWidth = 2.3,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+            y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "48-hour moving average"],
+        )
+        # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
+        price_line_ma48_mouseover = alt.Chart(data).mark_line(
+            color = "#00C536",      #6029c1
+            strokeWidth = MOUSEOVER_LINE_THICKNESS,
+            opacity = 0,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+            y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=(
+              [alt.Tooltip("Time",title="Time",format=("%b %d, %I %p")), alt.Tooltip("48-hour moving average",title="Price (48h avg)",format=".2f")] if
+              scale!=100 else [alt.Tooltip("Time",title="Time",format=("%b %d, %I %p")), alt.Tooltip("48-hour moving average",title="Price (48h avg)",format=".0f")]
+            ),
+        )
+        quantity_line_ma48 = alt.Chart(data).mark_area(
+            color=alt.Gradient(
+                gradient="linear",
+                stops=[alt.GradientStop(color="#1CD14E", offset=0.3),   # bottom color  #9670dc
+                       alt.GradientStop(color="#00B030", offset=0.7)],  # top color     #5728ae
+                x1=1, x2=1, y1=1, y2=0,
+            ),
+            opacity = 0.5,
+            strokeWidth=1,
+            interpolate="monotone",
+            clip=True,
+        ).encode(
+            x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+            y=alt.Y("Quantity 48hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=["Time", "48h Avg Quantity"],
+        )
+        if hide_original:
+            if ma4 or ma12 or ma24:
+                chart = chart + quantity_line_ma48 + price_line_ma48 + price_line_ma48_mouseover
+            else:
+                chart = quantity_line_ma48 + price_line_ma48 + price_line_ma48_mouseover
+        else:
+            chart = chart + quantity_line_ma48 + price_line_ma48 + price_line_ma48_mouseover
+
 
 
     chart = chart.properties(height=600)
