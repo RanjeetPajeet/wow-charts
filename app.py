@@ -36,7 +36,7 @@ with st.container():
     with item_col:
         item = st.text_input("Item name", "Saronite Ore")
     with days_col:
-        num_days = st.number_input("Number of days", 1, 365, 90)
+        num_days = st.number_input("Number of days", 1, 730, 120)
 
         
         
