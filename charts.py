@@ -1614,7 +1614,7 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("48-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(server2_data).mark_line(
-                                    color="#FFD62D",strokeWidth=2.2).encode(        #ff5169
+                                    color="#FFE060",strokeWidth=2.2).encode(        #ff5169 F5D551 FFE060
                                     x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                                     y = alt.Y("48-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
@@ -1628,7 +1628,7 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("48-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 ) + alt.Chart(server2_data).mark_line(
-                            color="#FFD62D",strokeWidth=2.2).encode(        #ff5169
+                            color="#FFE060",strokeWidth=2.2).encode(        #ff5169
                             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                             y = alt.Y("48-hour moving average", axis = alt.Axis(title=ylabel), scale = alt.Scale(domain=chart_ylims))
                 )
@@ -1642,7 +1642,7 @@ def plot_price_history_comparison(item: str, server1: str, faction1: str, server
                 x = alt.X("Time"),
                 y = alt.Y("48-hour moving average")
             ) + alt.Chart(server2_data).mark_line(
-                color="#FFD62D").encode(        #ff5169
+                color="#FFE060").encode(        #ff5169
                 x = alt.X("Time"),
                 y = alt.Y("48-hour moving average"))
             # make a second price line but with zero opacity to assist in tooltip visibility when mousing over
