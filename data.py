@@ -132,7 +132,6 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
     """
     Returns the price & quantity history of an item for the specified faction/server,
     for the specified number of days, formatted for the creation of an OHLC-style chart, along with the min and max prices for setting the y-axis limits.
-
     Parameters
     ----------
     `item`: The name of the item.
@@ -141,7 +140,6 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
     `numDays`: The number of days to get the price history for. If `None`, then the entire history is returned.
     `avg`: Whether or not to average the data over 2 hours.  Default is `True`.
     `fix`: Whether or not to fix the missing data that occurs between Dec. 20th and Dec. 25th.  Default is `True`.
-
     Returns
     -------
     Dictionary of dictionaries of the form:
@@ -201,14 +199,22 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
             if t[j] == dates[i]:
                 locs[dates[i]].append(j)        # Get the locations of the times that are for this date
     d1 = {}
-    for date in dates:
-        d1[date] = {
+    for i in range(len(dates)):
+    # for date in dates:
+        d1[dates[i]] = {
             "prices": [],
             "quantities": [],
         }
-        for loc in locs[date]:
-            d1[date]["prices"].append(d["prices"][loc])
-            d1[date]["quantities"].append(d["quantities"][loc])
+        for j in range(len(locs[dates[i]])):
+            # append the last price and quantity of the previous day to the first price and quantity of the current day if i > 0
+            if i > 0 and j == 0:
+                d1[dates[i]]["prices"].append(d1[dates[i-1]]["prices"][-1])
+                d1[dates[i]]["quantities"].append(d1[dates[i-1]]["quantities"][-1])
+            d1[dates[i]]["prices"].append(d["prices"][locs[dates[i]][j]])
+            d1[dates[i]]["quantities"].append(d["quantities"][locs[dates[i]][j]])
+        # for loc in locs[date]:
+        #     d1[date]["prices"].append(d["prices"][loc])
+        #     d1[date]["quantities"].append(d["quantities"][loc])
     d2 = {}
     n = -1
     for date in dates:
