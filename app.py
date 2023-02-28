@@ -152,7 +152,7 @@ if submit:
             if server_compare is not None and faction_compare is not None:
                 chart = st.altair_chart(plot_price_history_comparison(item, server, faction, server_compare, faction_compare, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
             else:
-                chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+                chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
 
         elif chart_type == "Price & Quantity":
             chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
