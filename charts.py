@@ -2,12 +2,15 @@ import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
-from misc import map_value
+from misc import map_value, get_min_max_of_data
 from data import get_server_history, get_region_history, remove_outliers
 
 
 
-MOUSEOVER_LINE_THICKNESS = 15.0     # the stroke width of the zero opacity line added to charts to assist in tooltip visibility when mousing over price lines
+MOUSEOVER_LINE_THICKNESS = 15.0             # the stroke width of the zero opacity line added to charts to assist in tooltip visibility when mousing over price lines
+XAXIS_DATETIME_FORMAT = ( "%b %d" )         # the format of the x-axis datetime labels
+TOOLTIP_DATETIME_FORMAT = ( "%b %d, %Y" )   # the format of the datetime labels in the tooltip
+
 
 
 def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: str, 
@@ -300,7 +303,214 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
 
 
 
-            
+
+
+def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_price_line_title: str) -> list[alt.Tooltip]:
+    """
+    Creates a list of tooltips for a chart.
+
+    Parameters
+    ----------
+    `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
+    `price_scale`: The scaling factor of the price data (`100` or `10000`).
+    `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
+
+    Returns
+    -------
+    A list of tooltip objects.
+    """
+    if price_scale != 100:
+        # Prices are in gold
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".2f")]
+    else:
+        # Prices are in silver
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
+
+
+
+
+
+def get_mouseover_line(data: pd.DataFrame, dataframe_price_column_label: str, yaxis_title: str, 
+                       chart_ylimits: tuple, price_scale: int, tooltip_price_line_title: str) -> alt.Chart:
+    """
+    Generates a line equivalent to what is used for an item's price,
+    except the stroke width (thickness) is much larger and it has zero opacity.
+    This creates a region around the visible line where the mouse will generate a tooltip.
+
+    Parameters
+    ----------
+    `data`: The dataframe containing the data to be plotted.
+    `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
+    `yaxis_title`: The title of the chart's y-axis (one of `"Price (gold)"` or `"Price (silver)"`).
+    `chart_ylimits`: The minimum and maximum values of the chart's y-axis.
+    `price_scale`: The scaling factor of the price data (`100` or `10000`).
+    `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
+
+    Returns
+    -------
+    An `alt.Chart` object containing the mouseover line.
+    """
+    return alt.Chart(data).mark_line(
+        color = "#ffffff",
+        opacity = 0.01,
+        strokeWidth = MOUSEOVER_LINE_THICKNESS,
+    ).encode(
+        x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+        y = alt.Y(dataframe_price_column_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
+        tooltip=get_tooltip(dataframe_price_column_label, price_scale, tooltip_price_line_title)
+    )
+
+
+
+
+
+
+
+class Plot:
+    """
+    A class containing methods for plotting data.
+
+    Methods
+    -------
+    `price_history()`: Creates a line chart of the price history of an item.
+    `price_history_with_quantity()`: Creates a line chart of the price history of an item, with a volume/quantity area chart below.
+    """
+    @staticmethod
+    def price_history(historical_price_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False) -> alt.Chart:
+        """
+        Creates a line chart of the price history of an item.
+
+        Parameters
+        ----------
+        `historical_price_data`: A dictionary containing the historical price data of an item, as returned from `data.get_server_history()`.
+        `ma4`: Boolean indicating whether or not to plot the 4-hour moving average.
+        `ma12`: Boolean indicating whether or not to plot the 12-hour moving average.
+        `ma24`: Boolean indicating whether or not to plot the 24-hour moving average.
+        `ma48`: Boolean indicating whether or not to plot the 48-hour moving average.
+        `hide_original`: Boolean indicating whether or not to hide the original price data.
+        `mobile`: Boolean indicating whether or not to render the chart for mobile.
+        `fix_outliers`: An optional boolean value indicating whether or not to remove outliers from the data. Note that this is currently not working.
+        
+        Returns
+        -------
+        An Altair chart object which can be rendered via `st.altair_chart( chart )`.
+        """
+        scale = 100 if historical_price_data["prices"][-1] < 10000 else 10000
+        prices = [round(price/scale,2) for price in historical_price_data["prices"]]
+        ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+        if fix_outliers:
+            prices = remove_outliers(prices)
+        prices = enforce_upper_limit(prices)
+        prices = enforce_lower_limit(prices)
+        data = pd.DataFrame({
+            "Time": data["times"], ylabel: prices,
+            "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
+            "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
+        })
+        minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
+        try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
+        except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
+        if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
+            try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
+            except: pass                                                        # Such is the case when plotting the price of Saronite Ore
+        
+        if not hide_original:
+            chart = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip(ylabel, scale, "Price"))
+            chart = chart + get_mouseover_line(data, ylabel, ylabel, chart_ylims, scale, "Price")
+            chart = chart.properties(height=600)
+        if ma4:
+            price_line_ma4 = alt.Chart(data).mark_line(color = "#0CE550", strokeWidth = 2).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("4-hour moving average", scale, "Price (4h avg)"))
+            price_line_ma4 = price_line_ma4 + get_mouseover_line(data, "4-hour moving average", ylabel, chart_ylims, scale, "Price (4h avg)")
+            chart = price_line_ma4 if hide_original else chart + price_line_ma4
+            chart = chart.properties(height=600)
+        if ma12:
+            price_line_ma12 = alt.Chart(data).mark_line(color = "#6029C1", strokeWidth = 2.1).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("12-hour moving average", scale, "Price (12h avg)"))
+            price_line_ma12 = price_line_ma12 + get_mouseover_line(data, "12-hour moving average", ylabel, chart_ylims, scale, "Price (12h avg)")
+            if hide_original:
+                if ma4: chart = chart + price_line_ma12
+                else: chart = price_line_ma12
+            else: chart = chart + price_line_ma12
+            chart = price_line_ma12 if hide_original else chart + price_line_ma12
+            chart = chart.properties(height=600)
+        if ma24:
+            price_line_ma24 = alt.Chart(data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("24-hour moving average", scale, "Price (24h avg)"))
+            price_line_ma24 = price_line_ma24 + get_mouseover_line(data, "24-hour moving average", ylabel, chart_ylims, scale, "Price (24h avg)")
+            if hide_original:
+                if ma4 or ma12: chart = chart + price_line_ma24
+                else: chart = price_line_ma24
+            else: chart = chart + price_line_ma24
+            chart = chart.properties(height=600)
+        if ma48:
+            price_line_ma48 = alt.Chart(data).mark_line(color = "#F5C500", strokeWidth = 2.3).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("48-hour moving average", scale, "Price (48h avg)"))
+            price_line_ma48 = price_line_ma48 + get_mouseover_line(data, "48-hour moving average", ylabel, chart_ylims, scale, "Price (48h avg)")
+            if hide_original:
+                if ma4 or ma12 or ma24: chart = chart + price_line_ma48
+                else: chart = price_line_ma48
+            else: chart = chart + price_line_ma48
+            chart = chart.properties(height=600)
+        
+        chart = chart.properties(height=600)
+        chart = chart.configure_axisY(
+            grid=True,           gridOpacity=0.2,         tickCount=6,
+            titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
+            titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
+            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",
+        )
+        chart = chart.configure_axisX(
+            grid=False,          tickCount="day",        titleOpacity=0,
+            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+            labelFontSize=20,    labelFontWeight="bold",
+        )
+        chart = chart.configure_view(
+            strokeOpacity=0,    # remove border
+        )
+    
+        if mobile:
+            chart = chart.configure_axisY(
+                grid=True,           gridOpacity=0.2,         tickCount=5,
+                titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
+                titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
+                labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+                labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
+            )
+            chart = chart.configure_axisX(
+                grid=False,          tickCount="day",        titleOpacity=0,
+                labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+                labelFontSize=16,    labelFontWeight="bold", 
+            )
+            chart = chart.properties(title=f"{ylabel.replace('(', '(in ')}")
+            chart.configure_title(
+                fontSize=20,
+                font='Calibri',
+                anchor='start',
+                color='#ffffff',
+                align='center'
+            )
+            chart = chart.properties(height=400)
+
+        return chart
+
+
+
+
             
             
             
