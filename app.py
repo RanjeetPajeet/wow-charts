@@ -44,9 +44,9 @@ with st.container():
     server_col, faction_col = st.columns(2)
     
     with server_col:
-        server = st.selectbox("Server", ["Skyfury","Atiesh","Faerlina","Whitemane"])
+        server = st.selectbox("Server", ["Skyfury","Pagle","Atiesh","Faerlina","Whitemane"])
     with faction_col:
-        if server == "Skyfury" or server == "Atiesh":
+        if server == "Skyfury" or server == "Atiesh" or server == "Pagle":
             faction = st.selectbox("Faction", ["Alliance","Horde"])
         else:
             faction = st.selectbox("Faction", ["Horde","Alliance"])
@@ -68,13 +68,13 @@ with st.container():
         server_col_compare, faction_col_compare = st.columns(2)
         
         with server_col_compare:
-            server_compare = st.selectbox("Compare with", [None,"Atiesh","Skyfury","Faerlina","Whitemane"], key="server_compare")
+            server_compare = st.selectbox("Compare with", [None,"Pagle","Atiesh","Skyfury","Faerlina","Whitemane"], key="server_compare")
         
         with faction_col_compare:
             if server_compare is not None:
                 if server_compare == server:
                     faction_compare = st.selectbox(" ", [f for f in ["Alliance","Horde"] if f != faction], key="faction_compare", disabled=True)
-                elif server_compare == "Skyfury" or server_compare == "Atiesh":
+                elif server_compare == "Skyfury" or server_compare == "Atiesh" or server_compare == "Pagle":
                     faction_compare = st.selectbox(" ", ["Alliance","Horde"], key="faction_compare")
                 else:
                     faction_compare = st.selectbox(" ", ["Horde","Alliance"], key="faction_compare")
