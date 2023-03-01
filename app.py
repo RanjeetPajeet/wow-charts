@@ -72,8 +72,10 @@ st.markdown("---")
 st.markdown("# ")
 mobile = st.checkbox("Mobile", value=False)
 
-st.markdown("## ")
-candlestick = st.checkbox("Candlestick", value=False)
+if chart_type in ["Price","Price & Quantity"] and server_compare is None:
+    st.markdown("##")
+    candlestick = st.checkbox("Candlestick", value=False)
+else: candlestick = False
 
 st.markdown("## ")
 submit = st.button("Submit")
