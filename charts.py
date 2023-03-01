@@ -280,7 +280,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             labelFontSize=16,    labelFontWeight="bold", 
         )
         
-        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
+        chart = chart.properties(title=f"{item} {YLABEL.replace('(', '(in ')}")
         chart.configure_title(
             fontSize=20,
             font='Calibri',
