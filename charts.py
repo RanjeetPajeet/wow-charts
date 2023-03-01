@@ -90,7 +90,7 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
     
     
     
-def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = False) -> alt.Chart:
+def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = False, mobile: bool = False) -> alt.Chart:
     """
     `OHLC_data`, `minimum`, and `maximum` come from `data.get_server_history_OHLC()`.
     `show_quantity` determines whether or not an area is drawn to the plot showing quantities.
@@ -265,6 +265,32 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
         labelFontSize=20,    labelFontWeight="bold",
     )
+    
+    if mobile:
+        chart = chart.configure_axisY(
+            grid=True,           gridOpacity=0.2,         tickCount=5,
+            titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
+            titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
+            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
+        )
+        chart = chart.configure_axisX(
+            grid=False,          tickCount="day",        titleOpacity=0,
+            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
+            labelFontSize=16,    labelFontWeight="bold", 
+        )
+        
+        chart = chart.properties(title=f"{item} {ylabel.replace('(', '(in ')}")
+        chart.configure_title(
+            fontSize=20,
+            font='Calibri',
+            anchor='start',
+            color='#ffffff',
+            align='center'
+        )
+        
+        chart = chart.properties(height=400)
+    
     return chart
     
     
