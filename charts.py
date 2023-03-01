@@ -118,6 +118,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         'mean_quantity': [OHLC_data[date]["mean"]["quantity"] for date in OHLC_data],
         'median_price': [round(OHLC_data[date]["median"]["price"]/SCALE,2) for date in OHLC_data],
         'median_quantity': [OHLC_data[date]["median"]["quantity"] for date in OHLC_data],
+        'percent_change_price': [OHLC_data[date]["percent_change"]["price"] for date in OHLC_data],
+        'percent_change_quantity': [OHLC_data[date]["percent_change"]["quantity"] for date in OHLC_data],
         'pct_change_mean_price': [OHLC_data[date]["pct_change"]["mean"]["price"] for date in OHLC_data],
         'pct_change_mean_quantity': [OHLC_data[date]["pct_change"]["mean"]["quantity"] for date in OHLC_data],
         'pct_change_median_price': [OHLC_data[date]["pct_change"]["median"]["price"] for date in OHLC_data],
@@ -161,7 +163,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
             # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-            alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+            alt.Tooltip('percent_change_price'  , title='Price % Change'  , format='.2%',),
+            alt.Tooltip('percent_change_quantity'  , title='Quantity % Change'  , format='.2%',),
         ]
     ).properties(
         #width=600,
