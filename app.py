@@ -43,7 +43,7 @@ with st.container():
             if server_compare is not None:
                 if server_compare == server:
                     faction_compare = st.selectbox(" ", [f for f in ["Alliance","Horde"] if f != faction], key="faction_compare", disabled=True)
-                elif server_compare == "Skyfury" or server_compare == "Atiesh":
+                elif server_compare in ["Skyfury","Pagle","Atiesh"]:
                     faction_compare = st.selectbox(" ", ["Alliance","Horde"], key="faction_compare")
                 else:
                     faction_compare = st.selectbox(" ", ["Horde","Alliance"], key="faction_compare")
