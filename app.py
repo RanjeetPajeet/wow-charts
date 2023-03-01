@@ -137,11 +137,10 @@ if submit:
     
 #     if saronite_value:
 #         chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
+    chart = st.empty()
+    
     if candlestick:
-        
-        chart = st.empty()
         with st.spinner("Loading..."):
-            
             ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
             st.markdown("# ")
             st.markdown("# ")
@@ -153,7 +152,6 @@ if submit:
         st.markdown("# ")
         st.markdown(f"### [{titleize(item)}] {chart_type} History -- Last {num_days} Days")
         st.markdown("## ")
-        chart = st.empty()
 
         if chart_type == "Price":
             if server_compare is not None and faction_compare is not None:
