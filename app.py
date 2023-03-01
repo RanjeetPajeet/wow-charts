@@ -143,8 +143,9 @@ if submit:
         st.markdown(f"### [{titleize(item)}] {chart_type} History -- Last {num_days} Days")
         st.markdown("## ")
         chart = st.empty()
-        ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
-        chart = st.altair_chart(create_OHLC_chart(ohlc_data, data_min, data_max, mobile=mobile))
+        with st.spinner("Loading..."):
+            ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
+            chart = st.altair_chart(create_OHLC_chart(ohlc_data, data_min, data_max, mobile=mobile))
     else:
         st.markdown("# ")
         st.markdown("# ")
