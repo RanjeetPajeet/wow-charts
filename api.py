@@ -143,6 +143,29 @@ def region_history(itemname: str, region = "us", timerange: int = None, convert_
 
 
 
+def api_online() -> bool:
+    """
+    Checks if the Nexushub API is currently online.
+
+    Parameters
+    ----------
+    None
+
+    Returns
+    -------
+    `True` if the API is currently up, `False` otherwise.
+    """
+    try:
+        _ = server_history("Copper Ore", timerange=1)
+        online = True   # `online` is only `True` if the `server_history()` call doesn't throw an error
+    except:
+        online = False  # `online` is only `False` if the `server_history()` call throws an error
+    return online
+
+
+
+
+
 def api_offline() -> bool:
     """
     Checks if the Nexushub API is currently offline.
@@ -155,9 +178,5 @@ def api_offline() -> bool:
     -------
     `True` if the API is currently down, `False` otherwise
     """
-    try:
-        online = server_history("Copper Ore", timerange=1)
-    except:
-        online = False
-    return True if not online else False
+    return not api_online()
 
