@@ -39,17 +39,19 @@ with st.container():
         num_days = st.number_input("Number of days", 1, 730, 120)
 
         
-        
-        
     server_col, faction_col = st.columns(2)
+    with server_col:  server = st.selectbox("Server", ["Skyfury","Pagle","Atiesh","Faerlina","Whitemane"])
+    with faction_col: faction = st.selectbox("Faction", ["Alliance","Horde"]) if server in ["Skyfury","Pagle","Atiesh"] else st.selectbox("Faction", ["Horde","Alliance"])
+        
+#     server_col, faction_col = st.columns(2)
     
-    with server_col:
-        server = st.selectbox("Server", ["Skyfury","Pagle","Atiesh","Faerlina","Whitemane"])
-    with faction_col:
-        if server == "Skyfury" or server == "Atiesh" or server == "Pagle":
-            faction = st.selectbox("Faction", ["Alliance","Horde"])
-        else:
-            faction = st.selectbox("Faction", ["Horde","Alliance"])
+#     with server_col:
+#         server = st.selectbox("Server", ["Skyfury","Pagle","Atiesh","Faerlina","Whitemane"])
+#     with faction_col:
+#         if server == "Skyfury" or server == "Atiesh" or server == "Pagle":
+#             faction = st.selectbox("Faction", ["Alliance","Horde"])
+#         else:
+#             faction = st.selectbox("Faction", ["Horde","Alliance"])
     
     
     
