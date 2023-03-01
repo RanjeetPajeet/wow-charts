@@ -20,7 +20,7 @@ hide_element("footer", "class", "css-1lsmgbg egzxvld0")
 st.title("Auction House Data")
 st.markdown("---")
 
-
+st.error("API is offline")
 
 
 
