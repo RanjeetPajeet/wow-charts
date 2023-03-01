@@ -117,8 +117,10 @@ st.markdown("#")
 mobile = st.checkbox("Mobile", value=False)
 st.markdown("##")
 
-candlestick = st.checkbox("Candlestick", value=False)
-st.markdown("##")
+if chart_type in ["Price","Price & Quantity"] and server_compare is None:
+    candlestick = st.checkbox("Candlestick", value=False)
+    st.markdown("##")
+else: candlestick = False
 
 # saronite_value = st.checkbox("Saronite Value", value=False)
 # st.markdown("##")
