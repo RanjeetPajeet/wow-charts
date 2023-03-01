@@ -165,7 +165,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
             # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-            alt.Tooltip('percent_change_price'  , title='Price % Change'  , format='.2%',),
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%',),
 #             alt.Tooltip('percent_change_quantity'  , title='Quantity % Change'  , format='.2%',),
         ]
     ).properties(
@@ -188,7 +188,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
             # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-            alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%',),
+#             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
         ]
     ).properties(
         #width=600,
@@ -213,7 +214,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
             # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-            alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+#             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%',),
         ]
     ).properties(
         #width=600,
