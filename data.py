@@ -153,6 +153,7 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
             "mean":   {"price": 0, "quantity": 0},
             "median": {"price": 0, "quantity": 0},
             "stdev":  {"price": 0, "quantity": 0},
+            "percent_change": {"price": 0, "quantity": 0},
             "pct_change": {
                 "open":   {"price": 0, "quantity": 0},
                 "close":  {"price": 0, "quantity": 0},
@@ -227,6 +228,7 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
             "mean":   {"price": 0, "quantity": 0},
             "median": {"price": 0, "quantity": 0},
             "stdev":  {"price": 0, "quantity": 0},
+            "percent_change": {"price": 0, "quantity": 0},
             "pct_change": {
                 "open":   {"price": 0, "quantity": 0},
                 "close":  {"price": 0, "quantity": 0},
@@ -251,6 +253,10 @@ def get_server_history_OHLC(item: str, server: str = "Skyfury", faction: str = "
         d2[date]["median"]["quantity"] = round(np.median(d1[date]["quantities"]))
         d2[date]["stdev"]["price"]     = round(np.std(d1[date]["prices"]), 2)
         d2[date]["stdev"]["quantity"]  = round(np.std(d1[date]["quantities"]))
+
+        d2[date]["percent_change"]["price"] = round( 100 * ((d2[date]["close"]["price"]-d2[date]["open"]["price"])/(d2[date]["open"]["price"])) , 2 )
+        d2[date]["percent_change"]["quantity"] = round( 100 * ((d2[date]["close"]["quantity"]-d2[date]["open"]["quantity"])/(d2[date]["open"]["quantity"])) , 2 )
+
         try:
             if n > 0:
                 d2[date]["pct_change"]["open"]["price"]      = round((d2[date]["open"]["price"] - d2[dates[n-1]]["close"]["price"]) / d2[dates[n-1]]["close"]["price"] * 100, 2)
