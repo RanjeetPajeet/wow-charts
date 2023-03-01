@@ -4,6 +4,149 @@ misc.py
 
 Functions/classes used elsewhere that didn't have a home.
 """
+import pandas as pd
+
+
+
+
+def get_min_max_of_data(
+        data: pd.DataFrame | list[pd.DataFrame], prices: list[float] | list[list[float]],
+        ma4: bool, ma12: bool, ma24: bool, ma48: bool, hiding_original: bool)  ->  tuple:
+    """
+    Gets the minimum and maximum values from the given data for use in determining the y-axis chart limits.
+
+    Finds:
+        - The minimum of the minimums of each moving average given.
+        - The maximum of the maximums of each moving average given.
+    
+    Parameters
+    ----------
+    `data` :  The data to be analyzed (can be a single DataFrame or a list of DataFrames [max length of `2`]).
+    `prices` :  A list of the prices contained in the data (can be a single list or a list of lists [max length of `2`]).
+    `ma4` :  Whether or not to include the 4-day moving average in the analysis.
+    `ma12` :  Whether or not to include the 12-day moving average in the analysis.
+    `ma24` :  Whether or not to include the 24-day moving average in the analysis.
+    `ma48` :  Whether or not to include the 48-day moving average in the analysis.
+    `hiding_original` :  Whether or not to include the original data in the analysis.
+
+    Returns
+    -------
+    A tuple containing the minimum and maximum values of the given data, `(min, max)`.
+    """
+    # Check proper input of `data` and `prices`
+    if isinstance(data, list) and not isinstance(prices[0], list):
+        raise ValueError("If `data` is a list, `prices` must be a list of lists.")
+    elif not isinstance(data, list) and isinstance(prices[0], list):
+        raise ValueError("If `prices` is a list of lists, `data` must be a list.")
+    elif isinstance(data, list) and isinstance(prices[0], list) and len(data) != len(prices):
+        raise ValueError("If `data` and `prices` are both lists, they must be the same length.")
+    elif isinstance(data, list) and isinstance(prices[0], list) and len(data) > 2:
+        raise ValueError("If `data` and `prices` are both lists, they must be no longer than 2.")
+
+    if isinstance(data, list):
+        min4_a  = min(data[0]["4-hour moving average" ].dropna().tolist()[1:])
+        min4_b  = min(data[1]["4-hour moving average" ].dropna().tolist()[1:])
+        max4_a  = max(data[0]["4-hour moving average" ].dropna().tolist()[1:])
+        max4_b  = max(data[1]["4-hour moving average" ].dropna().tolist()[1:])
+        min12_a = min(data[0]["12-hour moving average"].dropna().tolist()[1:])
+        min12_b = min(data[1]["12-hour moving average"].dropna().tolist()[1:])
+        max12_a = max(data[0]["12-hour moving average"].dropna().tolist()[1:])
+        max12_b = max(data[1]["12-hour moving average"].dropna().tolist()[1:])
+        min24_a = min(data[0]["24-hour moving average"].dropna().tolist()[1:])
+        min24_b = min(data[1]["24-hour moving average"].dropna().tolist()[1:])
+        max24_a = max(data[0]["24-hour moving average"].dropna().tolist()[1:])
+        max24_b = max(data[1]["24-hour moving average"].dropna().tolist()[1:])
+        min48_a = min(data[0]["48-hour moving average"].dropna().tolist()[1:])
+        min48_b = min(data[1]["48-hour moving average"].dropna().tolist()[1:])
+        max48_a = max(data[0]["48-hour moving average"].dropna().tolist()[1:])
+        max48_b = max(data[1]["48-hour moving average"].dropna().tolist()[1:])
+        min4  = min(min4_a,  min4_b )
+        max4  = max(max4_a,  max4_b )
+        min12 = min(min12_a, min12_b)
+        max12 = max(max12_a, max12_b)
+        min24 = min(min24_a, min24_b)
+        max24 = max(max24_a, max24_b)
+        min48 = min(min48_a, min48_b)
+        max48 = max(max48_a, max48_b)
+    else:
+        min4  = min(data["4-hour moving average" ].dropna().tolist()[1:])
+        max4  = max(data["4-hour moving average" ].dropna().tolist()[1:])
+        min12 = min(data["12-hour moving average"].dropna().tolist()[1:])
+        max12 = max(data["12-hour moving average"].dropna().tolist()[1:])
+        min24 = min(data["24-hour moving average"].dropna().tolist()[1:])
+        max24 = max(data["24-hour moving average"].dropna().tolist()[1:])
+        min48 = min(data["48-hour moving average"].dropna().tolist()[1:])
+        max48 = max(data["48-hour moving average"].dropna().tolist()[1:])
+
+    if hiding_original:
+        if ma4 and not ma12 and not ma24 and not ma48:
+            minimum = min4
+            maximum = max4
+        elif ma12 and not ma4 and not ma24 and not ma48:
+            minimum = min12
+            maximum = max12
+        elif ma24 and not ma4 and not ma12 and not ma48:
+            minimum = min24
+            maximum = max24
+        elif ma48 and not ma4 and not ma12 and not ma24:
+            minimum = min48
+            maximum = max48
+        elif ma4 and ma12 and not ma24 and not ma48:
+            minimum = min(min4, min12)
+            maximum = max(max4, max12)
+        elif ma4 and ma24 and not ma12 and not ma48:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma12 and ma24 and not ma4 and not ma48:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma4 and ma12 and ma24 and not ma48:
+            minimum = min(min4, min12, min24)
+            maximum = max(max4, max12, max24)
+        elif ma4 and ma12 and ma24 and ma48:
+            minimum = min(min4, min12, min24, min48)
+            maximum = max(max4, max12, max24, max48)
+        elif ma4 and not ma12 and ma24 and not ma48:
+            minimum = min(min4, min24)
+            maximum = max(max4, max24)
+        elif ma4 and not ma12 and not ma24 and ma48:
+            minimum = min(min4, min48)
+            maximum = max(max4, max48)
+        elif ma12 and not ma4 and ma24 and not ma48:
+            minimum = min(min12, min24)
+            maximum = max(max12, max24)
+        elif ma12 and not ma4 and not ma24 and ma48:
+            minimum = min(min12, min48)
+            maximum = max(max12, max48)
+        elif ma24 and not ma4 and not ma12 and ma48:
+            minimum = min(min24, min48)
+            maximum = max(max24, max48)
+        elif ma4 and not ma12 and ma24 and ma48:
+            minimum = min(min4, min24, min48)
+            maximum = max(max4, max24, max48)
+        elif ma12 and not ma4 and ma24 and ma48:
+            minimum = min(min12, min24, min48)
+            maximum = max(max12, max24, max48)
+        elif ma4 and ma12 and not ma24 and ma48:
+            minimum = min(min4, min12, min48)
+            maximum = max(max4, max12, max48)
+        else:
+            if isinstance(data, list):
+                minimum = min( min(prices[0]), min(prices[1]) )
+                maximum = max( max(prices[0]), max(prices[1]) )
+            else:
+                minimum = min(prices)
+                maximum = max(prices)
+    else:
+        if isinstance(data, list):
+            minimum = min( min(prices[0]), min(prices[1]) )
+            maximum = max( max(prices[0]), max(prices[1]) )
+        else:
+            minimum = min(prices)
+            maximum = max(prices)
+    return minimum, maximum
+
+
 
 
 
