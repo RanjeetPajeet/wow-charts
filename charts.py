@@ -135,6 +135,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
     OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
     OHLC_df = OHLC_df.sort_values(by='date')
     OHLC_df = OHLC_df.reset_index(drop=True)
+    OHLC_df['percent_change_price'] = OHLC_df['percent_change_price'].apply(lambda x: x / 100)
+    OHLC_df['percent_change_quantity'] = OHLC_df['percent_change_quantity'].apply(lambda x: x / 100)
     OHLC_df['pct_change_mean_price'] = OHLC_df['pct_change_mean_price'].apply(lambda x: x / 100)
     OHLC_df['pct_change_mean_quantity'] = OHLC_df['pct_change_mean_quantity'].apply(lambda x: x / 100)
     OHLC_df['pct_change_median_price'] = OHLC_df['pct_change_median_price'].apply(lambda x: x / 100)
@@ -164,7 +166,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
             # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
             alt.Tooltip('percent_change_price'  , title='Price % Change'  , format='.2%',),
-            alt.Tooltip('percent_change_quantity'  , title='Quantity % Change'  , format='.2%',),
+#             alt.Tooltip('percent_change_quantity'  , title='Quantity % Change'  , format='.2%',),
         ]
     ).properties(
         #width=600,
