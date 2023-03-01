@@ -10,7 +10,7 @@ import pandas as pd
 
 
 def get_min_max_of_data(
-        data: pd.DataFrame | list, prices: list,
+        data: pd.DataFrame, prices: list,
         ma4: bool, ma12: bool, ma24: bool, ma48: bool, hiding_original: bool)  ->  tuple:
     """
     Gets the minimum and maximum values from the given data for use in determining the y-axis chart limits.
