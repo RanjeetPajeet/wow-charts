@@ -128,6 +128,7 @@ else: candlestick = False
 
 submit = st.button("Submit")
 
+chart = st.empty()
 
 
 
@@ -137,7 +138,7 @@ if submit:
     
 #     if saronite_value:
 #         chart = st.altair_chart(plot_saronite_value_history(server, faction, num_days, ma4, ma12, ma24, hide_original, mobile), use_container_width=True)
-    chart = st.empty()
+    
     
     if candlestick:
         st.markdown("## ")
