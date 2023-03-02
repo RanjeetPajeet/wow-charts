@@ -438,7 +438,7 @@ class Plot:
                     "Regression line": [slope*i + intercept for i in range(len(data["Time"]))],
                 })
                 data["Regression line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
-                regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+                regression_line = alt.Chart(data).mark_line(strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                     # make the line dashed
