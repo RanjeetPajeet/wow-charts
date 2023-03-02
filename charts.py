@@ -429,10 +429,10 @@ class Plot:
                     if MAs[ma] and int(ma.split("-")[0]) > int(highest_ma.split("-")[0]):
                         highest_ma = ma
             if highest_ma:
-                # Create a list of x values of equal length of data["Time"] since the slope cannot be multiplied by a time object
-                x = [i for i in range(len(data["Time"]))]
-                slope, intercept,_,_,_ = stats.linregress(data["Time"], data[highest_ma])
-                data["Regression line"] = slope*data["Time"] + intercept    # y = mx + b
+                # Create a list of x values of equal length of data["Time"] since we can't use data["Time"] in the regression line
+                x = np.array([i for i in range(len(data["Time"]))])
+                slope, intercept,_,_,_ = stats.linregress(x, data[highest_ma])
+                data["Regression line"] = slope*x + intercept    # y = mx + b
                 regression_line = alt.Chart(data).mark_line(color = "#FF0000", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
@@ -440,11 +440,11 @@ class Plot:
                     strokeDash = alt.StrokeDash("Regression line", dash=[5,5]), # dash=[5,5] means 5 pixels of line, 5 pixels of space
                     tooltip = get_tooltip("Regression line", scale, "Regression line"),
                     # make the line be a different color when the mouse is over it
-                    color = alt.condition(
-                        alt.datum.Regression_line == alt.datum.Regression_line,
-                        alt.value("#FF0000"),
-                        alt.value("lightgray")
-                    )
+                    # color = alt.condition(
+                    #     alt.datum.Regression_line == alt.datum.Regression_line,
+                    #     alt.value("#FF0000"),
+                    #     alt.value("lightgray")
+                    # )
                 )
                 # Also create a mouseover line
                 regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
