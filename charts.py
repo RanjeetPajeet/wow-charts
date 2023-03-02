@@ -376,7 +376,7 @@ class Plot:
     `price_history_with_quantity()`: Creates a line chart of the price history of an item, with a volume/quantity area chart below.
     """
     @staticmethod
-    def price_history(historical_price_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False) -> alt.Chart:
+    def price_history(historical_price_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
         """
         Creates a line chart of the price history of an item.
 
@@ -390,6 +390,7 @@ class Plot:
         `hide_original`: Boolean indicating whether or not to hide the original price data.
         `mobile`: Boolean indicating whether or not to render the chart for mobile.
         `fix_outliers`: An optional boolean value indicating whether or not to remove outliers from the data. Note that this is currently not working.
+        `regression_line`: An optional boolean value indicating whether or not to plot a least-squares regression line.
         
         Returns
         -------
@@ -416,6 +417,46 @@ class Plot:
             try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
             except: pass                                                        # Such is the case when plotting the price of Saronite Ore
         
+        if regression_line:
+            from scipy import stats
+            # Base the regression line on the highest moving average
+            if not ma4 and not ma12 and not ma24 and not ma48:
+                highest_ma = False
+            else:
+                highest_ma = "4-hour moving average"
+                MAs = {"4-hour moving average":ma4, "12-hour moving average":ma12, "24-hour moving average":ma24, "48-hour moving average":ma48}
+                for ma in MAs:
+                    if MAs[ma] and int(ma.split("-")[0]) > int(highest_ma.split("-")[0]):
+                        highest_ma = ma
+            if highest_ma:
+                # Create a list of x values of equal length of data["Time"] since the slope cannot be multiplied by a time object
+                x = [i for i in range(len(data["Time"]))]
+                slope, intercept,_,_,_ = stats.linregress(data["Time"], data[highest_ma])
+                data["Regression line"] = slope*data["Time"] + intercept    # y = mx + b
+                regression_line = alt.Chart(data).mark_line(color = "#FF0000", strokeWidth = 2).encode(
+                    x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                    y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                    # make the line dashed
+                    strokeDash = alt.StrokeDash("Regression line", dash=[5,5]), # dash=[5,5] means 5 pixels of line, 5 pixels of space
+                    tooltip = get_tooltip("Regression line", scale, "Regression line"),
+                    # make the line be a different color when the mouse is over it
+                    color = alt.condition(
+                        alt.datum.Regression_line == alt.datum.Regression_line,
+                        alt.value("#FF0000"),
+                        alt.value("lightgray")
+                    )
+                )
+                # Also create a mouseover line
+                regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
+                # Also create a 2nd order polynomial regression line
+
+                # # First, get the 2nd order polynomial coefficients
+                # coeffs = np.polyfit(data["Time"], data[highest_ma], 2)
+                # # Then, create a new column in the dataframe with the 2nd order polynomial
+                # data["2nd order polynomial"] = coeffs[0]*data["Time"]**2 + coeffs[1]*data["Time"] + coeffs[2]
+
+
+
         if not hide_original:
             chart = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
@@ -466,6 +507,10 @@ class Plot:
             else: chart = chart + price_line_ma48
             chart = chart.properties(height=600)
         
+        if regression_line:
+            chart = chart + regression_line
+            chart = chart.properties(height=600)
+
         chart = chart.properties(height=600)
         chart = chart.configure_axisY(
             grid=True,           gridOpacity=0.2,         tickCount=6,
