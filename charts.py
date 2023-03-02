@@ -403,7 +403,7 @@ class Plot:
         prices = enforce_upper_limit(prices)
         prices = enforce_lower_limit(prices)
         data = pd.DataFrame({
-            "Time": data["times"], ylabel: prices,
+            "Time": historical_price_data["times"], ylabel: prices,
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
