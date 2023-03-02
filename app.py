@@ -108,7 +108,7 @@ if submit:
                 with st.spinner("Loading..."):
                     price_data = get_server_history(item, server, faction, num_days)
                     title(item, chart_type, num_days)
-                    chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
+                    chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=True), use_container_width=True)
 
         else:
             st.markdown("# ")
