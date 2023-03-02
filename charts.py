@@ -431,9 +431,11 @@ class Plot:
             if highest_ma:
                 # Create a list of x values of equal length of data["Time"] since we can't use data["Time"] in the regression line
                 
-                x = np.array([i for i in range(len(data["Time"]))])
+                x = np.array([i+1 for i in range(len(data["Time"]))])
                 # x = np.array([i for i in range(len(data[highest_ma].dropna().tolist()))])
                 slope, intercept,_,_,_ = stats.linregress(x, data[highest_ma])
+                st.write(x)
+                st.write(data[highest_ma].dropna().tolist())
                 st.write(slope, intercept)
                 rdata = pd.DataFrame({
                     "Time": historical_price_data["times"], ylabel: prices,
