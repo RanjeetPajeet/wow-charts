@@ -1,4 +1,5 @@
 pytz
+scipy
 numpy
 altair
 pandas
