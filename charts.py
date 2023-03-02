@@ -449,7 +449,8 @@ class Plot:
                 # Also create a mouseover line
                 regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
                 # Also create a 2nd order polynomial regression line
-
+                # show the chart
+                st.altair_chart(regression_line, use_container_width=True)
                 # # First, get the 2nd order polynomial coefficients
                 # coeffs = np.polyfit(data["Time"], data[highest_ma], 2)
                 # # Then, create a new column in the dataframe with the 2nd order polynomial
