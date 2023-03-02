@@ -429,21 +429,18 @@ class Plot:
                     if MAs[ma] and int(ma.split("-")[0]) > int(highest_ma.split("-")[0]):
                         highest_ma = ma
             if highest_ma:
-                # Create a list of x values of equal length of data["Time"] since we can't use data["Time"] in the regression line
-                
+                # Create a list of x values of equal length of data["Time"]
+                # since we can't use data["Time"] directly in the regression line
                 x = np.array([i for i in range(len(data["Time"]))])
                 y = np.array(data[highest_ma].dropna().tolist())
-                x = x[:len(y)]
-                # x = np.array([i for i in range(len(data[highest_ma].dropna().tolist()))])
+                # x = x[:len(y)]
+                x = x[-len(y):]
                 slope, intercept,_,_,_ = stats.linregress(x, y)
-                st.write(x)
-                st.write(y)
-                st.write(slope, intercept)
                 rdata = pd.DataFrame({
                     "Time": historical_price_data["times"],
                     "Regression line": [slope*i + intercept for i in range(len(data["Time"]))],
                 })
-                # data["Regression line"] = slope*x + intercept    # y = mx + b
+                data["Regression line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
                 regression_line = alt.Chart(rdata).mark_line(color = "#FF0000", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
@@ -462,7 +459,7 @@ class Plot:
                 # Also create a 2nd order polynomial regression line
                 # show the chart
                 st.write(rdata["Regression line"])
-                st.altair_chart(regression_line, use_container_width=True)
+                # st.altair_chart(regression_line, use_container_width=True)
                 # # First, get the 2nd order polynomial coefficients
                 # coeffs = np.polyfit(data["Time"], data[highest_ma], 2)
                 # # Then, create a new column in the dataframe with the 2nd order polynomial
