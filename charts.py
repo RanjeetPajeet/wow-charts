@@ -421,6 +421,7 @@ class Plot:
             from scipy import stats
             # Base the regression line on the highest moving average
             if not ma4 and not ma12 and not ma24 and not ma48:
+                st.write("Here")
                 highest_ma = False
             else:
                 highest_ma = "4-hour moving average"
