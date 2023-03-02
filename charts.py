@@ -445,17 +445,17 @@ class Plot:
                 # Also create a 2nd order polynomial regression line
                 # First, get the 2nd order polynomial coefficients
                 coeffs = np.polyfit(x, y, 2)
-                # Then, create a new column in the dataframe with the 2nd order polynomial
-                data["2nd-Order Regression Line"] = coeffs[0]*x**2 + coeffs[1]*x + coeffs[2]
-                regression_line_2nd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
-                    x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                    y = alt.Y("2nd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-                    strokeDash = alt.value([5,5]),  # make the line dashed
-                    tooltip = get_tooltip("2nd-Order Regression Line", scale, "2nd-Order Regression")
-                )
-                regression_line_2nd_order = regression_line_2nd_order + get_mouseover_line(data, "2nd-Order Regression Line", ylabel, chart_ylims, scale, "2nd-Order Regression")
-                st.write(data["2nd-Order Regression Line"])
-                regression_line = regression_line + regression_line_2nd_order
+                # # Then, create a new column in the dataframe with the 2nd order polynomial
+                # data["2nd-Order Regression Line"] = coeffs[0]*x**2 + coeffs[1]*x + coeffs[2]
+                # regression_line_2nd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+                #     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                #     y = alt.Y("2nd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                #     strokeDash = alt.value([5,5]),  # make the line dashed
+                #     tooltip = get_tooltip("2nd-Order Regression Line", scale, "2nd-Order Regression")
+                # )
+                # regression_line_2nd_order = regression_line_2nd_order + get_mouseover_line(data, "2nd-Order Regression Line", ylabel, chart_ylims, scale, "2nd-Order Regression")
+                # st.write(data["2nd-Order Regression Line"])
+                # regression_line = regression_line + regression_line_2nd_order
 
 
 
