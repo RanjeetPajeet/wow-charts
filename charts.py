@@ -433,6 +433,7 @@ class Plot:
                 
                 x = np.array([i for i in range(len(data["Time"]))])
                 y = np.array(data[highest_ma].dropna().tolist())
+                x = x[:len(y)]
                 # x = np.array([i for i in range(len(data[highest_ma].dropna().tolist()))])
                 slope, intercept,_,_,_ = stats.linregress(x, y)
                 st.write(x)
