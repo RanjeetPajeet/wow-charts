@@ -1,7 +1,8 @@
 import streamlit as st
 from api import api_online, api_offline
 from misc import hide_element, titleize
-from data import get_server_history_OHLC
+from data import get_server_history, get_server_history_OHLC
+from charts import Plot
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, create_OHLC_chart
 
 st.set_page_config(
@@ -9,6 +10,16 @@ st.set_page_config(
     page_icon  = ":moneybag:",
     page_title = "AH Prices",
 )
+
+def title(item: str, chart_type: str, num_days: int) -> None:
+    """
+    Writes the title of the chart to the page.
+    """
+    st.markdown("#  ")
+    st.markdown("#  ")
+    st.markdown(f"### [{titleize(item)}] {chart_type} -- Last {num_days} Days")
+    st.markdown("##  ")
+
 
 
 st.title("Auction House Data")
@@ -90,11 +101,16 @@ if submit:
         if candlestick:
             with st.spinner("Loading..."):
                 ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
-                st.markdown("# ")
-                st.markdown("# ")
-                st.markdown(f"### [{titleize(item)}] {chart_type} -- Last {num_days} Days")
-                st.markdown("## ")
+                title(item, chart_type, num_days)
                 chart = st.altair_chart(create_OHLC_chart(ohlc_data, data_min, data_max, mobile=mobile))
+        elif chart_type == "Price":
+            if server_compare is None and faction_compare is None:
+                st.write("Here")
+                with st.spinner("Loading..."):
+                    price_data = get_server_history(item, server, faction, num_days)
+                    title(item, chart_type, num_days)
+                    chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
+
         else:
             st.markdown("# ")
             st.markdown("# ")
