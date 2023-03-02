@@ -433,23 +433,30 @@ class Plot:
                 y = np.array(data[highest_ma].dropna().tolist())                # Create a list of x values of equal length of data["Time"]
                 x = np.array([i for i in range(len(data["Time"]))])[-len(y):]   # since we can't use data["Time"] directly in the regression line
                 slope, intercept,_,_,_ = stats.linregress(x, y)
-                data["Regression line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
+                data["Linear Regression Line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
                 regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                    y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                    y = alt.Y("Linear Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                     strokeDash = alt.value([5,5]),  # make the line dashed
-                    tooltip = get_tooltip("Regression line", scale, "Regression line")
+                    tooltip = get_tooltip("Linear Regression Line", scale, "Linear Regression")
                 )
-                # Also create a mouseover line
-                regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
+                regression_line = regression_line + get_mouseover_line(data, "Linear Regression Line", ylabel, chart_ylims, scale, "Linear Regression")
+                st.write(data["Linear Regression Line"])
                 # Also create a 2nd order polynomial regression line
-                # show the chart
-                st.write(data["Regression line"])
-                # st.altair_chart(regression_line, use_container_width=True)
-                # # First, get the 2nd order polynomial coefficients
-                # coeffs = np.polyfit(data["Time"], data[highest_ma], 2)
-                # # Then, create a new column in the dataframe with the 2nd order polynomial
-                # data["2nd order polynomial"] = coeffs[0]*data["Time"]**2 + coeffs[1]*data["Time"] + coeffs[2]
+                # First, get the 2nd order polynomial coefficients
+                coeffs = np.polyfit(x, y, 2)
+                # Then, create a new column in the dataframe with the 2nd order polynomial
+                data["2nd-Order Regression Line"] = coeffs[0]*x**2 + coeffs[1]*x + coeffs[2]
+                regression_line_2nd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+                    x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                    y = alt.Y("2nd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                    strokeDash = alt.value([5,5]),  # make the line dashed
+                    tooltip = get_tooltip("2nd-Order Regression Line", scale, "2nd-Order Regression")
+                )
+                regression_line_2nd_order = regression_line_2nd_order + get_mouseover_line(data, "2nd-Order Regression Line", ylabel, chart_ylims, scale, "2nd-Order Regression")
+                st.write(data["2nd-Order Regression Line"])
+                regression_line = regression_line + regression_line_2nd_order
+
 
 
 
