@@ -423,6 +423,7 @@ class Plot:
             if not ma4 and not ma12 and not ma24 and not ma48:
                 st.write("Here")
                 highest_ma = False
+                regression_line = False
             else:
                 highest_ma = "4-hour moving average"
                 MAs = {"4-hour moving average":ma4, "12-hour moving average":ma12, "24-hour moving average":ma24, "48-hour moving average":ma48}
