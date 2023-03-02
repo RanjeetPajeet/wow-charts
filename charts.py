@@ -419,31 +419,26 @@ class Plot:
         
         if regression_line:
             from scipy import stats
-            # Base the regression line on the highest moving average
             if not ma4 and not ma12 and not ma24 and not ma48:
-                st.write("Here")
                 highest_ma = False
                 regression_line = False
             else:
                 highest_ma = "4-hour moving average"
+                # Base the regression line on the highest moving average
                 MAs = {"4-hour moving average":ma4, "12-hour moving average":ma12, "24-hour moving average":ma24, "48-hour moving average":ma48}
                 for ma in MAs:
                     if MAs[ma] and int(ma.split("-")[0]) > int(highest_ma.split("-")[0]):
                         highest_ma = ma
             if highest_ma:
-                # Create a list of x values of equal length of data["Time"]
-                # since we can't use data["Time"] directly in the regression line
-                y = np.array(data[highest_ma].dropna().tolist())
-                x = np.array([i for i in range(len(data["Time"]))])[-len(y):]
-                
-                # x = x[-len(y):]
+                y = np.array(data[highest_ma].dropna().tolist())                # Create a list of x values of equal length of data["Time"]
+                x = np.array([i for i in range(len(data["Time"]))])[-len(y):]   # since we can't use data["Time"] directly in the regression line
                 slope, intercept,_,_,_ = stats.linregress(x, y)
                 rdata = pd.DataFrame({
                     "Time": historical_price_data["times"],
                     "Regression line": [slope*i + intercept for i in range(len(data["Time"]))],
                 })
                 data["Regression line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
-                regression_line = alt.Chart(rdata).mark_line(color = "#FF0000", strokeWidth = 2).encode(
+                regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                     # make the line dashed
@@ -460,7 +455,7 @@ class Plot:
                 # regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
                 # Also create a 2nd order polynomial regression line
                 # show the chart
-                st.write(rdata["Regression line"])
+                st.write(data["Regression line"])
                 # st.altair_chart(regression_line, use_container_width=True)
                 # # First, get the 2nd order polynomial coefficients
                 # coeffs = np.polyfit(data["Time"], data[highest_ma], 2)
