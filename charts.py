@@ -433,26 +433,15 @@ class Plot:
                 y = np.array(data[highest_ma].dropna().tolist())                # Create a list of x values of equal length of data["Time"]
                 x = np.array([i for i in range(len(data["Time"]))])[-len(y):]   # since we can't use data["Time"] directly in the regression line
                 slope, intercept,_,_,_ = stats.linregress(x, y)
-                rdata = pd.DataFrame({
-                    "Time": historical_price_data["times"],
-                    "Regression line": [slope*i + intercept for i in range(len(data["Time"]))],
-                })
                 data["Regression line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
-                regression_line = alt.Chart(data).mark_line(strokeWidth = 2).encode(
+                regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-                    # make the line dashed
-                    strokeDash = alt.value([5,5]),
-                    tooltip = get_tooltip("Regression line", scale, "Regression line"),
-                    # make the line be a different color when the mouse is over it
-                    color = alt.condition(
-                        alt.datum["Regression line"] == alt.datum["Regression line"],   # If the line is the regression line ()
-                        alt.value("#83C9FF"),   # The original line is blue
-                        alt.value("#FF0000"),   # The regression line is red
-                    )
+                    strokeDash = alt.value([5,5]),  # make the line dashed
+                    tooltip = get_tooltip("Regression line", scale, "Regression line")
                 )
                 # Also create a mouseover line
-                # regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
+                regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
                 # Also create a 2nd order polynomial regression line
                 # show the chart
                 st.write(data["Regression line"])
