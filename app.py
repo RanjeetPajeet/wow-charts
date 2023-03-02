@@ -130,5 +130,7 @@ if submit:
             hide_element("button", "title", "View fullscreen")
     
     except Exception as e:
-        st.error("NexusHub API is currently offline.", icon="🚨") if api_offline() else st.markdown(f"### Error: {e}")
+        if api_offline():
+            st.error("NexusHub API is currently offline.", icon="🚨")
+        else: st.markdown(f"### Error: {e}")
 
