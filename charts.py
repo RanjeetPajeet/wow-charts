@@ -437,7 +437,7 @@ class Plot:
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                     # make the line dashed
-                    strokeDash = alt.value([5,5]),
+                    # strokeDash = alt.value([5,5]),
                     tooltip = get_tooltip("Regression line", scale, "Regression line"),
                     # make the line be a different color when the mouse is over it
                     # color = alt.condition(
