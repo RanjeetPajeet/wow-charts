@@ -445,11 +445,12 @@ class Plot:
                     strokeDash = alt.value([5,5]),
                     tooltip = get_tooltip("Regression line", scale, "Regression line"),
                     # make the line be a different color when the mouse is over it
-                    # color = alt.condition(
-                    #     alt.datum.Regression_line == alt.datum.Regression_line,
-                    #     alt.value("#FF0000"),   # The regression line is red
-                    #     alt.value("lightgray")  # The original line is gray
-                    # )
+                    color = alt.condition(
+                        alt.datum.Regression_line == alt.datum.Regression_line,
+                        alt.value("#83C9FF"),
+                        alt.value("#FF0000"),   # The regression line is red
+                        # alt.value("lightgray")  # The original line is gray
+                    )
                 )
                 # Also create a mouseover line
                 # regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
