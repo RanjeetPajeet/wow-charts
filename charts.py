@@ -430,10 +430,16 @@ class Plot:
                         highest_ma = ma
             if highest_ma:
                 # Create a list of x values of equal length of data["Time"] since we can't use data["Time"] in the regression line
-                x = np.array([i for i in range(len(data["Time"]))])
+                
+                # x = np.array([i for i in range(len(data["Time"]))])
+                x = np.array([i for i in range(len(data[highest_ma].dropna().tolist()))])
                 slope, intercept,_,_,_ = stats.linregress(x, data[highest_ma])
-                data["Regression line"] = slope*x + intercept    # y = mx + b
-                regression_line = alt.Chart(data).mark_line(color = "#FF0000", strokeWidth = 2).encode(
+                rdata = pd.DataFrame({
+                    "Time": historical_price_data["times"], ylabel: prices,
+                    "Regression line": slope*x + intercept
+                })
+                # data["Regression line"] = slope*x + intercept    # y = mx + b
+                regression_line = alt.Chart(rdata).mark_line(color = "#FF0000", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Regression line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                     # make the line dashed
@@ -450,7 +456,7 @@ class Plot:
                 # regression_line = regression_line + get_mouseover_line(data, "Regression line", ylabel, chart_ylims, scale, "Regression line")
                 # Also create a 2nd order polynomial regression line
                 # show the chart
-                st.write(data["Regression line"])
+                st.write(rdata["Regression line"])
                 st.altair_chart(regression_line, use_container_width=True)
                 # # First, get the 2nd order polynomial coefficients
                 # coeffs = np.polyfit(data["Time"], data[highest_ma], 2)
