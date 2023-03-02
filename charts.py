@@ -446,10 +446,9 @@ class Plot:
                     tooltip = get_tooltip("Regression line", scale, "Regression line"),
                     # make the line be a different color when the mouse is over it
                     color = alt.condition(
-                        alt.datum.Regression_line == alt.datum.Regression_line,
-                        alt.value("#83C9FF"),
+                        alt.datum["Regression line"] == alt.datum["Regression line"],   # If the line is the regression line ()
+                        alt.value("#83C9FF"),   # The original line is blue
                         alt.value("#FF0000"),   # The regression line is red
-                        # alt.value("lightgray")  # The original line is gray
                     )
                 )
                 # Also create a mouseover line
