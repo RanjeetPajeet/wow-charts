@@ -434,6 +434,7 @@ class Plot:
                 x = np.array([i for i in range(len(data["Time"]))])
                 # x = np.array([i for i in range(len(data[highest_ma].dropna().tolist()))])
                 slope, intercept,_,_,_ = stats.linregress(x, data[highest_ma])
+                st.write(slope, intercept)
                 rdata = pd.DataFrame({
                     "Time": historical_price_data["times"], ylabel: prices,
                     "Regression line": slope*x + intercept
