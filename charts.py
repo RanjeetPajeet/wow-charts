@@ -429,7 +429,7 @@ class Plot:
                     if MAs[ma] and int(ma.split("-")[0]) > int(highest_ma.split("-")[0]):   # Base the regression line on the highest moving average
                         highest_ma = ma
             if highest_ma:
-                y = np.array(data[highest_ma].dropna().tolist())                # Create a list of x values of equal length of data["Time"]
+                y = np.array(data[highest_ma].dropna().tolist())[1:]                # Create a list of x values of equal length of data["Time"]
                 x = np.array([i for i in range(len(data["Time"]))])[-len(y):]   # since we can't use data["Time"] directly in the regression line
                 slope, intercept,_,_,_ = stats.linregress(x, y)
                 data["Linear Regression Line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
