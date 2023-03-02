@@ -455,7 +455,7 @@ class Plot:
 
                 # Also create a 3rd order polynomial regression line
                 coeffs = np.polyfit(x, y, 3)
-                data["3rd-Order Regression Line"] = [coeffs[0]*i**3 + coeffs[1]*i**2 + coeffs[2]*i + coeffs[3] for i in range(len(data["Time"]))]    # y = ax^3 + bx^2 + cx + d
+                data["3rd-Order Regression Line"] = [coeffs[0]*i**3 + coeffs[1]*i**2 + coeffs[2]*i + coeffs[3] for i in range(len(x))]    # y = ax^3 + bx^2 + cx + d
                 # regression_line_3rd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                 #     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 #     y = alt.Y("3rd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
@@ -466,7 +466,7 @@ class Plot:
                 # regression_line = regression_line + regression_line_3rd_order
 
                 # Create a line that combines the 3rd order regression line and the highest moving average
-                data["Combined Regression Line"] = [(data["3rd-Order Regression Line"][i] + y[i])/2 for i in range(len(data["Time"]))]
+                data["Combined Regression Line"] = [(data["3rd-Order Regression Line"][i] + y[i])/2 for i in range(len(x))]
                 combined_regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                     y = alt.Y("Combined Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
