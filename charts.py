@@ -466,7 +466,7 @@ class Plot:
                 # regression_line = regression_line + regression_line_3rd_order
 
                 # Create a line that combines the 3rd order regression line and the highest moving average
-                minlen = min(len(data["3rd-Order Regression Line"]), len(data[highest_ma], len(data["Time"])))
+                minlen = min(len(data["3rd-Order Regression Line"]), len(data[highest_ma]), len(data["Time"]))
                 data["Combined Regression Line"] = [(data["3rd-Order Regression Line"][i] + y[i])/2 for i in range(minlen)]
                 combined_regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
