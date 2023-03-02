@@ -429,7 +429,7 @@ class Plot:
                     if MAs[ma] and int(ma.split("-")[0]) > int(highest_ma.split("-")[0]):   # Base the regression line on the highest moving average
                         highest_ma = ma
             if highest_ma:
-                y = np.array(data[highest_ma].dropna().tolist())[1:]                # Create a list of x values of equal length of data["Time"]
+                y = np.array(data[highest_ma].dropna().tolist())                # Create a list of x values of equal length of data["Time"]
                 x = np.array([i for i in range(len(data["Time"]))])[-len(y):]   # since we can't use data["Time"] directly in the regression line
                 slope, intercept,_,_,_ = stats.linregress(x, y)
                 data["Linear Regression Line"] = [slope*i + intercept for i in range(len(data["Time"]))]    # y = mx + b
@@ -441,42 +441,17 @@ class Plot:
                 )
                 regression_line = regression_line + get_mouseover_line(data, "Linear Regression Line", ylabel, chart_ylims, scale, "Linear Regression")
 
-                # Also create a 2nd order polynomial regression line
-                # coeffs = np.polyfit(x, y, 2)
-                # data["2nd-Order Regression Line"] = [coeffs[0]*i**2 + coeffs[1]*i + coeffs[2] for i in range(len(data["Time"]))]    # y = ax^2 + bx + c
-                # regression_line_2nd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
-                #     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                #     y = alt.Y("2nd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-                #     strokeDash = alt.value([5,5]),  # make the line dashed
-                #     tooltip = get_tooltip("2nd-Order Regression Line", scale, "2nd-Order Regression")
-                # )
-                # regression_line_2nd_order = regression_line_2nd_order + get_mouseover_line(data, "2nd-Order Regression Line", ylabel, chart_ylims, scale, "2nd-Order Regression")
-                # regression_line = regression_line + regression_line_2nd_order
-
-                # Also create a 3rd order polynomial regression line
+                # 3rd order polynomial regression line
                 coeffs = np.polyfit(x, y, 3)
                 data["3rd-Order Regression Line"] = [coeffs[0]*i**3 + coeffs[1]*i**2 + coeffs[2]*i + coeffs[3] for i in range(len(data["Time"]))]    # y = ax^3 + bx^2 + cx + d
-                # regression_line_3rd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
-                #     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                #     y = alt.Y("3rd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-                #     strokeDash = alt.value([5,5]),  # make the line dashed
-                #     tooltip = get_tooltip("3rd-Order Regression Line", scale, "3rd-Order Regression")
-                # )
-                # regression_line_3rd_order = regression_line_3rd_order + get_mouseover_line(data, "3rd-Order Regression Line", ylabel, chart_ylims, scale, "3rd-Order Regression")
-                # regression_line = regression_line + regression_line_3rd_order
-
-                # Create a line that combines the 3rd order regression line and the highest moving average
-                minlen = min(len(data["3rd-Order Regression Line"]), len(data[highest_ma]), len(data["Time"]))
-                data["Combined Regression Line"] = [(data["3rd-Order Regression Line"][i] + y[i])/2 for i in range(minlen-1)]
-                combined_regression_line = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+                regression_line_3rd_order = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
                     x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                    y = alt.Y("Combined Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                    y = alt.Y("3rd-Order Regression Line", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                     strokeDash = alt.value([5,5]),  # make the line dashed
-                    tooltip = get_tooltip("Combined Regression Line", scale, "Combined Regression")
+                    tooltip = get_tooltip("3rd-Order Regression Line", scale, "3rd-Order Regression")
                 )
-                combined_regression_line = combined_regression_line + get_mouseover_line(data, "Combined Regression Line", ylabel, chart_ylims, scale, "Combined Regression")
-                regression_line = regression_line + combined_regression_line
-
+                regression_line_3rd_order = regression_line_3rd_order + get_mouseover_line(data, "3rd-Order Regression Line", ylabel, chart_ylims, scale, "3rd-Order Regression")
+                regression_line = regression_line + regression_line_3rd_order
 
 
 
