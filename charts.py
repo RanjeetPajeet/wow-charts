@@ -352,7 +352,7 @@ def get_mouseover_line(data: pd.DataFrame, dataframe_price_column_label: str, ya
     """
     return alt.Chart(data).mark_line(
         color = "#ffffff",
-        opacity = 0.01,
+        opacity = 0.001,
         strokeWidth = MOUSEOVER_LINE_THICKNESS,
     ).encode(
         x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
