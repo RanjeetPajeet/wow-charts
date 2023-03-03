@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
-from misc import map_value, get_min_max_of_data
 from data import get_server_history, remove_outliers
+from misc import map_value, get_min_max_of_data, enforce_upper_price_limit, enforce_lower_price_limit
 
 
 
@@ -13,10 +13,11 @@ TOOLTIP_DATETIME_FORMAT = ( "%b %d, %Y" )   # the format of the datetime labels 
 
 
 
-def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
+
+def enforce_price_limits(prices: list, num_std_deviations: int = 3) -> list:
     """
-    Defines an upper limit as `mean(prices) + num_std_deviations*std_dev(prices)`,
-    then iterates through the given list of prices, setting any values larger than this value equal to it.
+    Defines an upper and lower limit as `mean(prices) +/- num_std_deviations*std_dev(prices)`,
+    then iterates through the given list of prices, setting any values above or below these values equal to them.
     
     Parameters
     ----------
@@ -25,45 +26,70 @@ def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
     
     Returns
     -------
-    A new list with any values too high replaced with the upper limit.
+    A new list with any values too high/too low replaced with the upper/lower limit, respectively.
     """
-    upper_limit  =  (
-        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
-        num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
-    )
-    for i in range(len(prices)):
-        if prices[i] > upper_limit:
-            prices[i] = upper_limit
+    prices = enforce_upper_price_limit(prices, num_std_deviations)
+    prices = enforce_lower_price_limit(prices, num_std_deviations)
     return prices
 
-  
 
 
-def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
+
+
+def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_price_line_title: str, is_quantity: bool = False) -> list[alt.Tooltip]:
     """
-    Defines a lower limit as `mean(prices) - num_std_deviations*std_dev(prices)`,
-    then iterates through the given list of prices, setting any values smaller than this value equal to it.
-    
+    Creates a list of tooltips for a chart.
+
     Parameters
     ----------
-    `prices`: The list to set an upper limit on.
-    `num_std_deviations`: The number of standard deviations away from the mean to define the lower limit as.
-    
+    `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
+    `price_scale`: The scaling factor of the price data (`100` or `10000`).
+    `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
+    `is_quantity`: Whether the tooltip is for a quantity or not.
+
     Returns
     -------
-    A new list with any values too low replaced with the lower limit.
+    A list of tooltip objects.
     """
-    lower_limit  =  (
-        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  -  
-        num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
-    )
-    for i in range(len(prices)):
-        if prices[i] < lower_limit:
-            prices[i] = lower_limit
-    return prices
-        
-    
+    if is_quantity:         # Quantity formatting
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
+    if price_scale != 100:  # Prices are in gold
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".2f")]
+    else:                   # Prices are in silver
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
 
+
+
+
+
+def get_mouseover_line(data: pd.DataFrame, dataframe_price_column_label: str, yaxis_title: str, 
+                       chart_ylimits: tuple, price_scale: int, tooltip_price_line_title: str) -> alt.Chart:
+    """
+    Generates a line equivalent to what is used for an item's price,
+    except the stroke width (thickness) is much larger and it has zero opacity.
+    This creates a region around the visible line where the mouse will generate a tooltip.
+
+    Parameters
+    ----------
+    `data`: The dataframe containing the data to be plotted.
+    `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
+    `yaxis_title`: The title of the chart's y-axis (one of `"Price (gold)"` or `"Price (silver)"`).
+    `chart_ylimits`: The minimum and maximum values of the chart's y-axis.
+    `price_scale`: The scaling factor of the price data (`100` or `10000`).
+    `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
+
+    Returns
+    -------
+    An `alt.Chart` object containing the mouseover line.
+    """
+    return alt.Chart(data).mark_line(
+        color = "#ffffff",
+        opacity = 0.001,
+        strokeWidth = MOUSEOVER_LINE_THICKNESS,
+    ).encode(
+        x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+        y = alt.Y(dataframe_price_column_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
+        tooltip=get_tooltip(dataframe_price_column_label, price_scale, tooltip_price_line_title))
     
     
     
@@ -72,12 +98,23 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
     
 def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = False, mobile: bool = False) -> alt.Chart:
     """
-    `OHLC_data`, `minimum`, and `maximum` come from `data.get_server_history_OHLC()`.
-    `show_quantity` determines whether or not an area is drawn to the plot showing quantities.
+    Creates an OHLC chart from the given data.
+
+    Parameters
+    ----------
+    `OHLC_data`: The data to create the chart from.
+    `minimum`: The minimum price in the data.
+    `maximum`: The maximum price in the data.
+    `show_quantity`: Whether or not to show the quantity area chart.
+    `mobile`: Whether or not the chart is being displayed on a mobile device.
+
+    NOTE: `OHLC_data`, `minimum`, and `maximum` come from `data.get_server_history_OHLC()`.
+
+    Returns
+    -------
+    An Altair chart object.
     """
-    df = pd.DataFrame({
-        'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data],
-    })
+    df = pd.DataFrame({'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data]})
     SCALE = 100 if df["median_price"].mean() < 10000 else 10000
     YLABEL = "Price (silver)" if SCALE==100 else "Price (gold)"
     chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.1/SCALE))
@@ -105,13 +142,9 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         'pct_change_median_price': [OHLC_data[date]["pct_change"]["median"]["price"] for date in OHLC_data],
         'pct_change_median_quantity': [OHLC_data[date]["pct_change"]["median"]["quantity"] for date in OHLC_data],
     })
-    
-    
     range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
     quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
     OHLC_df.insert(2, "quantities", quantities, True)
-
-    
     OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
     OHLC_df = OHLC_df.sort_values(by='date')
     OHLC_df = OHLC_df.reset_index(drop=True)
@@ -122,14 +155,11 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
     OHLC_df['pct_change_median_price'] = OHLC_df['pct_change_median_price'].apply(lambda x: x / 100)
     OHLC_df['pct_change_median_quantity'] = OHLC_df['pct_change_median_quantity'].apply(lambda x: x / 100)
 
-    
-    
-    
-    
+    RED = "#AE1325"
+    GREEN = "#06982D"
+    XAXIS_DATETIME_FORMAT = ("%b %d")
 
-    XAXIS_DATETIME_FORMAT = ( "%b %d" )
-
-    # wick line mouseover helper
+    # Wick line mouseover helper
     mouseover = alt.Chart(OHLC_df).mark_rule().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
@@ -137,99 +167,60 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         color=alt.value('#FB00FF'),
         opacity=alt.value(0.01),
         size=alt.value(6),
-        tooltip=[
-            alt.Tooltip('date' , title='Date'),
-            alt.Tooltip('open_price' , title='Open' , format='.2f',),
-            alt.Tooltip('close_price', title='Close', format='.2f',),
-            alt.Tooltip('high_price' , title='High' , format='.2f',),
-            alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
-            # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
-            # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%',),
-#             alt.Tooltip('percent_change_quantity'  , title='Quantity % Change'  , format='.2%',),
-        ]
-    ).properties(
+        tooltip=[alt.Tooltip('date'  , title='Date'),
+            alt.Tooltip('open_price' , title='Open' , format='.2f'),
+            alt.Tooltip('close_price', title='Close', format='.2f'),
+            alt.Tooltip('high_price' , title='High' , format='.2f'),
+            alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')]).properties(
         #width=600,
-        height=600
-    )
+        height=600)
 
-    
-    # wick lines
+    # Wick lines
     chart = alt.Chart(OHLC_df).mark_rule().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
         y2='high_price',
-        color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),    # color green (#06982d) if open <= close, else red (#ae1325)
-        tooltip=[
-            alt.Tooltip('date' , title='Date'),
-            alt.Tooltip('open_price' , title='Open' , format='.2f',),
-            alt.Tooltip('close_price', title='Close', format='.2f',),
-            alt.Tooltip('high_price' , title='High' , format='.2f',),
-            alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
-            # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
-            # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%',),
-#             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
-        ]
-    ).properties(
+        color=alt.condition('datum.open_price <= datum.close_price', alt.value(GREEN), alt.value(RED)),    # green if open <= close, else red
+        tooltip=[alt.Tooltip('date'  , title='Date'),
+            alt.Tooltip('open_price' , title='Open' , format='.2f'),
+            alt.Tooltip('close_price', title='Close', format='.2f'),
+            alt.Tooltip('high_price' , title='High' , format='.2f'),
+            alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')]).properties(
         #width=600,
-        height=600
-    )
+        height=600)
     
-
-    
-    # candle bodies
+    # Candle bodies
     chart += alt.Chart(OHLC_df).mark_bar().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y='open_price',
         y2='close_price',
-        # size=alt.value(8),
-        # stroke=alt.value('black'), strokeWidth=alt.value(0.25),
-        color=alt.condition('datum.open_price <= datum.close_price', alt.value('#06982d'), alt.value('#ae1325')),
-        tooltip=[
-            alt.Tooltip('date' , title='Date'),
-            alt.Tooltip('open_price' , title='Open' , format='.2f',),
-            alt.Tooltip('close_price', title='Close', format='.2f',),
-            alt.Tooltip('high_price' , title='High' , format='.2f',),
-            alt.Tooltip('low_price'  , title='Low'  , format='.2f',),
-            # alt.Tooltip('mean_price' , title='Mean' , format='.2f',),
-            # alt.Tooltip('median_price'  , title='Median'  , format='.2f',),
-#             alt.Tooltip('pct_change_mean_price'  , title='Pct Change'  , format='.2%',),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%',),
-        ]
-    ).properties(
+        # size=alt.value(8), stroke=alt.value('black'), strokeWidth=alt.value(0.25),
+        color=alt.condition('datum.open_price <= datum.close_price', alt.value(GREEN), alt.value(RED)),
+        tooltip=[alt.Tooltip('date'  , title='Date'),
+            alt.Tooltip('open_price' , title='Open' , format='.2f'),
+            alt.Tooltip('close_price', title='Close', format='.2f'),
+            alt.Tooltip('high_price' , title='High' , format='.2f'),
+            alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')]).properties(
         #width=600,
-        height=600
-    )
+        height=600)
 
-    
-    # add mouseover helper
     chart += mouseover
-    
     
     if show_quantity:
         quantity_chart = alt.Chart(OHLC_df).mark_area(
-              color=alt.Gradient(
-                  gradient="linear",
-                  stops=[alt.GradientStop(color="#83c9ff", offset=0),     # bottom color
-                        alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
-                  x1=1, x2=1, y1=1, y2=0,
-              ),
-              opacity = 0.2,
-              strokeWidth=2,
-              interpolate="monotone",
-              clip=True,
-          ).encode(
-              x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-              y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
-              tooltip=[
-                  alt.Tooltip('date' , title='Date'),
-                  alt.Tooltip('mean_quantity' , title='Quantity')
-              ]
-          )
-        chart = chart + quantity_chart
-    
-    
+            color=alt.Gradient(
+                gradient="linear",
+                stops=[alt.GradientStop(color="#83c9ff", offset=0.0),   # bottom color
+                       alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
+                x1=1, x2=1, y1=1, y2=0),
+            opacity = 0.2, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
+            x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+            y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
+            tooltip=[alt.Tooltip('date', title='Date'), alt.Tooltip('mean_quantity', title='Quantity')])
+        chart += quantity_chart
     
     chart = chart.properties(height=600)
     chart = chart.properties(width=700)
@@ -282,63 +273,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
 
 
 
-def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_price_line_title: str, is_quantity: bool = False) -> list[alt.Tooltip]:
-    """
-    Creates a list of tooltips for a chart.
 
-    Parameters
-    ----------
-    `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
-    `price_scale`: The scaling factor of the price data (`100` or `10000`).
-    `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
-    `is_quantity`: Whether the tooltip is for a quantity or not.
-
-    Returns
-    -------
-    A list of tooltip objects.
-    """
-    if is_quantity:
-        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
-    if price_scale != 100:
-        # Prices are in gold
-        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".2f")]
-    else:
-        # Prices are in silver
-        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
-
-
-
-
-
-def get_mouseover_line(data: pd.DataFrame, dataframe_price_column_label: str, yaxis_title: str, 
-                       chart_ylimits: tuple, price_scale: int, tooltip_price_line_title: str) -> alt.Chart:
-    """
-    Generates a line equivalent to what is used for an item's price,
-    except the stroke width (thickness) is much larger and it has zero opacity.
-    This creates a region around the visible line where the mouse will generate a tooltip.
-
-    Parameters
-    ----------
-    `data`: The dataframe containing the data to be plotted.
-    `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
-    `yaxis_title`: The title of the chart's y-axis (one of `"Price (gold)"` or `"Price (silver)"`).
-    `chart_ylimits`: The minimum and maximum values of the chart's y-axis.
-    `price_scale`: The scaling factor of the price data (`100` or `10000`).
-    `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
-
-    Returns
-    -------
-    An `alt.Chart` object containing the mouseover line.
-    """
-    return alt.Chart(data).mark_line(
-        color = "#ffffff",
-        opacity = 0.001,
-        strokeWidth = MOUSEOVER_LINE_THICKNESS,
-    ).encode(
-        x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-        y = alt.Y(dataframe_price_column_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
-        tooltip=get_tooltip(dataframe_price_column_label, price_scale, tooltip_price_line_title)
-    )
 
 
 
@@ -381,8 +316,8 @@ class Plot:
         ylabel = "Price (silver)" if scale==100 else "Price (gold)"
         if fix_outliers:
             prices = remove_outliers(prices)
-        prices = enforce_upper_limit(prices)
-        prices = enforce_lower_limit(prices)
+        prices = enforce_upper_price_limit(prices)
+        prices = enforce_lower_price_limit(prices)
         data = pd.DataFrame({
             "Time": historical_price_data["times"], ylabel: prices,
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
@@ -541,10 +476,10 @@ class Plot:
         if fix_outliers:
             server1_prices = remove_outliers(server1_prices)
             server2_prices = remove_outliers(server2_prices)
-        server1_prices = enforce_upper_limit(server1_prices)
-        server1_prices = enforce_lower_limit(server1_prices)
-        server2_prices = enforce_upper_limit(server2_prices)
-        server2_prices = enforce_lower_limit(server2_prices)
+        server1_prices = enforce_upper_price_limit(server1_prices)
+        server1_prices = enforce_lower_price_limit(server1_prices)
+        server2_prices = enforce_upper_price_limit(server2_prices)
+        server2_prices = enforce_lower_price_limit(server2_prices)
         server1_price_data["times"] = [time.replace(minute=0) for time in server1_price_data["times"]]
         server2_price_data["times"] = [time.replace(minute=0) for time in server2_price_data["times"]]
         server1_data  = pd.DataFrame({
@@ -695,10 +630,10 @@ class Plot:
         if fix_outliers:
             server_prices = remove_outliers(server_prices)
             region_prices = remove_outliers(region_prices)
-        server_prices = enforce_upper_limit(server_prices)
-        server_prices = enforce_lower_limit(server_prices)
-        region_prices = enforce_upper_limit(region_prices)
-        region_prices = enforce_lower_limit(region_prices)
+        server_prices = enforce_upper_price_limit(server_prices)
+        server_prices = enforce_lower_price_limit(server_prices)
+        region_prices = enforce_upper_price_limit(region_prices)
+        region_prices = enforce_lower_price_limit(region_prices)
         server_std_dev = np.std( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
         region_std_dev = np.std( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
         server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
@@ -852,8 +787,8 @@ class Plot:
         ylabel = "Price (silver)" if scale==100 else "Price (gold)"
         if fix_outliers:
             prices = remove_outliers(prices)
-        prices = enforce_upper_limit(prices)
-        prices = enforce_lower_limit(prices)
+        prices = enforce_upper_price_limit(prices)
+        prices = enforce_lower_price_limit(prices)
         data = pd.DataFrame({
             "Time": historical_data["times"], ylabel: prices,
             "Quantity": historical_data["quantities"],
@@ -1094,8 +1029,8 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     values = [ values_per_prospect[i]/5  for i in range(len(values_per_prospect)) ]     # per saronite ore
     values = [ value/100 for value in values ]  # gold -> silver
     
-    values = enforce_upper_limit(values)
-    values = enforce_lower_limit(values,2)
+    values = enforce_upper_price_limit(values)
+    values = enforce_lower_price_limit(values,2)
     
     saronite_ore_data = get_server_history("Saronite Ore", server, faction, num_days)
     scale = 100 if saronite_ore_data["prices"][-1] < 10000 else 10000
@@ -1105,7 +1040,7 @@ def plot_saronite_value_history(server: str, faction: str, num_days: int, ma4: b
     if fix_outliers:
         prices = remove_outliers(prices)
     
-    prices = enforce_upper_limit(prices)
+    prices = enforce_upper_price_limit(prices)
     prices = prices[-len(values):]
     
     saronite_ore_data["times"] = [time.replace(minute=0) for time in saronite_ore_data["times"]]
