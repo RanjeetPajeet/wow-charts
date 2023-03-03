@@ -172,9 +172,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('close_price', title='Close', format='.2f'),
             alt.Tooltip('high_price' , title='High' , format='.2f'),
             alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')]).properties(
-        #width=600,
-        height=600)
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
 
     # Wick lines
     chart = alt.Chart(OHLC_df).mark_rule().encode(
@@ -187,9 +185,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('close_price', title='Close', format='.2f'),
             alt.Tooltip('high_price' , title='High' , format='.2f'),
             alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')]).properties(
-        #width=600,
-        height=600)
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
     
     # Candle bodies
     chart += alt.Chart(OHLC_df).mark_bar().encode(
@@ -203,9 +199,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('close_price', title='Close', format='.2f'),
             alt.Tooltip('high_price' , title='High' , format='.2f'),
             alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')]).properties(
-        #width=600,
-        height=600)
+            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
 
     chart += mouseover
     
