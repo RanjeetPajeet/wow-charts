@@ -480,7 +480,6 @@ class Plot:
                 if ma4: chart = chart + price_line_ma12
                 else: chart = price_line_ma12
             else: chart = chart + price_line_ma12
-            chart = price_line_ma12 if hide_original else chart + price_line_ma12
             #chart = chart.properties(height=600)
         if ma24:
             price_line_ma24 = alt.Chart(data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
