@@ -461,7 +461,7 @@ class Plot:
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, "Price"))
             chart = chart + get_mouseover_line(data, ylabel, ylabel, chart_ylims, scale, "Price")
-            chart = chart.properties(height=600)
+            #chart = chart.properties(height=600)
         if ma4:
             price_line_ma4 = alt.Chart(data).mark_line(color = "#0CE550", strokeWidth = 2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -469,7 +469,7 @@ class Plot:
                 tooltip = get_tooltip("4-hour moving average", scale, "Price (4h avg)"))
             price_line_ma4 = price_line_ma4 + get_mouseover_line(data, "4-hour moving average", ylabel, chart_ylims, scale, "Price (4h avg)")
             chart = price_line_ma4 if hide_original else chart + price_line_ma4
-            chart = chart.properties(height=600)
+            #chart = chart.properties(height=600)
         if ma12:
             price_line_ma12 = alt.Chart(data).mark_line(color = "#6029C1", strokeWidth = 2.1).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -481,7 +481,7 @@ class Plot:
                 else: chart = price_line_ma12
             else: chart = chart + price_line_ma12
             chart = price_line_ma12 if hide_original else chart + price_line_ma12
-            chart = chart.properties(height=600)
+            #chart = chart.properties(height=600)
         if ma24:
             price_line_ma24 = alt.Chart(data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -492,7 +492,7 @@ class Plot:
                 if ma4 or ma12: chart = chart + price_line_ma24
                 else: chart = price_line_ma24
             else: chart = chart + price_line_ma24
-            chart = chart.properties(height=600)
+            #chart = chart.properties(height=600)
         if ma48:
             price_line_ma48 = alt.Chart(data).mark_line(color = "#F5C500", strokeWidth = 2.3).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -503,11 +503,11 @@ class Plot:
                 if ma4 or ma12 or ma24: chart = chart + price_line_ma48
                 else: chart = price_line_ma48
             else: chart = chart + price_line_ma48
-            chart = chart.properties(height=600)
+            #chart = chart.properties(height=600)
         
         if regression_line:
             chart = chart + regression_line
-            chart = chart.properties(height=600)
+            #chart = chart.properties(height=600)
 
         chart = chart.properties(height=600)
         chart = chart.configure_axisY(
