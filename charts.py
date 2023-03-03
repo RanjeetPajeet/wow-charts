@@ -206,10 +206,10 @@ class Plot:
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, "Price (12h avg)"))
-            # price_line_ma12 = price_line_ma12 + get_mouseover_line(data, "12-hour moving average", ylabel, chart_ylims, scale, "Price (12h avg)")
+            price_line_ma12 = price_line_ma12 + get_mouseover_line(data, "12-hour moving average", ylabel, chart_ylims, scale, "Price (12h avg)")
             if hide_original:
                 if ma4: chart = chart + price_line_ma12
-                else: chart = price_line_ma12.configure_background(strokeWidth=10, stroke="#FFFFFF")
+                else: chart = price_line_ma12
             else: chart = chart + price_line_ma12
         if ma24:
             price_line_ma24 = alt.Chart(data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
