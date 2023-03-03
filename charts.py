@@ -305,7 +305,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
 
 
 
-def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_price_line_title: str) -> list[alt.Tooltip]:
+def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_price_line_title: str, is_quantity: bool = False) -> list[alt.Tooltip]:
     """
     Creates a list of tooltips for a chart.
 
@@ -314,11 +314,14 @@ def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_pri
     `dataframe_price_column_label`: The name of the column in the dataframe containing the price data, e.g. `ylabel`, `"12-hour moving average"`, etc.
     `price_scale`: The scaling factor of the price data (`100` or `10000`).
     `tooltip_price_line_title`: The title to give the line of the tooltip that shows price, e.g. `"Price"`, `"Price (12h avg)"`, etc.
+    `is_quantity`: Whether the tooltip is for a quantity or not.
 
     Returns
     -------
     A list of tooltip objects.
     """
+    if is_quantity:
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
     if price_scale != 100:
         # Prices are in gold
         return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".2f")]
@@ -822,6 +825,187 @@ class Plot:
                 else: chart = price_line_ma48
             else: chart = chart + price_line_ma48
         
+        chart = chart.properties(height=600)
+        chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
+            titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
+            titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+        chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
+            labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
+        chart = chart.configure_view(strokeOpacity=0)
+        if mobile:
+            chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
+                titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
+                titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold", titleOpacity=0)
+            chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
+                labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+            chart = chart.properties(title=f"{ylabel.replace('(', '(in ')}")
+            chart.configure_title(fontSize=20, font='Calibri', anchor='start', color='#FFFFFF', align='center')
+            chart = chart.properties(height=400)
+        
+        return chart
+    
+
+
+
+
+
+    @staticmethod
+    def price_and_quantity_history(historical_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
+        """
+        Creates a line chart of the price and quantity history of an item.
+
+        Parameters
+        ----------
+        `historical_data`: A dictionary containing the historical data of an item, as returned from `data.get_server_history()`.
+        `ma4`: Boolean indicating whether or not to plot the 4-hour moving average.
+        `ma12`: Boolean indicating whether or not to plot the 12-hour moving average.
+        `ma24`: Boolean indicating whether or not to plot the 24-hour moving average.
+        `ma48`: Boolean indicating whether or not to plot the 48-hour moving average.
+        `hide_original`: Boolean indicating whether or not to hide the original price data.
+        `mobile`: Boolean indicating whether or not to render the chart for mobile.
+        `fix_outliers`: An optional boolean value indicating whether or not to remove outliers from the data. Note that this is currently not working.
+        `regression_line`: An optional boolean value indicating whether or not to plot a least-squares regression line.
+        
+        Returns
+        -------
+        An Altair chart object which can be rendered via `st.altair_chart( chart )`.
+        """
+        scale = 100 if historical_data["prices"][-1] < 10000 else 10000
+        prices = [round(price/scale,2) for price in historical_data["prices"]]
+        ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+        if fix_outliers:
+            prices = remove_outliers(prices)
+        prices = enforce_upper_limit(prices)
+        prices = enforce_lower_limit(prices)
+        data = pd.DataFrame({
+            "Time": historical_data["times"], ylabel: prices,
+            "Quantity": data["quantities"],
+            "Quantity  4hMA": pd.Series(data["quantities"]).rolling( 2).mean(),
+            "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean(),
+            "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean(),
+            "Quantity 48hMA": pd.Series(data["quantities"]).rolling(24).mean(),
+            "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
+            "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
+            "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
+            "Raw Quantity":     pd.Series(data["quantities"]).rolling( 1).mean().dropna().apply(lambda x: int(x)),
+            "4h Avg Quantity":  pd.Series(data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
+            "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
+            "24h Avg Quantity": pd.Series(data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
+            "48h Avg Quantity": pd.Series(data["quantities"]).rolling(24).mean().dropna().apply(lambda x: int(x)),
+        })
+        minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
+        try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
+        except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
+        if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
+            try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
+            except: pass                                                        # Such is the case when plotting the price of Saronite Ore
+
+        if not hide_original:
+            range_quantity = [data["Quantity"].min(), data["Quantity"].max()]
+            data["Quantity"] = data["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+            chart = alt.Chart(data).mark_line(color = "#3AA9FF", strokeWidth = 2).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip(ylabel, scale, "Price")
+            ) + alt.Chart(data).mark_area(
+                color=alt.Gradient(
+                    gradient="linear",
+                    stops=[alt.GradientStop(color="#83C9FF", offset=0),     # bottom color
+                           alt.GradientStop(color="#0068C9", offset=1)],    # top color
+                    x1=1, x2=1, y1=1, y2=0),
+                opacity = 0.5, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("Raw Quantity", scale, "Quantity", is_quantity=True))
+            chart = chart + get_mouseover_line(data, ylabel, ylabel, chart_ylims, scale, "Price")
+        if ma4:
+            range_quantity = [data["Quantity  4hMA"].min(), data["Quantity  4hMA"].max()]
+            data["Quantity  4hMA"] = data["Quantity  4hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+            ma4_lines = alt.Chart(data).mark_line(color = "#0CE550", strokeWidth = 2).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("4-hour moving average", scale, "Price (4h avg)")
+            ) + alt.Chart(data).mark_area(
+                color=alt.Gradient(
+                    gradient="linear",
+                    stops=[alt.GradientStop(color="#7DEFA1", offset=0.0),     # bottom color
+                           alt.GradientStop(color="#29B09D", offset=0.4)],    # top color
+                    x1=1, x2=1, y1=1, y2=0),
+                opacity = 0.5, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity  4hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("Quantity  4hMA", scale, "Quantity (4h avg)", is_quantity=True))
+            ma4_lines = ma4_lines + get_mouseover_line(data, "4-hour moving average", ylabel, chart_ylims, scale, "Price (4h avg)")
+            chart = ma4_lines if hide_original else chart + ma4_lines
+        if ma12:
+            range_quantity = [data["Quantity 12hMA"].min(), data["Quantity 12hMA"].max()]
+            data["Quantity 12hMA"] = data["Quantity 12hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+
+            ma12_lines = alt.Chart(data).mark_line(color = "#6029C1", strokeWidth = 2.1).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("12-hour moving average", scale, "Price (12h avg)")
+            ) + alt.Chart(data).mark_area(
+                color=alt.Gradient(
+                    gradient="linear",
+                    stops=[alt.GradientStop(color="#9670DC", offset=0.3),     # bottom color
+                           alt.GradientStop(color="#5728AE", offset=0.7)],    # top color
+                    x1=1, x2=1, y1=1, y2=0),
+                opacity = 0.5, strokeWidth = 1, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("Quantity 12hMA", scale, "Quantity (12h avg)", is_quantity=True))
+            ma12_lines = ma12_lines + get_mouseover_line(data, "12-hour moving average", ylabel, chart_ylims, scale, "Price (12h avg)")
+            if hide_original:
+                if ma4: chart = chart + ma12_lines
+                else: chart = ma12_lines
+            else: chart = chart + ma12_lines
+        if ma24:
+            range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
+            data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+            ma24_lines = alt.Chart(data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("24-hour moving average", scale, "Price (24h avg)")
+            ) + alt.Chart(data).mark_area(
+                color=alt.Gradient(
+                    gradient="linear",
+                    stops=[alt.GradientStop(color="#FF5169", offset=0.0),     # bottom color
+                           alt.GradientStop(color="#D71B35", offset=0.4)],    # top color
+                    x1=1, x2=1, y1=1, y2=0),
+                opacity = 0.5, strokeWidth = 2.2, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("Quantity 24hMA", scale, "Quantity (24h avg)", is_quantity=True))
+            ma24_lines = ma24_lines + get_mouseover_line(data, "24-hour moving average", ylabel, chart_ylims, scale, "Price (24h avg)")
+            if hide_original:
+                if ma4 or ma12: chart = chart + ma24_lines
+                else: chart = ma24_lines
+            else: chart = chart + ma24_lines
+        if ma48:
+            range_quantity = [data["Quantity 48hMA"].min(), data["Quantity 48hMA"].max()]
+            data["Quantity 48hMA"] = data["Quantity 48hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+            ma48_lines = alt.Chart(data).mark_line(color = "#F5C500", strokeWidth = 2.3).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("48-hour moving average", scale, "Price (48h avg)")
+            ) + alt.Chart(data).mark_area(
+                color=alt.Gradient(
+                    gradient="linear",
+                    stops=[alt.GradientStop(color="#FCD32A", offset=0.3),     # bottom color
+                           alt.GradientStop(color="#E3B600", offset=0.7)],    # top color
+                    x1=1, x2=1, y1=1, y2=0),
+                opacity = 0.5, strokeWidth = 1, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity 48hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("Quantity 48hMA", scale, "Quantity (48h avg)", is_quantity=True))
+            ma48_lines = ma48_lines + get_mouseover_line(data, "48-hour moving average", ylabel, chart_ylims, scale, "Price (48h avg)")
+            if hide_original:
+                if ma4 or ma12 or ma24: chart = chart + ma48_lines
+                else: chart = ma48_lines
+            else: chart = chart + ma48_lines
+
         chart = chart.properties(height=600)
         chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
             titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
