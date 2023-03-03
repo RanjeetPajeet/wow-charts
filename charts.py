@@ -3,7 +3,7 @@ import pandas as pd
 import altair as alt
 import streamlit as st
 from misc import map_value, get_min_max_of_data
-from data import get_server_history, get_region_history, remove_outliers
+from data import get_server_history, remove_outliers
 
 
 
@@ -33,7 +33,6 @@ def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
     )
     for i in range(len(prices)):
         if prices[i] > upper_limit:
-#             st.write(f"Replacing {prices[i]} with {upper_limit}")
             prices[i] = upper_limit
     return prices
 
@@ -60,7 +59,6 @@ def enforce_lower_limit(prices: list, num_std_deviations: int = 3) -> list:
     )
     for i in range(len(prices)):
         if prices[i] < lower_limit:
-#             st.write(f"Replacing {prices[i]} with {lower_limit}")
             prices[i] = lower_limit
     return prices
         
