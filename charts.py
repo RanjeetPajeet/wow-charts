@@ -222,8 +222,8 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             tooltip=[alt.Tooltip('date', title='Date'), alt.Tooltip('mean_quantity', title='Quantity')])
         chart += quantity_chart
     
-    #chart = chart.properties(height=600)
-    chart = chart.properties(width=700)
+    chart = chart.properties(height=600)
+    #chart = chart.properties(width=700)
     chart = chart.configure_axisY(
         grid=True,           gridOpacity=0.2,         tickCount=6,
         titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
