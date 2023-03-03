@@ -503,46 +503,30 @@ class Plot:
             chart = chart + regression_line
 
         chart = chart.properties(height=600)
-        chart = chart.configure_axisY(
-            grid=True,           gridOpacity=0.2,         tickCount=6,
-            titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
-            titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
-            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
-            labelFontSize=16,    labelFontWeight="bold",
-        )
-        chart = chart.configure_axisX(
-            grid=False,          tickCount="day",        titleOpacity=0,
-            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-            labelFontSize=20,    labelFontWeight="bold",
-        )
-        chart = chart.configure_view(
-            strokeOpacity=0,    # remove border
-        )
-    
+        chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
+            titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
+            titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+        chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
+            labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
+        chart = chart.configure_view(strokeOpacity=0)
         if mobile:
-            chart = chart.configure_axisY(
-                grid=True,           gridOpacity=0.2,         tickCount=5,
-                titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
-                titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
-                labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
-                labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
-            )
-            chart = chart.configure_axisX(
-                grid=False,          tickCount="day",        titleOpacity=0,
-                labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-                labelFontSize=16,    labelFontWeight="bold", 
-            )
+            chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
+                titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
+                titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold", titleOpacity=0)
+            chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
+                labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
             chart = chart.properties(title=f"{ylabel.replace('(', '(in ')}")
-            chart.configure_title(
-                fontSize=20,
-                font='Calibri',
-                anchor='start',
-                color='#ffffff',
-                align='center'
-            )
+            chart.configure_title(fontSize=20, font='Calibri', anchor='start', color='#FFFFFF', align='center')
             chart = chart.properties(height=400)
+        
         return chart
     
+
+
+
+
+
+
 
 
 
@@ -674,44 +658,187 @@ class Plot:
             else: chart = chart + price_line_ma48
         
         chart = chart.properties(height=600)
-        chart = chart.configure_axisY(
-            grid=True,           gridOpacity=0.2,         tickCount=6,
-            titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
-            titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
-            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
-            labelFontSize=16,    labelFontWeight="bold",
-        )
-        chart = chart.configure_axisX(
-            grid=False,          tickCount="day",        titleOpacity=0,
-            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-            labelFontSize=20,    labelFontWeight="bold",
-        )
-        chart = chart.configure_view(
-            strokeOpacity=0,    # remove border
-        )
-
+        chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
+            titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
+            titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+        chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
+            labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
+        chart = chart.configure_view(strokeOpacity=0)
         if mobile:
-            chart = chart.configure_axisY(
-                grid=True,           gridOpacity=0.2,         tickCount=5,
-                titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
-                titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
-                labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
-                labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
-            )
-            chart = chart.configure_axisX(
-                grid=False,          tickCount="day",        titleOpacity=0,
-                labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-                labelFontSize=16,    labelFontWeight="bold", 
-            )
+            chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
+                titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
+                titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold", titleOpacity=0)
+            chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
+                labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
             chart = chart.properties(title=f"{ylabel.replace('(', '(in ')}")
-            chart.configure_title(
-                fontSize=20,
-                font='Calibri',
-                anchor='start',
-                color='#ffffff',
-                align='center'
-            )
+            chart.configure_title(fontSize=20, font='Calibri', anchor='start', color='#FFFFFF', align='center')
             chart = chart.properties(height=400)
+        
+        return chart
+    
+
+
+
+
+
+
+
+
+
+    @staticmethod
+    def price_and_region_history_comparison(server_price_data: dict, region_price_data: dict, server_name: str, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
+        """
+        Creates a line chart of the price history of an item compared to the price history of the region (US).
+
+        Parameters
+        ----------
+        `server_price_data`: A dictionary containing the historical price data of an item, as returned from `data.get_server_history()`, for the server.
+        `region_price_data`: A dictionary containing the historical price data of an item, as returned from `data.get_region_history()`, for the region.
+        `server_name`: The name of the server.
+        `ma4`: Boolean indicating whether or not to plot the 4-hour moving average.
+        `ma12`: Boolean indicating whether or not to plot the 12-hour moving average.
+        `ma24`: Boolean indicating whether or not to plot the 24-hour moving average.
+        `ma48`: Boolean indicating whether or not to plot the 48-hour moving average.
+        `hide_original`: Boolean indicating whether or not to hide the original price data.
+        `mobile`: Boolean indicating whether or not to render the chart for mobile.
+        `fix_outliers`: An optional boolean value indicating whether or not to remove outliers from the data. Note that this is currently not working.
+        `regression_line`: An optional boolean value indicating whether or not to plot a least-squares regression line.
+        
+        Returns
+        -------
+        An Altair chart object which can be rendered via `st.altair_chart( chart )`.
+        """
+        scale = 100 if (server_price_data["prices"][-1] < 10000 or region_price_data["prices"][-1] < 10000) else 10000
+        server_prices = [round(price/scale,2) for price in server_price_data["prices"]]
+        region_prices = [round(price/scale,2) for price in region_price_data["prices"]]
+        ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+        if fix_outliers:
+            server_prices = remove_outliers(server_prices)
+            region_prices = remove_outliers(region_prices)
+        server_prices = enforce_upper_limit(server_prices)
+        server_prices = enforce_lower_limit(server_prices)
+        region_prices = enforce_upper_limit(region_prices)
+        region_prices = enforce_lower_limit(region_prices)
+        server_std_dev = np.std( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
+        region_std_dev = np.std( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
+        server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
+        region_std_mean = np.mean( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
+        std_dev = min(server_std_dev, region_std_dev)
+        server_upper_limit = server_std_mean + 3*std_dev
+        region_upper_limit = region_std_mean + 3*std_dev
+        for i in range(len(server_prices)):
+            if server_prices[i] > server_upper_limit: server_prices[i] = server_upper_limit
+        for i in range(len(region_prices)):
+            if region_prices[i] > region_upper_limit: region_prices[i] = region_upper_limit
+        server_price_data["times"] = [time.replace(minute=0) for time in server_price_data["times"]]
+        region_price_data["times"] = [time.replace(minute=0) for time in region_price_data["times"]]
+        server_data  = pd.DataFrame({
+            "Time": server_price_data["times"], ylabel: server_prices,
+            "4-hour moving average":  pd.Series(server_prices).rolling( 2).mean().round(2),
+            "12-hour moving average": pd.Series(server_prices).rolling( 6).mean().round(2),
+            "24-hour moving average": pd.Series(server_prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(server_prices).rolling(24).mean().round(2),
+        })
+        region_data  = pd.DataFrame({
+            "Time": region_price_data["times"], ylabel: region_prices,
+            "4-hour moving average":  pd.Series(region_prices).rolling( 2).mean().round(2),
+            "12-hour moving average": pd.Series(region_prices).rolling( 6).mean().round(2),
+            "24-hour moving average": pd.Series(region_prices).rolling(12).mean().round(2),
+            "48-hour moving average": pd.Series(region_prices).rolling(24).mean().round(2),
+        })
+        minimum, maximum = get_min_max_of_data([server_data,region_data], [server_prices,region_prices], ma4, ma12, ma24, ma48, hide_original)
+        try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
+        except Exception as e: chart_ylims = (int(min(min(server_prices),min(region_prices))/1.25), int(max(max(server_prices),max(region_prices))*1.10))
+        if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
+            try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
+            except: pass                                                        # Such is the case when plotting the price of Saronite Ore
+
+        if not hide_original:
+            chart = alt.Chart(server_data).mark_line(color = "#3AA9FF", strokeWidth = 2).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip(ylabel, scale, f"{server_name} Price")
+            ) + alt.Chart(region_data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip(ylabel, scale, "Region Price"))
+            chart = chart + get_mouseover_line(server_data, ylabel, ylabel, chart_ylims, scale, f"{server_name} Price")
+            chart = chart + get_mouseover_line(region_data, ylabel, ylabel, chart_ylims, scale, "Region Price")
+        if ma4:
+            price_line_ma4 = alt.Chart(server_data).mark_line(color = "#0CE550", strokeWidth = 2).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("4-hour moving average", scale, f"{server_name} Price (4h avg)")
+            ) + alt.Chart(region_data).mark_line(color = "#7DEFA1", strokeWidth = 2).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("4-hour moving average", scale, f"Region Price (4h avg)"))
+            price_line_ma4 = price_line_ma4 + get_mouseover_line(server_data, "4-hour moving average", ylabel, chart_ylims, scale, f"{server_name} Price (4h avg)")
+            price_line_ma4 = price_line_ma4 + get_mouseover_line(region_data, "4-hour moving average", ylabel, chart_ylims, scale, "Region Price (4h avg)")
+            chart = price_line_ma4 if hide_original else chart + price_line_ma4
+        if ma12:
+            price_line_ma12 = alt.Chart(server_data).mark_line(color = "#6029C1", strokeWidth = 2.1).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("12-hour moving average", scale, f"{server_name} Price (12h avg)")
+            ) + alt.Chart(region_data).mark_line(color = "#9670DC", strokeWidth = 2.1).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("12-hour moving average", scale, "Region Price (12h avg)"))
+            price_line_ma12 = price_line_ma12 + get_mouseover_line(server_data, "12-hour moving average", ylabel, chart_ylims, scale, f"{server_name} Price (12h avg)")
+            price_line_ma12 = price_line_ma12 + get_mouseover_line(region_data, "12-hour moving average", ylabel, chart_ylims, scale, "Region Price (12h avg)")
+            if hide_original:
+                if ma4: chart = chart + price_line_ma12
+                else: chart = price_line_ma12
+            else: chart = chart + price_line_ma12
+        if ma24:
+            price_line_ma24 = alt.Chart(server_data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("24-hour moving average", scale, f"{server_name} Price (24h avg)")
+            ) + alt.Chart(region_data).mark_line(color = "#FF5169", strokeWidth = 2.2).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("24-hour moving average", scale, "Region Price (24h avg)"))
+            price_line_ma24 = price_line_ma24 + get_mouseover_line(server_data, "24-hour moving average", ylabel, chart_ylims, scale, f"{server_name} Price (24h avg)")
+            price_line_ma24 = price_line_ma24 + get_mouseover_line(region_data, "24-hour moving average", ylabel, chart_ylims, scale, "Region Price (24h avg)")
+            if hide_original:
+                if ma4 or ma12: chart = chart + price_line_ma24
+                else: chart = price_line_ma24
+            else: chart = chart + price_line_ma24
+        if ma48:
+            price_line_ma48 = alt.Chart(server_data).mark_line(color = "#F5C500", strokeWidth = 2.3).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("48-hour moving average", scale, f"{server_name} Price (48h avg)")
+            ) + alt.Chart(region_data).mark_line(color = "#FFE060", strokeWidth = 2.3).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("48-hour moving average", scale, "Region Price (48h avg)"))
+            price_line_ma48 = price_line_ma48 + get_mouseover_line(server_data, "48-hour moving average", ylabel, chart_ylims, scale, f"{server_name} Price (48h avg)")
+            price_line_ma48 = price_line_ma48 + get_mouseover_line(region_data, "48-hour moving average", ylabel, chart_ylims, scale, "Region Price (48h avg)")
+            if hide_original:
+                if ma4 or ma12 or ma24: chart = chart + price_line_ma48
+                else: chart = price_line_ma48
+            else: chart = chart + price_line_ma48
+        
+        chart = chart.properties(height=600)
+        chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
+            titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
+            titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+        chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
+            labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
+        chart = chart.configure_view(strokeOpacity=0)
+        if mobile:
+            chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
+                titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
+                titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold", titleOpacity=0)
+            chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
+                labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+            chart = chart.properties(title=f"{ylabel.replace('(', '(in ')}")
+            chart.configure_title(fontSize=20, font='Calibri', anchor='start', color='#FFFFFF', align='center')
+            chart = chart.properties(height=400)
+        
         return chart
 
 
