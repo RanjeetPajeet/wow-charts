@@ -110,6 +110,13 @@ if submit:
                     price_data = get_server_history(item, server, faction, num_days)
                     title(item, chart_type, num_days)
                     chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
+            else:
+                st.write("Here")
+                with st.spinner("Loading..."):
+                    server1_data = get_server_history(item, server, faction, num_days)
+                    server2_data = get_server_history(item, server_compare, faction_compare, num_days)
+                    title(item, chart_type, num_days)
+                    chart = st.altair_chart(Plot.price_history_comparison(server1_data, server2_data, server, server_compare, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
 
         else:
             st.markdown("# ")
