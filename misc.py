@@ -4,7 +4,69 @@ misc.py
 
 Functions/classes used elsewhere that didn't have a home.
 """
+import numpy as np
 import pandas as pd
+
+
+
+
+
+def enforce_upper_price_limit(prices: list, num_std_deviations: int = 3) -> list:
+    """
+    Defines an upper limit as `mean(prices) + num_std_deviations*std_dev(prices)`,
+    then iterates through the given list of prices, setting any values larger than this value equal to it.
+    
+    Parameters
+    ----------
+    `prices`: The list to set an upper limit on.
+    `num_std_deviations`: The number of standard deviations away from the mean to define the upper limit as.
+    
+    Returns
+    -------
+    A new list with any values too high replaced with the upper limit.
+    """
+    upper_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  +  
+        num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(prices)):
+        if prices[i] > upper_limit:
+            prices[i] = upper_limit
+    return prices
+
+
+
+
+
+def enforce_lower_price_limit(prices: list, num_std_deviations: int = 3) -> list:
+    """
+    Defines a lower limit as `mean(prices) - num_std_deviations*std_dev(prices)`,
+    then iterates through the given list of prices, setting any values smaller than this value equal to it.
+    
+    Parameters
+    ----------
+    `prices`: The list to set an upper limit on.
+    `num_std_deviations`: The number of standard deviations away from the mean to define the lower limit as.
+    
+    Returns
+    -------
+    A new list with any values too low replaced with the lower limit.
+    """
+    lower_limit  =  (
+        np.mean(pd.Series(prices).rolling(2).mean().dropna().tolist())  -  
+        num_std_deviations * np.std(pd.Series(prices).rolling(2).mean().dropna().tolist()) 
+    )
+    for i in range(len(prices)):
+        if prices[i] < lower_limit:
+            prices[i] = lower_limit
+    return prices
+
+
+
+
+
+
+
 
 
 
@@ -294,98 +356,3 @@ def fix_bad_data(data1: list, data2: list, threshold: int = 3) -> list:
                     regionPrices[j] = lastGoodRegionPrice + plusMinus1Stdev
     return regionPrices
 
-
-
-
-
-
-
-
-
-
-# class Datetime:
-#     """
-#     `datetime`  wrapper with several static methods.
-#     """
-#     import pytz
-#     from datetime import datetime
-
-
-#     @staticmethod
-#     def now(rtype = "string", format = "%m-%d-%Y %H:%M:%S", timezone = "central", _12h = False) -> datetime | str:
-#         """
-#         Timezone aware version of `datetime.datetime.now()`.
-        
-#         Parameters
-#         ----------
-#         `rtype`:   The type to be returned.  Can be `"string"` or `"datetime"`.
-#         `format`:   The format for `strftime`,  if `rtype` is `"string"`.  Default format is of the form `09-10-2022 14:21:05`.
-#         `timezone`:   The timezone of the returned date & time.  Can be `"central"`, `"eastern"`, `"mountain"`, `"pacific"`, or `"utc"`.
-#         `_12h`:   If `True`, will return the time in 12-hour format (`09-10-2022 02:21:05 PM`),  as opposed to 24-hour format (`09-10-2022 14:21:05`).  Overrides `format`.
-
-#         Examples
-#         --------
-#         >>> Datetime.now()
-#             str('09-10-2022 14:21:05')
-#         >>> Datetime.now(_12h=True)
-#             str('09-10-2022 02:21:05 PM')
-#         >>> Datetime.now(timezone="eastern")
-#             str('09-10-2022 15:21:05')
-#         >>> Datetime.now(rtype="datetime")
-#             datetime.datetime('2022-09-10 14:21:05')
-#         """
-#         if rtype.lower() not in ["string","datetime"]:
-#             raise ValueError(f"\n>> `rtype` must be either 'string' or 'datetime', not {rtype}.\n")
-#         if timezone.lower() not in ["central","eastern","mountain","pacific","utc"]:
-#             raise ValueError(f"\n>> The specified timezone ({timezone}) is invalid.\n")
-#         timezone = f"US/{timezone.lower().capitalize()}" if timezone.lower() != "utc" else "UTC"
-#         now = Datetime.datetime.now(Datetime.pytz.timezone(timezone))
-#         if _12h: return now.strftime("%m-%d-%Y %I:%M:%S %p")
-#         if rtype.lower() == "string": return now.strftime(format)
-#         return now.replace(tzinfo=None, microsecond=0)
-    
-
-#     @staticmethod
-#     def change_timezone(dt: datetime, timezone: str, rtype = "string", format = "%m-%d-%Y %H:%M:%S") -> datetime | str:
-#         """
-#         Converts a `datetime` object into a new `datetime` object in the given timezone.
-        
-#         Parameters
-#         ----------
-#         `dt`:   The `datetime` object to be converted.
-#         `timezone`:   The timezone to convert to.  Can be `"central"`, `"eastern"`, `"mountain"`, `"pacific"`, or `"utc"`.
-#         `rtype`:   The type to be returned.  Can be `"string"` or `"datetime"`.
-#         `format`:   The format for `strftime`, if `rtype` is `"string"`.  Default format is of the form `09-10-2022 14:21:05`.
-        
-#         Examples
-#         --------
-#         >>> dt = datetime('09-10-2022 14:21:05')
-#             str('09-10-2022 14:21:05')
-#         >>> dt = Datetime.change_timezone(dt, "eastern")
-#             str('09-10-2022 15:21:05')
-#         >>> dt = Datetime.change_timezone(dt, "utc", rtype="datetime")
-#             datetime.datetime('2022-09-10 19:21:05')
-#         """
-#         if rtype.lower() not in ["string","datetime"]:
-#             raise ValueError(f"\n>> `rtype` must be either 'string' or 'datetime', not {rtype}.\n")
-#         if timezone.lower() not in ["central","eastern","mountain","pacific","utc"]:
-#             raise ValueError(f"\n>> The specified timezone ({timezone}) is invalid.\n")
-#         timezone = f"US/{timezone.lower().capitalize()}" if timezone.lower() != "utc" else "UTC"
-#         dt = dt.replace(tzinfo=Datetime.pytz.timezone(timezone))
-#         return dt.strftime(format) if rtype.lower() == "string" else dt.replace(tzinfo=None, microsecond=0)
-    
-
-#     @staticmethod
-#     def seconds_until_next_hour() -> int:
-#         """
-#         Returns the number of seconds from now until the next hour.
-#         """
-#         return (60-Datetime.datetime.now().minute)*60 - Datetime.datetime.now().second
-    
-
-#     @staticmethod
-#     def seconds_until_next_minute() -> int:
-#         """
-#         Returns the number of seconds from now until the next minute.
-#         """
-#         return 60-(Datetime.datetime.now().second)
