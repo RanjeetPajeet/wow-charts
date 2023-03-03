@@ -111,7 +111,6 @@ if submit:
                     title(item, chart_type, num_days)
                     chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
             else:
-                st.write("Here")
                 with st.spinner("Loading..."):
                     server1_data = get_server_history(item, server, faction, num_days)
                     server2_data = get_server_history(item, server_compare, faction_compare, num_days)
@@ -125,11 +124,7 @@ if submit:
             st.markdown("## ")
             
             chart = st.empty()
-            if chart_type == "Price":
-                if server_compare is not None and faction_compare is not None:
-                    chart = st.altair_chart(plot_price_history_comparison(item, server, faction, server_compare, faction_compare, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
-                else: chart = st.altair_chart(plot_price_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
-            elif chart_type == "Price & Quantity":
+            if chart_type == "Price & Quantity":
                 chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
             elif chart_type == "Price & Region Price":
                 chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
