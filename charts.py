@@ -316,8 +316,7 @@ class Plot:
         ylabel = "Price (silver)" if scale==100 else "Price (gold)"
         if fix_outliers:
             prices = remove_outliers(prices)
-        prices = enforce_upper_price_limit(prices)
-        prices = enforce_lower_price_limit(prices)
+        prices = enforce_price_limits(prices)
         data = pd.DataFrame({
             "Time": historical_price_data["times"], ylabel: prices,
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
@@ -476,10 +475,8 @@ class Plot:
         if fix_outliers:
             server1_prices = remove_outliers(server1_prices)
             server2_prices = remove_outliers(server2_prices)
-        server1_prices = enforce_upper_price_limit(server1_prices)
-        server1_prices = enforce_lower_price_limit(server1_prices)
-        server2_prices = enforce_upper_price_limit(server2_prices)
-        server2_prices = enforce_lower_price_limit(server2_prices)
+        server1_prices = enforce_price_limits(server1_prices)
+        server2_prices = enforce_price_limits(server2_prices)
         server1_price_data["times"] = [time.replace(minute=0) for time in server1_price_data["times"]]
         server2_price_data["times"] = [time.replace(minute=0) for time in server2_price_data["times"]]
         server1_data  = pd.DataFrame({
@@ -630,10 +627,8 @@ class Plot:
         if fix_outliers:
             server_prices = remove_outliers(server_prices)
             region_prices = remove_outliers(region_prices)
-        server_prices = enforce_upper_price_limit(server_prices)
-        server_prices = enforce_lower_price_limit(server_prices)
-        region_prices = enforce_upper_price_limit(region_prices)
-        region_prices = enforce_lower_price_limit(region_prices)
+        server_prices = enforce_price_limits(server_prices)
+        region_prices = enforce_price_limits(region_prices)
         server_std_dev = np.std( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
         region_std_dev = np.std( pd.Series(region_prices).rolling(2).mean().dropna().tolist() )
         server_std_mean = np.mean( pd.Series(server_prices).rolling(2).mean().dropna().tolist() )
@@ -787,8 +782,7 @@ class Plot:
         ylabel = "Price (silver)" if scale==100 else "Price (gold)"
         if fix_outliers:
             prices = remove_outliers(prices)
-        prices = enforce_upper_price_limit(prices)
-        prices = enforce_lower_price_limit(prices)
+        prices = enforce_price_limits(prices)
         data = pd.DataFrame({
             "Time": historical_data["times"], ylabel: prices,
             "Quantity": historical_data["quantities"],
