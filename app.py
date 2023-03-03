@@ -1,10 +1,9 @@
 import streamlit as st
-from streamlit.delta_generator import DeltaGenerator
-from api import api_online, api_offline
+from api import api_offline
 from misc import hide_element, titleize
+from charts import Plot, create_OHLC_chart
+from streamlit.delta_generator import DeltaGenerator
 from data import get_server_history, get_server_history_OHLC, get_region_history
-from charts import Plot
-from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, create_OHLC_chart
 
 st.set_page_config(
     layout     = "centered",
