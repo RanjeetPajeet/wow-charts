@@ -879,20 +879,20 @@ class Plot:
         prices = enforce_lower_limit(prices)
         data = pd.DataFrame({
             "Time": historical_data["times"], ylabel: prices,
-            "Quantity": data["quantities"],
-            "Quantity  4hMA": pd.Series(data["quantities"]).rolling( 2).mean(),
-            "Quantity 12hMA": pd.Series(data["quantities"]).rolling( 6).mean(),
-            "Quantity 24hMA": pd.Series(data["quantities"]).rolling(12).mean(),
-            "Quantity 48hMA": pd.Series(data["quantities"]).rolling(24).mean(),
+            "Quantity": historical_data["quantities"],
+            "Quantity  4hMA": pd.Series(historical_data["quantities"]).rolling( 2).mean(),
+            "Quantity 12hMA": pd.Series(historical_data["quantities"]).rolling( 6).mean(),
+            "Quantity 24hMA": pd.Series(historical_data["quantities"]).rolling(12).mean(),
+            "Quantity 48hMA": pd.Series(historical_data["quantities"]).rolling(24).mean(),
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
             "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
-            "Raw Quantity":     pd.Series(data["quantities"]).rolling( 1).mean().dropna().apply(lambda x: int(x)),
-            "4h Avg Quantity":  pd.Series(data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
-            "12h Avg Quantity": pd.Series(data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
-            "24h Avg Quantity": pd.Series(data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
-            "48h Avg Quantity": pd.Series(data["quantities"]).rolling(24).mean().dropna().apply(lambda x: int(x)),
+            "Raw Quantity":     pd.Series(historical_data["quantities"]).rolling( 1).mean().dropna().apply(lambda x: int(x)),
+            "4h Avg Quantity":  pd.Series(historical_data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
+            "12h Avg Quantity": pd.Series(historical_data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
+            "24h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
+            "48h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(24).mean().dropna().apply(lambda x: int(x)),
         })
         minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
         try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
