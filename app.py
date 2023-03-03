@@ -117,14 +117,17 @@ if submit:
                     title(item, chart_type, num_days)
                     chart = st.altair_chart(Plot.price_history_comparison(server1_data, server2_data, server, server_compare, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
         elif chart_type == "Price & Region Price":
-            st.write("Here")
             with st.spinner("Loading..."):
                 region_data = get_region_history(item, numDays=num_days)
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 chart = st.altair_chart(Plot.price_and_region_history_comparison(server_data, region_data, server, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
-
-
+        elif chart_type == "Price & Quantity":
+            st.write("Here")
+            with st.spinner("Loading..."):
+                server_data = get_server_history(item, server, faction, num_days)
+                title(item, chart_type, num_days)
+                chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
 
 
 
@@ -137,8 +140,6 @@ if submit:
             chart = st.empty()
             if chart_type == "Price & Quantity":
                 chart = st.altair_chart(plot_price_and_quantity_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
-            elif chart_type == "Price & Region Price":
-                chart = st.altair_chart(plot_price_and_region_history(item, server, faction, num_days, ma4, ma12, ma24, ma48, hide_original, mobile), use_container_width=True)
         
         if mobile:
             hide_element("button", "title", "View fullscreen")
