@@ -2,7 +2,7 @@ import streamlit as st
 from streamlit.delta_generator import DeltaGenerator
 from api import api_online, api_offline
 from misc import hide_element, titleize
-from data import get_server_history, get_server_history_OHLC
+from data import get_server_history, get_server_history_OHLC, get_region_history
 from charts import Plot
 from charts import plot_price_history, plot_price_and_quantity_history, plot_price_and_region_history, plot_price_history_comparison, create_OHLC_chart
 
@@ -116,6 +116,17 @@ if submit:
                     server2_data = get_server_history(item, server_compare, faction_compare, num_days)
                     title(item, chart_type, num_days)
                     chart = st.altair_chart(Plot.price_history_comparison(server1_data, server2_data, server, server_compare, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
+        elif chart_type == "Price & Region Price":
+            st.write("Here")
+            with st.spinner("Loading..."):
+                region_data = get_region_history(item, numDays=num_days)
+                server_data = get_server_history(item, server, faction, num_days)
+                title(item, chart_type, num_days)
+                chart = st.altair_chart(Plot.price_and_region_history_comparison(server_data, region_data, server, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
+
+
+
+
 
         else:
             st.markdown("# ")
