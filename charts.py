@@ -220,7 +220,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
     chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
         titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
         titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
-    chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
+    chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, tickCount=6,
         labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
     chart = chart.configure_view(strokeOpacity=0)
     if mobile:
