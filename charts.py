@@ -90,158 +90,6 @@ def get_mouseover_line(data: pd.DataFrame, dataframe_price_column_label: str, ya
         x = alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
         y = alt.Y(dataframe_price_column_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
         tooltip=get_tooltip(dataframe_price_column_label, price_scale, tooltip_price_line_title))
-    
-    
-    
-    
-    
-    
-def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = False, mobile: bool = False) -> alt.Chart:
-    """
-    Creates an OHLC chart from the given data.
-
-    Parameters
-    ----------
-    `OHLC_data`: The data to create the chart from.
-    `minimum`: The minimum price in the data.
-    `maximum`: The maximum price in the data.
-    `show_quantity`: Whether or not to show the quantity area chart.
-    `mobile`: Whether or not the chart is being displayed on a mobile device.
-
-    NOTE: `OHLC_data`, `minimum`, and `maximum` come from `data.get_server_history_OHLC()`.
-
-    Returns
-    -------
-    An Altair chart object.
-    """
-    df = pd.DataFrame({'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data]})
-    SCALE = 100 if df["median_price"].mean() < 10000 else 10000
-    YLABEL = "Price (silver)" if SCALE==100 else "Price (gold)"
-    chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.1/SCALE))
-    if minimum < 1 and maximum < 2 and SCALE != 100:
-        chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
-
-    OHLC_df = pd.DataFrame({
-        'date': list(OHLC_data.keys()),
-        'open_price': [round(OHLC_data[date]["open"]["price"]/SCALE,2) for date in OHLC_data],
-        'close_price': [round(OHLC_data[date]["close"]["price"]/SCALE,2) for date in OHLC_data],
-        'high_price': [round(OHLC_data[date]["high"]["price"]/SCALE,2) for date in OHLC_data],
-        'low_price': [round(OHLC_data[date]["low"]["price"]/SCALE,2) for date in OHLC_data],
-        'open_quantity': [OHLC_data[date]["open"]["quantity"] for date in OHLC_data],
-        'close_quantity': [OHLC_data[date]["close"]["quantity"] for date in OHLC_data],
-        'high_quantity': [OHLC_data[date]["high"]["quantity"] for date in OHLC_data],
-        'low_quantity': [OHLC_data[date]["low"]["quantity"] for date in OHLC_data],
-        'mean_price': [round(OHLC_data[date]["mean"]["price"]/SCALE,2) for date in OHLC_data],
-        'mean_quantity': [OHLC_data[date]["mean"]["quantity"] for date in OHLC_data],
-        'median_price': [round(OHLC_data[date]["median"]["price"]/SCALE,2) for date in OHLC_data],
-        'median_quantity': [OHLC_data[date]["median"]["quantity"] for date in OHLC_data],
-        'percent_change_price': [OHLC_data[date]["percent_change"]["price"] for date in OHLC_data],
-        'percent_change_quantity': [OHLC_data[date]["percent_change"]["quantity"] for date in OHLC_data],
-        'pct_change_mean_price': [OHLC_data[date]["pct_change"]["mean"]["price"] for date in OHLC_data],
-        'pct_change_mean_quantity': [OHLC_data[date]["pct_change"]["mean"]["quantity"] for date in OHLC_data],
-        'pct_change_median_price': [OHLC_data[date]["pct_change"]["median"]["price"] for date in OHLC_data],
-        'pct_change_median_quantity': [OHLC_data[date]["pct_change"]["median"]["quantity"] for date in OHLC_data],
-    })
-    range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
-    quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
-    OHLC_df.insert(2, "quantities", quantities, True)
-    OHLC_df['date'] = pd.to_datetime(OHLC_df['date'])
-    OHLC_df = OHLC_df.sort_values(by='date')
-    OHLC_df = OHLC_df.reset_index(drop=True)
-    OHLC_df['percent_change_price'] = OHLC_df['percent_change_price'].apply(lambda x: x / 100)
-    OHLC_df['percent_change_quantity'] = OHLC_df['percent_change_quantity'].apply(lambda x: x / 100)
-    OHLC_df['pct_change_mean_price'] = OHLC_df['pct_change_mean_price'].apply(lambda x: x / 100)
-    OHLC_df['pct_change_mean_quantity'] = OHLC_df['pct_change_mean_quantity'].apply(lambda x: x / 100)
-    OHLC_df['pct_change_median_price'] = OHLC_df['pct_change_median_price'].apply(lambda x: x / 100)
-    OHLC_df['pct_change_median_quantity'] = OHLC_df['pct_change_median_quantity'].apply(lambda x: x / 100)
-
-    RED = "#AE1325"
-    GREEN = "#06982D"
-    XAXIS_DATETIME_FORMAT = ("%b %d")
-
-    # Wick line mouseover helper
-    mouseover = alt.Chart(OHLC_df).mark_rule().encode(
-        x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-        y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
-        y2='high_price',
-        color=alt.value('#FB00FF'),
-        opacity=alt.value(0.01),
-        size=alt.value(6),
-        tooltip=[alt.Tooltip('date'  , title='Date'),
-            alt.Tooltip('open_price' , title='Open' , format='.2f'),
-            alt.Tooltip('close_price', title='Close', format='.2f'),
-            alt.Tooltip('high_price' , title='High' , format='.2f'),
-            alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
-    
-    # Wick lines
-    chart = alt.Chart(OHLC_df).mark_rule().encode(
-        x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-        y=alt.Y('low_price', axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
-        y2='high_price',
-        color=alt.condition('datum.open_price <= datum.close_price', alt.value(GREEN), alt.value(RED)),    # green if open <= close, else red
-        tooltip=[alt.Tooltip('date'  , title='Date'),
-            alt.Tooltip('open_price' , title='Open' , format='.2f'),
-            alt.Tooltip('close_price', title='Close', format='.2f'),
-            alt.Tooltip('high_price' , title='High' , format='.2f'),
-            alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
-    
-    # Candle bodies
-    chart += alt.Chart(OHLC_df).mark_bar().encode(
-        x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-        y='open_price',
-        y2='close_price',
-        # size=alt.value(8), stroke=alt.value('black'), strokeWidth=alt.value(0.25),
-        color=alt.condition('datum.open_price <= datum.close_price', alt.value(GREEN), alt.value(RED)),
-        tooltip=[alt.Tooltip('date'  , title='Date'),
-            alt.Tooltip('open_price' , title='Open' , format='.2f'),
-            alt.Tooltip('close_price', title='Close', format='.2f'),
-            alt.Tooltip('high_price' , title='High' , format='.2f'),
-            alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
-            alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
-
-    chart += mouseover
-    
-    if show_quantity:
-        quantity_chart = alt.Chart(OHLC_df).mark_area(
-            color=alt.Gradient(
-                gradient="linear",
-                stops=[alt.GradientStop(color="#83c9ff", offset=0.0),   # bottom color
-                       alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
-                x1=1, x2=1, y1=1, y2=0),
-            opacity = 0.2, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
-            x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-            y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
-            tooltip=[alt.Tooltip('date', title='Date'), alt.Tooltip('mean_quantity', title='Quantity')])
-        chart += quantity_chart
-    
-    chart = chart.properties(height=600)
-    chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
-        titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
-        titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
-    chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
-        labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
-    chart = chart.configure_view(strokeOpacity=0)
-    if mobile:
-        chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
-            titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
-            titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold", titleOpacity=0)
-        chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
-            labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
-        chart = chart.properties(title=f"{YLABEL.replace('(', '(in ')}")
-        chart.configure_title(fontSize=20, font='Calibri', anchor='start', color='#FFFFFF', align='center')
-        chart = chart.properties(height=400)
-    
-    return chart
-
-
-
-
-
-
-
-
 
 
 
@@ -394,6 +242,8 @@ class Plot:
         chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
             labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
         chart = chart.configure_view(strokeOpacity=0)
+        # Put a border around the chart
+        chart = chart.configure_background(strokeWidth=10, stroke="#FFFFFF")
         if mobile:
             chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
                 titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
@@ -405,7 +255,7 @@ class Plot:
             chart = chart.properties(height=400)
         
         return chart
-    
+
 
 
 
