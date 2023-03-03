@@ -173,7 +173,7 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
             alt.Tooltip('high_price' , title='High' , format='.2f'),
             alt.Tooltip('low_price'  , title='Low'  , format='.2f'),
             alt.Tooltip('percent_change_price'  , title='% Change'  , format='.2%')])
-
+    
     # Wick lines
     chart = alt.Chart(OHLC_df).mark_rule().encode(
         x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -217,50 +217,27 @@ def create_OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quan
         chart += quantity_chart
     
     chart = chart.properties(height=600)
-    #chart = chart.properties(width=700)
-    chart = chart.configure_axisY(
-        grid=True,           gridOpacity=0.2,         tickCount=6,
-        titleFont="Calibri", titleColor="#ffffff",    titlePadding=20,
-        titleFontSize=24,    titleFontStyle="italic", titleFontWeight="bold",
-        labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
-        labelFontSize=16,    labelFontWeight="bold",
-    )
-    chart = chart.configure_axisX(
-        grid=False,          tickCount="day",        titleOpacity=0,
-        labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-        labelFontSize=20,    labelFontWeight="bold",
-    )
-    
+    chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
+        titleFont="Calibri", titleColor="#FFFFFF", titlePadding=20, titleFontSize=24, titleFontStyle="italic", 
+        titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
+    chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0, 
+        labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=20, labelFontWeight="bold")
+    chart = chart.configure_view(strokeOpacity=0)
     if mobile:
-        chart = chart.configure_axisY(
-            grid=True,           gridOpacity=0.2,         tickCount=5,
-            titleFont="Calibri", titleColor="#ffffff",    titlePadding=0,
-            titleFontSize=1,     titleFontStyle="italic", titleFontWeight="bold",
-            labelFont="Calibri", labelColor="#ffffff",    labelPadding=10,
-            labelFontSize=16,    labelFontWeight="bold",  titleOpacity=0,
-        )
-        chart = chart.configure_axisX(
-            grid=False,          tickCount="day",        titleOpacity=0,
-            labelFont="Calibri", labelColor="#ffffff",   labelPadding=10,
-            labelFontSize=16,    labelFontWeight="bold", 
-        )
-        
+        chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=5,
+            titleFont="Calibri", titleColor="#FFFFFF", titlePadding=0, titleFontSize=1, titleFontStyle="italic", 
+            titleFontWeight="bold", labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold", titleOpacity=0)
+        chart = chart.configure_axisX(grid=False, tickCount="day", titleOpacity=0,
+            labelFont="Calibri", labelColor="#FFFFFF", labelPadding=10, labelFontSize=16, labelFontWeight="bold")
         chart = chart.properties(title=f"{YLABEL.replace('(', '(in ')}")
-        chart.configure_title(
-            fontSize=20,
-            font='Calibri',
-            anchor='start',
-            color='#ffffff',
-            align='center'
-        )
-        
+        chart.configure_title(fontSize=20, font='Calibri', anchor='start', color='#FFFFFF', align='center')
         chart = chart.properties(height=400)
     
     return chart
-    
-    
-    
-    
+
+
+
+
 
 
 
