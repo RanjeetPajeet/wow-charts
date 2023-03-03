@@ -13,27 +13,6 @@ TOOLTIP_DATETIME_FORMAT = ( "%b %d, %Y" )   # the format of the datetime labels 
 
 
 
-def mouseover_line(data: pd.DataFrame, color: str, y_label: str, yaxis_title: str, 
-                   chart_ylimits: tuple, opacity: float = 0.0, xaxis_datetime_format: tuple = ("%b %d")) -> alt.Chart:
-    """
-    Generates a line equivalent to what is used for an item's price,
-    except the stroke width (thickness) is much larger and it has zero opacity.
-    This creates a region around the visible line where the mouse will generate a tooltip.
-    """
-    return alt.Chart(data).mark_line(
-        color = color,
-        strokeWidth = MOUSEOVER_LINE_THICKNESS,
-        opacity = opacity,
-    ).encode(
-        x=alt.X("Time", axis=alt.Axis(title="Date", format=xaxis_datetime_format)),
-        y=alt.Y(y_label, axis=alt.Axis(title=yaxis_title), scale=alt.Scale(domain=chart_ylimits)),
-        tooltip=["Time", y_label],
-    )
-
-
-
-
-
 def enforce_upper_limit(prices: list, num_std_deviations: int = 3) -> list:
     """
     Defines an upper limit as `mean(prices) + num_std_deviations*std_dev(prices)`,
