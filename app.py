@@ -24,7 +24,7 @@ def title(item: str, chart_type: str, num_days: int) -> None:
 st.title("Auction House Data")
 st.markdown("---")
 
-
+st.success('This is a success message!', icon="✅")
 
 
 with st.container():
