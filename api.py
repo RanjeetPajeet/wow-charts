@@ -143,6 +143,41 @@ def region_history(itemname: str, region = "us", timerange: int = None, convert_
 
 
 
+    
+def site_is_online(url: str, timeout: int = 2):
+    """
+    Checks the status of a website.
+
+    Parameters
+    ----------
+    `url` : str
+        The URL of the website to check.
+    `timeout` : int
+        The number of seconds to wait before timing out.
+    
+    Returns
+    -------
+    `status` : bool
+        True if the website is online, False otherwise.
+
+    Raises
+    ------
+    `Exception` if the website is offline.
+    """
+    error = Exception("< Unknown Error >")
+    parser = urlparse(url)
+    host = parser.netloc or parser.path.split("/")[0]
+    for port in (80,443):
+        connection = HTTPConnection(host=host, port=port, timeout=timeout)
+        try:
+            connection.request("HEAD", "/")
+            return True
+        except Exception as e:
+            error = e
+        finally:
+            connection.close()
+    raise error
+    
 
 
 def api_online() -> bool:
@@ -158,8 +193,8 @@ def api_online() -> bool:
     `True` if the API is currently up, `False` otherwise.
     """
     try:
-        _ = server_history("Copper Ore", timerange=1)
-        online = True   # `online` is only `True` if the `server_history()` call doesn't throw an error
+        online = site_is_online("https://api.nexushub.co/wow-classic/v1")
+#         online = True   # `online` is only `True` if the `server_history()` call doesn't throw an error
     except:
         online = False  # `online` is only `False` if the `server_history()` call throws an error
     return online
