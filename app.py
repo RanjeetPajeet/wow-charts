@@ -24,7 +24,9 @@ def title(item: str, chart_type: str, num_days: int) -> None:
 st.title("Auction House Data")
 st.markdown("---")
 
-st.success('This is a success message!', icon="✅")
+
+if api_offline():
+    st.error('Nexushub API is currently offline.', icon="🚨")
 
 
 with st.container():
