@@ -5,6 +5,8 @@ api.py
 Functions that interface with the NexusHub API.
 """
 import requests
+from urllib.parse import urlparse
+from http.client import HTTPConnection
 
 
 
