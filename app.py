@@ -35,10 +35,10 @@ with st.container():
     
     item_col, days_col = st.columns(2)
     with item_col:  item = st.text_input("Item name", "Saronite Ore")
-    with days_col:  num_days = st.number_input("Number of days", 1, 730, 120)
+    with days_col:  num_days = st.number_input("Number of days", 1, 730, 180)
         
     server_col, faction_col = st.columns(2)
-    with server_col:  server = st.selectbox("Server", ["Skyfury","Pagle","Atiesh","Faerlina","Whitemane"])
+    with server_col:  server = st.selectbox("Server", ["Pagle","Skyfury","Atiesh","Faerlina","Whitemane"])
     with faction_col: faction = st.selectbox("Faction", ["Alliance","Horde"]) if server in ["Skyfury","Pagle","Atiesh"] else st.selectbox("Faction", ["Horde","Alliance"])
 
     st.markdown("## ")
