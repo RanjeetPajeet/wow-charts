@@ -29,8 +29,8 @@ if "ma72" not in st.session_state:
     st.session_state["ma72"] = False
 
 
-def update_checkboxes():    # update other checkboxes when the Auto checkbox is pressed
-    new_state = not st.session_state["auto"]
+def update_sessionstate(checkbox, state):    # update other checkboxes when the Auto checkbox is pressed
+    st.session_state[checkbox] = state
 
 
 def title(item: str, chart_type: str, num_days: int) -> None:
