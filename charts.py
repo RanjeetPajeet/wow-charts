@@ -16,6 +16,7 @@ TOOLTIP_DATETIME_FORMAT = ( "%b %d, %Y" )   # the format of the datetime labels 
 
 
 Colors = namedtuple("Colors", ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'grey', 'gold', 'cyan'])
+mpl_colors = Colors(*mpl.rcParams['axes.prop_cycle'].by_key()['color'])
 
 
 
