@@ -10,12 +10,21 @@ st.set_page_config(
     page_title = "AH Prices",
 )
 
-css='''
-<style>
-    section.main > div {max-width:75rem}
-</style>
-'''
-st.markdown(css, unsafe_allow_html=True)
+# css='''
+# <style>
+#     section.main > div {max-width:75rem}
+# </style>
+# '''
+# st.markdown(css, unsafe_allow_html=True)
+
+st.markdown(body=\
+    """
+    <style>
+        section.main > div {max-width:75rem}
+    </style>
+    """,
+    unsafe_allow_html=True)
+
 
 
 def title(item: str, chart_type: str, num_days: int) -> None:
