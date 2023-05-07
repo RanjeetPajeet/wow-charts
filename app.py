@@ -75,12 +75,6 @@ with st.container():
     st.markdown("### ")
     
 
-#     ma4_col, ma12_col, ma24_col, ma48_col, hideOG_col = st.columns(5)
-#     with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox")
-#     with ma12_col:   ma12 = st.checkbox("12 hour", value=True,  key="ma12_checkbox")
-#     with ma24_col:   ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
-#     with ma48_col:   ma48 = st.checkbox("48 hour", value=False, key="ma48_checkbox")
-#     with hideOG_col: hide_original = st.checkbox("Hide raw", value=True, key="hide_original_checkbox")
     ma4_col, ma12_col, ma24_col, ma48_col, ma72_col, hideOG_col = st.columns(6)
     with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox")
     with ma12_col:   ma12 = st.checkbox("12 hour", value=True,  key="ma12_checkbox")
@@ -124,7 +118,7 @@ if submit:
                 with st.spinner("Loading..."):
                     price_data = get_server_history(item, server, faction, num_days)
                     title(item, chart_type, num_days)
-                    chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, hide_original, mobile, regression_line=False), use_container_width=True)
+                    chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
             else:
                 with st.spinner("Loading..."):
                     server1_data = get_server_history(item, server, faction, num_days)
