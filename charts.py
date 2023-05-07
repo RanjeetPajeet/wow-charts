@@ -14,9 +14,6 @@ XAXIS_DATETIME_FORMAT = ( "%b %d" )         # the format of the x-axis datetime 
 TOOLTIP_DATETIME_FORMAT = ( "%b %d, %Y" )   # the format of the datetime labels in the tooltip
 
 
-st.write(LineColors)
-st.write(GradientColors)
-
 
 
 
