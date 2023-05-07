@@ -487,22 +487,22 @@ class Plot:
             except: pass                                                        # Such is the case when plotting the price of Saronite Ore
 
         if not hide_original:
-            chart = alt.Chart(server_data).mark_line(color = "#3AA9FF", strokeWidth = 2).encode(
+            chart = alt.Chart(server_data).mark_line(color = LineColors.red, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, f"{server_name} Price")
-            ) + alt.Chart(region_data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+            ) + alt.Chart(region_data).mark_line(color = LineColors.lighter_red, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, "Region Price"))
             chart = chart + get_mouseover_line(server_data, ylabel, ylabel, chart_ylims, scale, f"{server_name} Price")
             chart = chart + get_mouseover_line(region_data, ylabel, ylabel, chart_ylims, scale, "Region Price")
         if ma4:
-            price_line_ma4 = alt.Chart(server_data).mark_line(color = "#0CE550", strokeWidth = 2).encode(
+            price_line_ma4 = alt.Chart(server_data).mark_line(color = LineColors.green, strokeWidth = 2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("4-hour moving average", scale, f"{server_name} Price (4h avg)")
-            ) + alt.Chart(region_data).mark_line(color = "#7DEFA1", strokeWidth = 2).encode(
+            ) + alt.Chart(region_data).mark_line(color = LineColors.lighter_green, strokeWidth = 2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("4-hour moving average", scale, f"Region Price (4h avg)"))
@@ -510,11 +510,11 @@ class Plot:
             price_line_ma4 = price_line_ma4 + get_mouseover_line(region_data, "4-hour moving average", ylabel, chart_ylims, scale, "Region Price (4h avg)")
             chart = price_line_ma4 if hide_original else chart + price_line_ma4
         if ma12:
-            price_line_ma12 = alt.Chart(server_data).mark_line(color = "#6029C1", strokeWidth = 2.1).encode(
+            price_line_ma12 = alt.Chart(server_data).mark_line(color = LineColors.purple, strokeWidth = 2.1).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, f"{server_name} Price (12h avg)")
-            ) + alt.Chart(region_data).mark_line(color = "#9670DC", strokeWidth = 2.1).encode(
+            ) + alt.Chart(region_data).mark_line(color = LineColors.lighter_purple, strokeWidth = 2.1).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, "Region Price (12h avg)"))
@@ -525,11 +525,11 @@ class Plot:
                 else: chart = price_line_ma12
             else: chart = chart + price_line_ma12
         if ma24:
-            price_line_ma24 = alt.Chart(server_data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
+            price_line_ma24 = alt.Chart(server_data).mark_line(color = LineColors.blue, strokeWidth = 2.2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("24-hour moving average", scale, f"{server_name} Price (24h avg)")
-            ) + alt.Chart(region_data).mark_line(color = "#FF5169", strokeWidth = 2.2).encode(
+            ) + alt.Chart(region_data).mark_line(color = LineColors.lighter_blue, strokeWidth = 2.2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("24-hour moving average", scale, "Region Price (24h avg)"))
@@ -540,11 +540,11 @@ class Plot:
                 else: chart = price_line_ma24
             else: chart = chart + price_line_ma24
         if ma48:
-            price_line_ma48 = alt.Chart(server_data).mark_line(color = "#F5C500", strokeWidth = 2.3).encode(
+            price_line_ma48 = alt.Chart(server_data).mark_line(color = LineColors.orange, strokeWidth = 2.3).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("48-hour moving average", scale, f"{server_name} Price (48h avg)")
-            ) + alt.Chart(region_data).mark_line(color = "#FFE060", strokeWidth = 2.3).encode(
+            ) + alt.Chart(region_data).mark_line(color = LineColors.lighter_orange, strokeWidth = 2.3).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("48-hour moving average", scale, "Region Price (48h avg)"))
