@@ -324,11 +324,11 @@ class Plot:
             except: pass                                                        # Such is the case when plotting the price of Saronite Ore
 
         if not hide_original:
-            chart = alt.Chart(server1_data).mark_line(color = "#3AA9FF", strokeWidth = 2).encode(
+            chart = alt.Chart(server1_data).mark_line(color = LineColors.red, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, f"{server1_name} Price")
-            ) + alt.Chart(server2_data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+            ) + alt.Chart(server2_data).mark_line(color = LineColors.dark_red, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, f"{server2_name} Price"))
