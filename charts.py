@@ -759,7 +759,7 @@ class Plot:
 
 
     @staticmethod
-    def OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = False, mobile: bool = False) -> alt.Chart:
+    def OHLC_chart(OHLC_data: dict, minimum: float, maximum: float, show_quantity: bool = True, mobile: bool = False) -> alt.Chart:
         """
         Creates an OHLC chart from the given data.
 
