@@ -1045,7 +1045,7 @@ class Plot:
                 x1=1, x2=1, y1=1, y2=0),
             opacity = 0.5, strokeWidth = 2.2, interpolate = "monotone", clip = True).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+            y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
             tooltip = get_tooltip("24h Avg Quantity", scale, "Quantity (24h avg)", is_quantity=True))
         
         chart = chart.properties(height=600)
