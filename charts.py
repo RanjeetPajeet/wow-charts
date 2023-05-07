@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
+from collections import namedtuple
 from data import get_server_history, remove_outliers
 from misc import map_value, get_min_max_of_data, enforce_upper_price_limit, enforce_lower_price_limit
 
