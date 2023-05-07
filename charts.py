@@ -928,14 +928,6 @@ class Plot:
         df = pd.DataFrame({'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data]})
         SCALE = 100 if df["median_price"].mean() < 10000 else 10000
         YLABEL = "Price (silver)" if SCALE==100 else "Price (gold)"
-        #ylabel = "Price (silver)" if SCALE==100 else "Price (gold)"
-        
-        #try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
-        #except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
-        #if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
-            #try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
-            #except: pass                                                        # Such is the case when plotting the price of Saronite Ore
-        
         chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.0/SCALE))
         if minimum < 1 and maximum < 2 and SCALE != 100:
             chart_ylims = (round(minimum/1.25,2), round(maximum*1.0,2))
@@ -1048,16 +1040,13 @@ class Plot:
         })
         range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
         quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
-        
-        #range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
-        #data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+
         data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]))
-        
         chart += alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
-                stops=[alt.GradientStop(color=GradientColors.blue.bottom, offset=0.0),     # bottom color
-                       alt.GradientStop(color=GradientColors.blue.top,    offset=0.4)],    # top color
+                stops=[alt.GradientStop(color=GradientColors.green.bottom, offset=0.0),     # bottom color
+                       alt.GradientStop(color=GradientColors.green.top,    offset=0.4)],    # top color
                 x1=1, x2=1, y1=1, y2=0),
             opacity = 0.5, strokeWidth = 2.2, interpolate = "monotone", clip = True).encode(
             x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
