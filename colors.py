@@ -35,13 +35,22 @@ LineColors = LineColors(
     '#90CEFF', '#FFB777', '#91EA91', '#FF9091', '#C2A9D9', '#EFB2DC',
 )
 
+# GradientColors = GradientColors(
+#     Gradient('#2B7EBF','#3AA9FF'),      # blue.top,    blue.bottom
+#     Gradient('#CF670B','#FF7F0E'),      # orange.top,  orange.bottom
+#     Gradient('#31B231','#3DDC3D'),      # green.top,   green.bottom
+#     Gradient('#BF2D2D','#FF3C3D'),      # red.top,     red.bottom
+#     Gradient('#6F4D8D','#9467BD'),      # purple.top,  purple.bottom
+#     Gradient('#AA5991','#E377C2'),      # pink.top,    pink.bottom
+# )
+
 GradientColors = GradientColors(
-    Gradient('#2B7EBF','#3AA9FF'),      # blue.top,    blue.bottom
-    Gradient('#CF670B','#FF7F0E'),      # orange.top,  orange.bottom
-    Gradient('#31B231','#3DDC3D'),      # green.top,   green.bottom
-    Gradient('#BF2D2D','#FF3C3D'),      # red.top,     red.bottom
-    Gradient('#6F4D8D','#9467BD'),      # purple.top,  purple.bottom
-    Gradient('#AA5991','#E377C2'),      # pink.top,    pink.bottom
+    Gradient(LineColors.dark_blue,   LineColors.light_blue),        # blue.top,    blue.bottom
+    Gradient(LineColors.dark_orange, LineColors.light_orange),      # orange.top,  orange.bottom
+    Gradient(LineColors.dark_green,  LineColors.light_green),       # green.top,   green.bottom
+    Gradient(LineColors.dark_red,    LineColors.light_red),         # red.top,     red.bottom
+    Gradient(LineColors.dark_purple, LineColors.light_purple),      # purple.top,  purple.bottom
+    Gradient(LineColors.dark_pink,   LineColors.light_pink),        # pink.top,    pink.bottom
 )
 
 
