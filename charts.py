@@ -634,7 +634,7 @@ class Plot:
 
 
     @staticmethod
-    def price_and_quantity_history(historical_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
+    def price_and_quantity_history(historical_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, ma72: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
         """
         Creates a line chart of the price and quantity history of an item.
 
@@ -645,6 +645,7 @@ class Plot:
         `ma12`: Boolean indicating whether or not to plot the 12-hour moving average.
         `ma24`: Boolean indicating whether or not to plot the 24-hour moving average.
         `ma48`: Boolean indicating whether or not to plot the 48-hour moving average.
+        `ma72`: Boolean indicating whether or not to plot the 48-hour moving average.
         `hide_original`: Boolean indicating whether or not to hide the original price data.
         `mobile`: Boolean indicating whether or not to render the chart for mobile.
         `fix_outliers`: An optional boolean value indicating whether or not to remove outliers from the data. Note that this is currently not working.
@@ -667,17 +668,22 @@ class Plot:
             "Quantity 12hMA": pd.Series(historical_data["quantities"]).rolling( 6).mean(),
             "Quantity 24hMA": pd.Series(historical_data["quantities"]).rolling(12).mean(),
             "Quantity 48hMA": pd.Series(historical_data["quantities"]).rolling(24).mean(),
+            "Quantity 72hMA": pd.Series(historical_data["quantities"]).rolling(36).mean(),
             "4-hour moving average":  pd.Series(prices).rolling( 2).mean().round(2),
             "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
             "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
+            "72-hour moving average": pd.Series(prices).rolling(36).mean().round(2),
             "Raw Quantity":     pd.Series(historical_data["quantities"]).rolling( 1).mean().dropna().apply(lambda x: int(x)),
             "4h Avg Quantity":  pd.Series(historical_data["quantities"]).rolling( 2).mean().dropna().apply(lambda x: int(x)),
             "12h Avg Quantity": pd.Series(historical_data["quantities"]).rolling( 6).mean().dropna().apply(lambda x: int(x)),
             "24h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
             "48h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(24).mean().dropna().apply(lambda x: int(x)),
+            "72h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(36).mean().dropna().apply(lambda x: int(x)),
         })
-        minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
+        if not ma72:
+            minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
+        else: minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, ma72, hide_original)
         try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
         except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
         if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
@@ -788,6 +794,28 @@ class Plot:
                 if ma4 or ma12 or ma24: chart = chart + ma48_lines
                 else: chart = ma48_lines
             else: chart = chart + ma48_lines
+        if ma72:
+            range_quantity = [data["Quantity 72hMA"].min(), data["Quantity 72hMA"].max()]
+            data["Quantity 72hMA"] = data["Quantity 72hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+            ma72_lines = alt.Chart(data).mark_line(color = LineColors.pink, strokeWidth = 2.4).encode(
+                x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
+                y = alt.Y("72-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("72-hour moving average", scale, "Price (72h avg)")
+            ) + alt.Chart(data).mark_area(
+                color=alt.Gradient(
+                    gradient="linear",
+                    stops=[alt.GradientStop(color=GradientColors.pink.bottom, offset=0.3),     # bottom color
+                           alt.GradientStop(color=GradientColors.pink.top,    offset=0.7)],    # top color
+                    x1=1, x2=1, y1=1, y2=0),
+                opacity = 0.5, strokeWidth = 1, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity 72hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("72h Avg Quantity", scale, "Quantity (72h avg)", is_quantity=True))
+            ma72_lines = ma72_lines + get_mouseover_line(data, "72-hour moving average", ylabel, chart_ylims, scale, "Price (72h avg)")
+            if hide_original:
+                if ma4 or ma12 or ma24 or ma48: chart = chart + ma72_lines
+                else: chart = ma72_lines
+            else: chart = chart + ma72_lines
 
         chart = chart.properties(height=600)
         chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
