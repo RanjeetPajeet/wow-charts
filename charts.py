@@ -1031,8 +1031,6 @@ class Plot:
         scale = 100 if historical_data["prices"][-1] < 10000 else 10000
         prices = [round(price/scale,2) for price in historical_data["prices"]]
         ylabel = "Price (silver)" if scale==100 else "Price (gold)"
-        if fix_outliers:
-            prices = remove_outliers(prices)
         prices = enforce_price_limits(prices)
         data = pd.DataFrame({
             "Time": historical_data["times"], ylabel: prices,
