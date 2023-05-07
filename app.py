@@ -75,13 +75,22 @@ with st.container():
     st.markdown("### ")
     
 
-    ma4_col, ma12_col, ma24_col, ma48_col, ma72_col, hideOG_col = st.columns(6)
-    with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox")
-    with ma12_col:   ma12 = st.checkbox("12 hour", value=True,  key="ma12_checkbox")
+#     ma4_col, ma12_col, ma24_col, ma48_col, ma72_col, hideOG_col = st.columns(6)
+#     with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox")
+#     with ma12_col:   ma12 = st.checkbox("12 hour", value=True,  key="ma12_checkbox")
+#     with ma24_col:   ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
+#     with ma48_col:   ma48 = st.checkbox("48 hour", value=False, key="ma48_checkbox")
+#     with ma72_col:   ma72 = st.checkbox("72 hour", value=False, key="ma72_checkbox")
+#     with hideOG_col: hide_original = st.checkbox("Hide raw", value=True, key="hide_original_checkbox")
+    auto_col, ma4_col, ma12_col, ma24_col, ma48_col, ma72_col, hideOG_col = st.columns(7)
+    with auto_col:   auto = st.checkbox("Auto",    value=True,  key="auto_checkbox")
+    with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox" )
+    with ma12_col:   ma12 = st.checkbox("12 hour", value=False, key="ma12_checkbox")
     with ma24_col:   ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
     with ma48_col:   ma48 = st.checkbox("48 hour", value=False, key="ma48_checkbox")
     with ma72_col:   ma72 = st.checkbox("72 hour", value=False, key="ma72_checkbox")
-    with hideOG_col: hide_original = st.checkbox("Hide raw", value=True, key="hide_original_checkbox")
+    with hideOG_col: hide_original = st.checkbox("Hide raw", value=False, key="hide_original_checkbox")
+
 
 
 
@@ -106,6 +115,49 @@ chart = st.empty()
 
 
 if submit:
+    if auto:
+        if num_days < 5:
+            ma4 = False
+            ma12 = False
+            ma24 = False
+            ma48 = False
+            ma72 = False
+            hide_original = False
+        elif num_days < 30:
+            ma4 = True
+            ma12 = False
+            ma24 = False
+            ma48 = False
+            ma72 = False
+            hide_original = True
+        elif num_days < 60:
+            ma4 = False
+            ma12 = True
+            ma24 = False
+            ma48 = False
+            ma72 = False
+            hide_original = True
+        elif num_days < 120:
+            ma4 = False
+            ma12 = False
+            ma24 = True
+            ma48 = False
+            ma72 = False
+            hide_original = True
+        elif num_days < 240:
+            ma4 = False
+            ma12 = False
+            ma24 = False
+            ma48 = True
+            ma72 = False
+            hide_original = True
+        else:
+            ma4 = False
+            ma12 = False
+            ma24 = False
+            ma48 = False
+            ma72 = True
+            hide_original = True
     try:
         if candlestick:
             with st.spinner("Loading..."):
