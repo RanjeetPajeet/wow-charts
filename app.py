@@ -10,6 +10,14 @@ st.set_page_config(
     page_title = "AH Prices",
 )
 
+css='''
+<style>
+    section.main > div {max-width:75rem}
+</style>
+'''
+st.markdown(css, unsafe_allow_html=True)
+
+
 def title(item: str, chart_type: str, num_days: int) -> None:
     """
     Writes the title of the chart to the page.
