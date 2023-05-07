@@ -866,18 +866,39 @@ class Plot:
 
         chart += mouseover
         
+#         if show_quantity:
+#             quantity_chart = alt.Chart(OHLC_df).mark_area(
+#                 color=alt.Gradient(
+#                     gradient="linear",
+#                     stops=[alt.GradientStop(color="#83c9ff", offset=0.0),   # bottom color
+#                         alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
+#                     x1=1, x2=1, y1=1, y2=0),
+#                 opacity = 0.2, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
+#                 x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+#                 y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
+#                 tooltip=[alt.Tooltip('date', title='Date'), alt.Tooltip('mean_quantity', title='Quantity')])
+#             chart += quantity_chart
+            
         if show_quantity:
-            quantity_chart = alt.Chart(OHLC_df).mark_area(
+            data = pd.DataFrame({
+                "Time": historical_data["times"], ylabel: prices,
+                "Quantity": historical_data["quantities"],
+                "Quantity 24hMA": pd.Series(historical_data["quantities"]).rolling(12).mean(),
+                "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
+                "24h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
+            })
+            range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
+            data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+            chart += alt.Chart(data).mark_area(
                 color=alt.Gradient(
                     gradient="linear",
-                    stops=[alt.GradientStop(color="#83c9ff", offset=0.0),   # bottom color
-                        alt.GradientStop(color="#52A9FA", offset=0.4)],  # top color
+                    stops=[alt.GradientStop(color=GradientColors.blue.bottom, offset=0.0),     # bottom color
+                           alt.GradientStop(color=GradientColors.blue.top,    offset=0.4)],    # top color
                     x1=1, x2=1, y1=1, y2=0),
-                opacity = 0.2, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
-                x=alt.X("date", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
-                y=alt.Y("quantities", axis=alt.Axis(title=YLABEL), scale=alt.Scale(domain=chart_ylims)),
-                tooltip=[alt.Tooltip('date', title='Date'), alt.Tooltip('mean_quantity', title='Quantity')])
-            chart += quantity_chart
+                opacity = 0.5, strokeWidth = 2.2, interpolate = "monotone", clip = True).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("Quantity 24hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("24h Avg Quantity", scale, "Quantity (24h avg)", is_quantity=True))
         
         chart = chart.properties(height=600)
         chart = chart.configure_axisY(grid=True, gridOpacity=0.2, tickCount=6,
