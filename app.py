@@ -110,7 +110,7 @@ with st.container():
     with ma24_col:   ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
     with ma48_col:   ma48 = st.checkbox("48 hour", value=False, key="ma48_checkbox")
     with ma72_col:   ma72 = st.checkbox("72 hour", value=False, key="ma72_checkbox")
-    with hideOG_col: hide_original = st.checkbox("Hide smoothed", value=False, key="hide_original_checkbox")
+    with hideOG_col: hide_original = st.checkbox("Hide rawwww", value=False, key="hide_original_checkbox")
 
 
 
