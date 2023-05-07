@@ -11,7 +11,7 @@ st.set_page_config(
 )
 st.markdown(body=\
     """ <style>
-    section.main > div {max-width:70rem}
+    section.main > div {max-width:65rem}
     </style> """, unsafe_allow_html=True
 )
 
