@@ -2,6 +2,12 @@
 # colors.py
 
 Defines colors used in the charts.
+
+Raw:    LineColors.red
+MA4:    LineColors.green
+MA12:   LineColors.purple
+MA24:   LineColors.blue
+MA48:   LineColors.orange
 """
 from collections import namedtuple
 
