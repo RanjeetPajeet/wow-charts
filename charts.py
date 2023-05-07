@@ -5,7 +5,7 @@ import streamlit as st
 from collections import namedtuple
 from colors import LineColors, GradientColors
 from data import get_server_history, remove_outliers, get_server_history_OHLC
-from misc import map_value, get_min_max_of_data, enforce_upper_price_limit, enforce_lower_price_limit
+from misc import map_value, get_min_max_of_data, get_min_max_of_data2, enforce_upper_price_limit, enforce_lower_price_limit
 
 
 
@@ -114,7 +114,7 @@ class Plot:
     `price_history_with_quantity()`: Creates a line chart of the price history of an item, with a volume/quantity area chart below.
     """
     @staticmethod
-    def price_history(historical_price_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
+    def price_history(historical_price_data: dict, ma4: bool, ma12: bool, ma24: bool, ma48: bool, ma72: bool, hide_original: bool, mobile: bool, fix_outliers: bool = False, regression_line: bool = False) -> alt.Chart:
         """
         Creates a line chart of the price history of an item.
 
@@ -125,6 +125,7 @@ class Plot:
         `ma12`: Boolean indicating whether or not to plot the 12-hour moving average.
         `ma24`: Boolean indicating whether or not to plot the 24-hour moving average.
         `ma48`: Boolean indicating whether or not to plot the 48-hour moving average.
+        `ma72`: Boolean indicating whether or not to plot the 72-hour moving average.
         `hide_original`: Boolean indicating whether or not to hide the original price data.
         `mobile`: Boolean indicating whether or not to render the chart for mobile.
         `fix_outliers`: An optional boolean value indicating whether or not to remove outliers from the data. Note that this is currently not working.
@@ -146,8 +147,11 @@ class Plot:
             "12-hour moving average": pd.Series(prices).rolling( 6).mean().round(2),
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
             "48-hour moving average": pd.Series(prices).rolling(24).mean().round(2),
+            "72-hour moving average": pd.Series(prices).rolling(36).mean().round(2),
         })
-        minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
+        if not ma72:
+            minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
+        else: minimum, maximum = get_min_max_of_data2(data, prices, ma4, ma12, ma24, ma48, ma72, hide_original)
         try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
         except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
         if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
@@ -235,6 +239,16 @@ class Plot:
                 if ma4 or ma12 or ma24: chart = chart + price_line_ma48
                 else: chart = price_line_ma48
             else: chart = chart + price_line_ma48
+        if ma72:
+            price_line_ma72 = alt.Chart(data).mark_line(color = LineColors.pink, strokeWidth = 2.4).encode(
+                x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
+                y=alt.Y("72-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
+                tooltip = get_tooltip("72-hour moving average", scale, "Price (72h avg)"))
+            price_line_ma72 = price_line_ma72 + get_mouseover_line(data, "72-hour moving average", ylabel, chart_ylims, scale, "Price (72h avg)")
+            if hide_original:
+                if ma4 or ma12 or ma24 or ma48: chart = chart + price_line_ma72
+                else: chart = price_line_ma72
+            else: chart = chart + price_line_ma72
         
         if regression_line:
             chart = chart + regression_line
