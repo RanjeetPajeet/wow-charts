@@ -104,7 +104,7 @@ with st.container():
 #     with ma72_col:   ma72 = st.checkbox("72 hour", value=False, key="ma72_checkbox")
 #     with hideOG_col: hide_original = st.checkbox("Hide raw", value=True, key="hide_original_checkbox")
     auto_col, ma4_col, ma12_col, ma24_col, ma48_col, ma72_col, hideOG_col = st.columns(7)
-    with auto_col:   auto = st.checkbox("Auto",    value=True,  key="auto_checkbox", on_change=update_sessionstate, args=[auto,"auto"])
+    with auto_col:   auto = st.checkbox("Auto",    value=True,  key="auto_checkbox")
     with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox" )
     with ma12_col:   ma12 = st.checkbox("12 hour", value=False, key="ma12_checkbox")
     with ma24_col:   ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
