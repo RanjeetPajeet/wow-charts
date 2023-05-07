@@ -193,7 +193,7 @@ class Plot:
 
 
         if not hide_original:
-            chart = alt.Chart(data).mark_line(color = "#83C9FF", strokeWidth = 2).encode(
+            chart = alt.Chart(data).mark_line(color = LineColors.pink, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, "Price"))
