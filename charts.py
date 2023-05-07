@@ -328,7 +328,7 @@ class Plot:
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, f"{server1_name} Price")
-            ) + alt.Chart(server2_data).mark_line(color = LineColors.light_red, strokeWidth = 2).encode(
+            ) + alt.Chart(server2_data).mark_line(color = LineColors.lighter_red, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, f"{server2_name} Price"))
@@ -339,7 +339,7 @@ class Plot:
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("4-hour moving average", scale, f"{server1_name} Price (4h avg)")
-            ) + alt.Chart(server2_data).mark_line(color = LineColors.light_green, strokeWidth = 2).encode(
+            ) + alt.Chart(server2_data).mark_line(color = LineColors.lighter_green, strokeWidth = 2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("4-hour moving average", scale, f"{server2_name} Price (4h avg)"))
@@ -351,7 +351,7 @@ class Plot:
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, f"{server1_name} Price (12h avg)")
-            ) + alt.Chart(server2_data).mark_line(color = LineColors.light_purple, strokeWidth = 2.1).encode(
+            ) + alt.Chart(server2_data).mark_line(color = LineColors.lighter_purple, strokeWidth = 2.1).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, f"{server2_name} Price (12h avg)"))
@@ -366,7 +366,7 @@ class Plot:
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("24-hour moving average", scale, f"{server1_name} Price (24h avg)")
-            ) + alt.Chart(server2_data).mark_line(color = LineColors.light_blue, strokeWidth = 2.2).encode(
+            ) + alt.Chart(server2_data).mark_line(color = LineColors.lighter_blue, strokeWidth = 2.2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("24-hour moving average", scale, f"{server2_name} Price (24h avg)"))
@@ -381,7 +381,7 @@ class Plot:
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("48-hour moving average", scale, f"{server1_name} Price (48h avg)")
-            ) + alt.Chart(server2_data).mark_line(color = LineColors.light_orange, strokeWidth = 2.3).encode(
+            ) + alt.Chart(server2_data).mark_line(color = LineColors.lighter_orange, strokeWidth = 2.3).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("48-hour moving average", scale, f"{server2_name} Price (48h avg)"))
