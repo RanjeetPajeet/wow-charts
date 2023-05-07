@@ -928,7 +928,7 @@ class Plot:
         df = pd.DataFrame({'median_price': [OHLC_data[date]["median"]["price"] for date in OHLC_data]})
         SCALE = 100 if df["median_price"].mean() < 10000 else 10000
         YLABEL = "Price (silver)" if SCALE==100 else "Price (gold)"
-        ylabel = "Price (silver)" if SCALE==100 else "Price (gold)"
+        #ylabel = "Price (silver)" if SCALE==100 else "Price (gold)"
         chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.1/SCALE))
         if minimum < 1 and maximum < 2 and SCALE != 100:
             chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
@@ -1028,7 +1028,12 @@ class Plot:
 #                 tooltip=[alt.Tooltip('date', title='Date'), alt.Tooltip('mean_quantity', title='Quantity')])
 #             chart += quantity_chart
             
-
+        scale = 100 if historical_data["prices"][-1] < 10000 else 10000
+        prices = [round(price/scale,2) for price in historical_data["prices"]]
+        ylabel = "Price (silver)" if scale==100 else "Price (gold)"
+        if fix_outliers:
+            prices = remove_outliers(prices)
+        prices = enforce_price_limits(prices)
         data = pd.DataFrame({
             "Time": historical_data["times"], ylabel: prices,
             "Quantity": historical_data["quantities"],
