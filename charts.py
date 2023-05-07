@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import altair as alt
 import streamlit as st
+import matplotlib as mpl
 from collections import namedtuple
 from data import get_server_history, remove_outliers
 from misc import map_value, get_min_max_of_data, enforce_upper_price_limit, enforce_lower_price_limit
@@ -11,6 +12,12 @@ from misc import map_value, get_min_max_of_data, enforce_upper_price_limit, enfo
 MOUSEOVER_LINE_THICKNESS = 15.0             # the stroke width of the zero opacity line added to charts to assist in tooltip visibility when mousing over price lines
 XAXIS_DATETIME_FORMAT = ( "%b %d" )         # the format of the x-axis datetime labels
 TOOLTIP_DATETIME_FORMAT = ( "%b %d, %Y" )   # the format of the datetime labels in the tooltip
+
+
+
+Colors = namedtuple("Colors", ['blue', 'orange', 'green', 'red', 'purple', 'brown', 'pink', 'grey', 'gold', 'cyan'])
+
+
 
 
 
