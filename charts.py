@@ -633,15 +633,15 @@ class Plot:
         if not hide_original:
             range_quantity = [data["Quantity"].min(), data["Quantity"].max()]
             data["Quantity"] = data["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
-            chart = alt.Chart(data).mark_line(color = "#3AA9FF", strokeWidth = 2).encode(
+            chart = alt.Chart(data).mark_line(color = LineColors.red, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y(ylabel, axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip(ylabel, scale, "Price")
             ) + alt.Chart(data).mark_area(
                 color=alt.Gradient(
                     gradient="linear",
-                    stops=[alt.GradientStop(color="#83C9FF", offset=0),     # bottom color
-                           alt.GradientStop(color="#0068C9", offset=1)],    # top color
+                    stops=[alt.GradientStop(color=GradientColors.red.bottom, offset=0),     # bottom color
+                           alt.GradientStop(color=GradientColors.red.top,    offset=1)],    # top color
                     x1=1, x2=1, y1=1, y2=0),
                 opacity = 0.5, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -651,15 +651,15 @@ class Plot:
         if ma4:
             range_quantity = [data["Quantity  4hMA"].min(), data["Quantity  4hMA"].max()]
             data["Quantity  4hMA"] = data["Quantity  4hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
-            ma4_lines = alt.Chart(data).mark_line(color = "#0CE550", strokeWidth = 2).encode(
+            ma4_lines = alt.Chart(data).mark_line(color = LineColors.green, strokeWidth = 2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("4-hour moving average", scale, "Price (4h avg)")
             ) + alt.Chart(data).mark_area(
                 color=alt.Gradient(
                     gradient="linear",
-                    stops=[alt.GradientStop(color="#7DEFA1", offset=0.0),     # bottom color
-                           alt.GradientStop(color="#29B09D", offset=0.4)],    # top color
+                    stops=[alt.GradientStop(color=GradientColors.green.bottom, offset=0.0),     # bottom color
+                           alt.GradientStop(color=GradientColors.green.top,    offset=0.4)],    # top color
                     x1=1, x2=1, y1=1, y2=0),
                 opacity = 0.5, strokeWidth = 2, interpolate = "monotone", clip = True).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -671,15 +671,15 @@ class Plot:
             range_quantity = [data["Quantity 12hMA"].min(), data["Quantity 12hMA"].max()]
             data["Quantity 12hMA"] = data["Quantity 12hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
 
-            ma12_lines = alt.Chart(data).mark_line(color = "#6029C1", strokeWidth = 2.1).encode(
+            ma12_lines = alt.Chart(data).mark_line(color = LineColors.purple, strokeWidth = 2.1).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, "Price (12h avg)")
             ) + alt.Chart(data).mark_area(
                 color=alt.Gradient(
                     gradient="linear",
-                    stops=[alt.GradientStop(color="#9670DC", offset=0.3),     # bottom color
-                           alt.GradientStop(color="#5728AE", offset=0.7)],    # top color
+                    stops=[alt.GradientStop(color=GradientColors.purple.bottom, offset=0.3),     # bottom color
+                           alt.GradientStop(color=GradientColors.purple.top,    offset=0.7)],    # top color
                     x1=1, x2=1, y1=1, y2=0),
                 opacity = 0.5, strokeWidth = 1, interpolate = "monotone", clip = True).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -693,15 +693,15 @@ class Plot:
         if ma24:
             range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
             data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
-            ma24_lines = alt.Chart(data).mark_line(color = "#BA191C", strokeWidth = 2.2).encode(
+            ma24_lines = alt.Chart(data).mark_line(color = LineColors.blue, strokeWidth = 2.2).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y("24-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("24-hour moving average", scale, "Price (24h avg)")
             ) + alt.Chart(data).mark_area(
                 color=alt.Gradient(
                     gradient="linear",
-                    stops=[alt.GradientStop(color="#FF5169", offset=0.0),     # bottom color
-                           alt.GradientStop(color="#D71B35", offset=0.4)],    # top color
+                    stops=[alt.GradientStop(color=GradientColors.blue.bottom, offset=0.0),     # bottom color
+                           alt.GradientStop(color=GradientColors.blue.top,    offset=0.4)],    # top color
                     x1=1, x2=1, y1=1, y2=0),
                 opacity = 0.5, strokeWidth = 2.2, interpolate = "monotone", clip = True).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
@@ -715,15 +715,15 @@ class Plot:
         if ma48:
             range_quantity = [data["Quantity 48hMA"].min(), data["Quantity 48hMA"].max()]
             data["Quantity 48hMA"] = data["Quantity 48hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
-            ma48_lines = alt.Chart(data).mark_line(color = "#F5C500", strokeWidth = 2.3).encode(
+            ma48_lines = alt.Chart(data).mark_line(color = LineColors.orange, strokeWidth = 2.3).encode(
                 x = alt.X("Time", axis=alt.Axis(title="Date" , format=XAXIS_DATETIME_FORMAT)),
                 y = alt.Y("48-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("48-hour moving average", scale, "Price (48h avg)")
             ) + alt.Chart(data).mark_area(
                 color=alt.Gradient(
                     gradient="linear",
-                    stops=[alt.GradientStop(color="#FCD32A", offset=0.3),     # bottom color
-                           alt.GradientStop(color="#E3B600", offset=0.7)],    # top color
+                    stops=[alt.GradientStop(color=GradientColors.orange.bottom, offset=0.3),     # bottom color
+                           alt.GradientStop(color=GradientColors.orange.top,    offset=0.7)],    # top color
                     x1=1, x2=1, y1=1, y2=0),
                 opacity = 0.5, strokeWidth = 1, interpolate = "monotone", clip = True).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
