@@ -199,14 +199,14 @@ class Plot:
                 tooltip = get_tooltip(ylabel, scale, "Price"))
             chart = chart + get_mouseover_line(data, ylabel, ylabel, chart_ylims, scale, "Price")
         if ma4:
-            price_line_ma4 = alt.Chart(data).mark_line(color = LineColors.purple, strokeWidth = 2).encode(
+            price_line_ma4 = alt.Chart(data).mark_line(color = LineColors.green, strokeWidth = 2).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("4-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("4-hour moving average", scale, "Price (4h avg)"))
             price_line_ma4 = price_line_ma4 + get_mouseover_line(data, "4-hour moving average", ylabel, chart_ylims, scale, "Price (4h avg)")
             chart = price_line_ma4 if hide_original else chart + price_line_ma4
         if ma12:
-            price_line_ma12 = alt.Chart(data).mark_line(color = LineColors.green, strokeWidth = 2.1).encode(
+            price_line_ma12 = alt.Chart(data).mark_line(color = LineColors.purple, strokeWidth = 2.1).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("12-hour moving average", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
                 tooltip = get_tooltip("12-hour moving average", scale, "Price (12h avg)"))
