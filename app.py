@@ -137,35 +137,35 @@ chart = st.empty()
 
 if submit:
     if auto:
-        if num_days < 5:
+        if num_days <= 5:
             ma4 = False
             ma12 = False
             ma24 = False
             ma48 = False
             ma72 = False
             hide_original = False
-        elif num_days < 30:
+        elif num_days <= 30:
             ma4 = True
             ma12 = False
             ma24 = False
             ma48 = False
             ma72 = False
             hide_original = True
-        elif num_days < 60:
+        elif num_days <= 60:
             ma4 = False
             ma12 = True
             ma24 = False
             ma48 = False
             ma72 = False
             hide_original = True
-        elif num_days < 120:
+        elif num_days <= 120:
             ma4 = False
             ma12 = False
             ma24 = True
             ma48 = False
             ma72 = False
             hide_original = True
-        elif num_days < 240:
+        elif num_days <= 240:
             ma4 = False
             ma12 = False
             ma24 = False
