@@ -15,9 +15,10 @@ from collections import namedtuple
 Gradient = namedtuple("Gradient", ['top', 'bottom'])
 
 LineColors = namedtuple("LineColors", 
-    ['blue',       'orange',       'green',       'red',       'purple',       'pink',
-     'dark_blue',  'dark_orange',  'dark_green',  'dark_red',  'dark_purple',  'dark_pink',
-     'light_blue', 'light_orange', 'light_green', 'light_red', 'light_purple', 'light_pink']
+    ['blue',         'orange',         'green',         'red',         'purple',         'pink',
+     'dark_blue',    'dark_orange',    'dark_green',    'dark_red',    'dark_purple',    'dark_pink',
+     'light_blue',   'light_orange',   'light_green',   'light_red',   'light_purple',   'light_pink',
+     'lighter_blue', 'lighter_orange', 'lighter_green', 'lighter_red', 'lighter_purple', 'lighter_pink']
 )
 
 GradientColors = namedtuple("GradientColors",
@@ -31,6 +32,7 @@ LineColors = LineColors(
     '#3AA9FF', '#FF7F0E', '#3DDC3D', '#FF3C3D', '#9467BD', '#E377C2',
     '#2B7EBF', '#CF670B', '#31B231', '#BF2D2D', '#6F4D8D', '#AA5991',
     '#6BBEFF', '#FF9F4A', '#6DE46D', '#FF6C6D', '#AE8DCD', '#EA99D1',
+    '#90CEFF', '#FFB777', '#91EA91', '#FF9091', '#C2A9D9', '#EFB2DC')
 )
 
 GradientColors = GradientColors(
