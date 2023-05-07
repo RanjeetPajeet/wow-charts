@@ -1039,8 +1039,13 @@ class Plot:
             "24-hour moving average": pd.Series(prices).rolling(12).mean().round(2),
             "24h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(12).mean().dropna().apply(lambda x: int(x)),
         })
-        range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
-        data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+        range_quantity = [OHLC_df["mean_quantity"].min(), OHLC_df["mean_quantity"].max()]
+        quantities = [ map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]) for x in OHLC_df["mean_quantity"] ]
+        
+        #range_quantity = [data["Quantity 24hMA"].min(), data["Quantity 24hMA"].max()]
+        #data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
+        data["Quantity 24hMA"] = data["Quantity 24hMA"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum/SCALE]))
+        
         chart += alt.Chart(data).mark_area(
             color=alt.Gradient(
                 gradient="linear",
