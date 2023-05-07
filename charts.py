@@ -683,7 +683,7 @@ class Plot:
         })
         if not ma72:
             minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
-        else: minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, ma72, hide_original)
+        else: minimum, maximum = get_min_max_of_data2(data, prices, ma4, ma12, ma24, ma48, ma72, hide_original)
         try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
         except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
         if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
