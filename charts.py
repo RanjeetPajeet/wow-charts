@@ -684,7 +684,7 @@ class Plot:
                 opacity = 0.5, strokeWidth = 1, interpolate = "monotone", clip = True).encode(
                 x=alt.X("Time", axis=alt.Axis(title="Date", format=XAXIS_DATETIME_FORMAT)),
                 y=alt.Y("Quantity 12hMA", axis=alt.Axis(title=ylabel), scale=alt.Scale(domain=chart_ylims)),
-                tooltip = get_tooltip("12h Avg Quantity", scale, "Quantity (12h avg)", is_quantity=True))
+                tooltip = get_tooltip("12h Avg Quantity", scale, "Quantity", is_quantity=True))
             ma12_lines = ma12_lines + get_mouseover_line(data, "12-hour moving average", ylabel, chart_ylims, scale, "Price (12h avg)")
             if hide_original:
                 if ma4: chart = chart + ma12_lines
