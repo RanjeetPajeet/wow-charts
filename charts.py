@@ -929,9 +929,16 @@ class Plot:
         SCALE = 100 if df["median_price"].mean() < 10000 else 10000
         YLABEL = "Price (silver)" if SCALE==100 else "Price (gold)"
         #ylabel = "Price (silver)" if SCALE==100 else "Price (gold)"
-        chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.1/SCALE))
+        
+        #try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
+        #except Exception as e: chart_ylims = (int(min(prices)/1.25), int(max(prices)*1.10))
+        #if minimum < 1 and maximum < 2 and scale != 100:                        # Fix the issue with y-limit scaling when
+            #try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
+            #except: pass                                                        # Such is the case when plotting the price of Saronite Ore
+        
+        chart_ylims = (int(minimum/1.25/SCALE), int(maximum*1.0/SCALE))
         if minimum < 1 and maximum < 2 and SCALE != 100:
-            chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))
+            chart_ylims = (round(minimum/1.25,2), round(maximum*1.0,2))
 
         OHLC_df = pd.DataFrame({
             'date': list(OHLC_data.keys()),
