@@ -18,12 +18,10 @@ st.set_page_config(
 # st.markdown(css, unsafe_allow_html=True)
 
 st.markdown(body=\
-    """
-    <style>
+        """ <style>
         section.main > div {max-width:75rem}
-    </style>
-    """,
-    unsafe_allow_html=True)
+        </style> """, unsafe_allow_html=True
+)
 
 
 
