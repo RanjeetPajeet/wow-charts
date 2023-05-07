@@ -56,11 +56,11 @@ def get_tooltip(dataframe_price_column_label: str, price_scale: int, tooltip_pri
     A list of tooltip objects.
     """
     if is_quantity:         # Quantity formatting
-        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=",.0f")]
     if price_scale != 100:  # Prices are in gold
-        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".2f")]
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=",.2f")]
     else:                   # Prices are in silver
-        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=".0f")]
+        return [alt.Tooltip("Time",title="Time",format=TOOLTIP_DATETIME_FORMAT), alt.Tooltip(dataframe_price_column_label,title=tooltip_price_line_title,format=",.0f")]
 
 
 
