@@ -103,7 +103,8 @@ if submit:
             with st.spinner("Loading..."):
                 ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
                 title(item, chart_type, num_days)
-                chart = st.altair_chart(Plot.OHLC_chart(ohlc_data, data_min, data_max, mobile=mobile), use_container_width=True)
+                chart = st.altair_chart(Plot.OHLC_chart2(item, server, faction, num_days, mobile=mobile), use_container_width=True)
+                #chart = st.altair_chart(Plot.OHLC_chart(ohlc_data, data_min, data_max, mobile=mobile), use_container_width=True)
         elif chart_type == "Price":
             if server_compare is None and faction_compare is None:
                 with st.spinner("Loading..."):
