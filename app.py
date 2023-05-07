@@ -9,18 +9,10 @@ st.set_page_config(
     page_icon  = ":moneybag:",
     page_title = "AH Prices",
 )
-
-# css='''
-# <style>
-#     section.main > div {max-width:75rem}
-# </style>
-# '''
-# st.markdown(css, unsafe_allow_html=True)
-
 st.markdown(body=\
-        """ <style>
-        section.main > div {max-width:75rem}
-        </style> """, unsafe_allow_html=True
+    """ <style>
+    section.main > div {max-width:70rem}
+    </style> """, unsafe_allow_html=True
 )
 
 
