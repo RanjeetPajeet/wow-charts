@@ -15,6 +15,22 @@ st.markdown(body=\
     </style> """, unsafe_allow_html=True
 )
 
+if "auto" not in st.session_state:
+    st.session_state["auto"] = True
+if "ma4" not in st.session_state:
+    st.session_state["ma4"]  = False
+if "ma12" not in st.session_state:
+    st.session_state["ma12"] = False
+if "ma24" not in st.session_state:
+    st.session_state["ma24"] = False
+if "ma48" not in st.session_state:
+    st.session_state["ma48"] = False
+if "ma72" not in st.session_state:
+    st.session_state["ma72"] = False
+
+
+def update_checkboxes():    # update other checkboxes when the Auto checkbox is pressed
+    new_state = not st.session_state["auto"]
 
 
 def title(item: str, chart_type: str, num_days: int) -> None:
