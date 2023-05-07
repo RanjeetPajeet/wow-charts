@@ -5,7 +5,7 @@ from misc import hide_element, titleize
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
 st.set_page_config(
-    #layout     = "centered",
+    layout     = "wide",
     page_icon  = ":moneybag:",
     page_title = "AH Prices",
 )
