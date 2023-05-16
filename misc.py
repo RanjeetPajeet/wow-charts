@@ -14,11 +14,9 @@ def hide_footer_text_css() -> str:
     """
     Returns the CSS code to hide the text in the footer.
     """
-    body=\
-        """ <style>
+    body=""" <style>
         footer {visibility:hidden}
-        </style> """
-    )
+        </style> """)
     return body
 
 
