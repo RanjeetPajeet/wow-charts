@@ -217,3 +217,9 @@ if submit:
             st.error("NexusHub API is currently offline.", icon="🚨")
         else: st.markdown(f"### Error: {e}")
 
+            
+st.markdown(body=\
+    """ <style>
+    footer {visibility:hidden}
+    </style> """, unsafe_allow_html=True
+)            
