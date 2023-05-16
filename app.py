@@ -120,7 +120,7 @@ st.markdown("---")
 
 
 st.markdown("# ")
-mobile = st.checkbox("Mobile", value=False)
+mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing on smaller screens")
 
 if chart_type in ["Price","Price & Quantity"] and server_compare is None:
     st.markdown("##")
