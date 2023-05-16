@@ -10,18 +10,6 @@ import pandas as pd
 
 
 
-def hide_footer_text_css() -> str:
-    """
-    Returns the CSS code to hide the text in the footer.
-    """
-    body=""" <style>
-        footer {visibility:hidden}
-        </style> """)
-    return body
-
-
-
-
 
 
 def enforce_upper_price_limit(prices: list, num_std_deviations: int = 3) -> list:
