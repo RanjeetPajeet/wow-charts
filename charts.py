@@ -682,7 +682,6 @@ class Plot:
             "72h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(36).mean().dropna().apply(lambda x: int(x)),
         })
         if not ma72:
-            st.write("not ma72")
             minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
         else: minimum, maximum = get_min_max_of_data2(data, prices, ma4, ma12, ma24, ma48, ma72, hide_original)
         try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
@@ -691,7 +690,6 @@ class Plot:
             try: chart_ylims = (round(minimum/1.25,2), round(maximum*1.1,2))    # the price of something is barely over a gold
             except: pass                                                        # Such is the case when plotting the price of Saronite Ore
 
-        st.write(chart_ylims)
         if not hide_original:
             range_quantity = [data["Quantity"].min(), data["Quantity"].max()]
             data["Quantity"] = data["Quantity"].apply(lambda x: map_value(x, range_quantity, [chart_ylims[0],minimum]))
