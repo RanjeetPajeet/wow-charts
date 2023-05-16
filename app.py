@@ -206,6 +206,11 @@ if submit:
                 chart = st.altair_chart(Plot.price_and_region_history_comparison(server_data, region_data, server, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         elif chart_type == "Price & Quantity":
             with st.spinner("Loading..."):
+                st.markdown(body=\
+                    """ <style>
+                    footer {visibility:hidden}
+                    </style> """, unsafe_allow_html=True
+                )         
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
