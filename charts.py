@@ -682,6 +682,7 @@ class Plot:
             "72h Avg Quantity": pd.Series(historical_data["quantities"]).rolling(36).mean().dropna().apply(lambda x: int(x)),
         })
         if not ma72:
+            st.write("not ma72")
             minimum, maximum = get_min_max_of_data(data, prices, ma4, ma12, ma24, ma48, hide_original)
         else: minimum, maximum = get_min_max_of_data2(data, prices, ma4, ma12, ma24, ma48, ma72, hide_original)
         try: chart_ylims = (int(minimum/1.25), int(maximum*1.1))
