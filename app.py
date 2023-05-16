@@ -189,6 +189,7 @@ if submit:
     try:
         if candlestick:
             with st.spinner("Loading..."):
+                hide_footer()
                 ohlc_data, data_min, data_max = get_server_history_OHLC(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 chart = st.altair_chart(Plot.OHLC_chart2(item, server, faction, num_days, mobile=mobile), use_container_width=True)
@@ -196,24 +197,27 @@ if submit:
         elif chart_type == "Price":
             if server_compare is None and faction_compare is None:
                 with st.spinner("Loading..."):
+                    hide_footer()
                     price_data = get_server_history(item, server, faction, num_days)
                     title(item, chart_type, num_days)
                     chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
             else:
                 with st.spinner("Loading..."):
+                    hide_footer()
                     server1_data = get_server_history(item, server, faction, num_days)
                     server2_data = get_server_history(item, server_compare, faction_compare, num_days)
                     title(item, chart_type, num_days)
                     chart = st.altair_chart(Plot.price_history_comparison(server1_data, server2_data, server, server_compare, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         elif chart_type == "Price & Region Price":
             with st.spinner("Loading..."):
+                hide_footer()
                 region_data = get_region_history(item, numDays=num_days)
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 chart = st.altair_chart(Plot.price_and_region_history_comparison(server_data, region_data, server, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         elif chart_type == "Price & Quantity":
             with st.spinner("Loading..."):
-                hide_footer()       
+                hide_footer()
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
