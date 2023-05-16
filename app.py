@@ -36,6 +36,13 @@ def update_sessionstate(checkbox, name):    # update other checkboxes when the A
     else:
         st.session_state[name] = False
 
+        
+def hide_footer():
+    st.markdown(body=\
+        """ <style>
+        footer {visibility:hidden}
+        </style> """, unsafe_allow_html=True
+    )  
 
 
 def title(item: str, chart_type: str, num_days: int) -> None:
