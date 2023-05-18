@@ -163,8 +163,10 @@ if submit:
         elif num_days <= 120:
             ma24 = True
             hide_original = True
-            for ma in [ma4,ma12,ma48,ma72]:
-                ma = False
+            for i in [4,12,48,72]:
+                exec(f"ma{i} = False")
+            #for ma in [ma4,ma12,ma48,ma72]:
+            #    ma = False
             #ma4 = False
             #ma12 = False
             #ma24 = True
