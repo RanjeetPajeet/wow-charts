@@ -137,66 +137,34 @@ chart = st.empty()
 if submit:
     if auto:
         if num_days <= 5:
-            for ma in [ma4,ma12,ma24,ma48,ma72]:
-                ma = False
             hide_original = False
-            st.write(f"ma4: {ma4}")
-            st.write(f"ma12: {ma12}")
-            st.write(f"ma24: {ma24}")
-            st.write(f"ma48: {ma48}")
-            st.write(f"ma72: {ma72}")
-            #ma4 = False
-            #ma12 = False
-            #ma24 = False
-            #ma48 = False
-            #ma72 = False
-            #hide_original = False
+            for i in [4,12,24,48,72]:
+                exec(f"ma{i} = False")
         elif num_days <= 30:
             ma4 = True
-            ma12 = False
-            ma24 = False
-            ma48 = False
-            ma72 = False
             hide_original = True
+            for i in [12,24,48,72]:
+                exec(f"ma{i} = False")
         elif num_days <= 60:
-            ma4 = False
             ma12 = True
-            ma24 = False
-            ma48 = False
-            ma72 = False
             hide_original = True
+            for i in [4,24,48,72]:
+                exec(f"ma{i} = False")
         elif num_days <= 120:
             ma24 = True
             hide_original = True
             for i in [4,12,48,72]:
                 exec(f"ma{i} = False")
-            st.write(f"ma4: {ma4}")
-            st.write(f"ma12: {ma12}")
-            st.write(f"ma24: {ma24}")
-            st.write(f"ma48: {ma48}")
-            st.write(f"ma72: {ma72}")
-            #for ma in [ma4,ma12,ma48,ma72]:
-            #    ma = False
-            #ma4 = False
-            #ma12 = False
-            #ma24 = True
-            #ma48 = False
-            #ma72 = False
-            #hide_original = True
         elif num_days <= 240:
-            ma4 = False
-            ma12 = False
-            ma24 = False
             ma48 = True
-            ma72 = False
             hide_original = True
+            for i in [4,12,24,72]:
+                exec(f"ma{i} = False")
         else:
-            ma4 = False
-            ma12 = False
-            ma24 = False
-            ma48 = False
             ma72 = True
             hide_original = True
+            for i in [4,12,24,48]:
+                exec(f"ma{i} = False")
     try:
         if candlestick:
             with st.spinner("Loading..."):
