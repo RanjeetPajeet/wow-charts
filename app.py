@@ -165,6 +165,11 @@ if submit:
             hide_original = True
             for i in [4,12,48,72]:
                 exec(f"ma{i} = False")
+            st.write(f"ma4: {ma4}")
+            st.write(f"ma12: {ma12}")
+            st.write(f"ma24: {ma24}")
+            st.write(f"ma48: {ma48}")
+            st.write(f"ma72: {ma72}")
             #for ma in [ma4,ma12,ma48,ma72]:
             #    ma = False
             #ma4 = False
