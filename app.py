@@ -2,6 +2,7 @@ import streamlit as st
 from charts import Plot
 from api import api_offline
 from misc import hide_element, titleize
+from streamlit_javascript import st_javascript as js
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
 st.set_page_config(
