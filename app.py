@@ -18,7 +18,7 @@ st.markdown(body=\
 
 js("""
    var wowhead_searchbox_format = "160x200"
-   src="http://wow.zamimg.com/widgets/searchbox.js"
+   (function(){function h(h,e){var i="//wow.zamimg.com/widgets/searchbox/searchbox.html";var t='<iframe src="'+i+'" width="'+h+'" height="'+e+'" frameborder="0" class="wowhead-searchbox"';t+="></iframe>";document.write(t)}function e(){var e={"160x200":{width:160,height:200},"160x120":{width:160,height:120},"120x200":{width:120,height:200},"120x120":{width:120,height:120},"150x120":{width:150,height:120}};var i;if(typeof wowhead_searchbox_format!="undefined"){if(e[wowhead_searchbox_format])i=e[wowhead_searchbox_format]}if(!i)i=e["160x200"];h(i.width,i.height)}e()})();
    """)
 
 # st.markdown(body=\
