@@ -22,14 +22,14 @@ st.markdown(body=\
 #     """, unsafe_allow_html=True
 # )
 
-st.markdown(body=\
-    """
-    <script>const whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>
-    <script src="https://wow.zamimg.com/js/tooltips.js"></script>
-    """, unsafe_allow_html=True
-)
+# st.markdown(body=\
+#     """
+#     <script>const whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>
+#     <script src="https://wow.zamimg.com/js/tooltips.js"></script>
+#     """, unsafe_allow_html=True
+# )
 
-st.write("https://www.wowhead.com/item=31015")
+# st.write("https://www.wowhead.com/item=31015")
 
 if "auto" not in st.session_state:
     st.session_state["auto"] = True
