@@ -16,6 +16,11 @@ st.markdown(body=\
     </style> """, unsafe_allow_html=True
 )
 
+js("""
+   var wowhead_searchbox_format = "160x200"
+   src="http://wow.zamimg.com/widgets/searchbox.js"
+   """)
+
 # st.markdown(body=\
 #     """
 #     <script type="text/javascript">var wowhead_searchbox_format = "160x200"</script>
