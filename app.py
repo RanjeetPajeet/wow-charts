@@ -15,6 +15,13 @@ st.markdown(body=\
     </style> """, unsafe_allow_html=True
 )
 
+st.markdown(body=\
+    """
+    <script type="text/javascript">var wowhead_searchbox_format = "160x200"</script>
+    <script type="text/javascript" src="http://wow.zamimg.com/widgets/searchbox.js"></script>
+    """, unsafe_allow_html=True
+)
+
 if "auto" not in st.session_state:
     st.session_state["auto"] = True
 if "ma4" not in st.session_state:
