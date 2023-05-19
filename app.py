@@ -15,12 +15,21 @@ st.markdown(body=\
     </style> """, unsafe_allow_html=True
 )
 
+# st.markdown(body=\
+#     """
+#     <script type="text/javascript">var wowhead_searchbox_format = "160x200"</script>
+#     <script type="text/javascript" src="http://wow.zamimg.com/widgets/searchbox.js"></script>
+#     """, unsafe_allow_html=True
+# )
+
 st.markdown(body=\
     """
-    <script type="text/javascript">var wowhead_searchbox_format = "160x200"</script>
-    <script type="text/javascript" src="http://wow.zamimg.com/widgets/searchbox.js"></script>
+    <script>const whTooltips = {colorLinks: true, iconizeLinks: true, renameLinks: true};</script>
+    <script src="https://wow.zamimg.com/js/tooltips.js"></script>
     """, unsafe_allow_html=True
 )
+
+st.write("https://www.wowhead.com/item=31015")
 
 if "auto" not in st.session_state:
     st.session_state["auto"] = True
