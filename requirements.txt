@@ -4,3 +4,4 @@ numpy
 altair
 pandas
 matplotlib
+streamlit-javascript
