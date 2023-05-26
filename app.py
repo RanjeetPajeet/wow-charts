@@ -113,8 +113,17 @@ with st.container():
     st.markdown("### ")
     
     item_col, days_col = st.columns(2)
-    with item_col:  item = st.text_input("Item name", "Titanium Ore")
-#     with item_col:  
+#     with item_col:  item = st.text_input("Item name", "Titanium Ore")
+    with item_col:
+        item = st_searchbox(
+            search_function=search_items,
+            placeholder="Search...",
+            label="Item name",
+            default=None,
+            clear_on_submit=False,
+            clearable=True,
+            key="search_items",
+        )
     with days_col:  num_days = st.number_input("Number of days", 1, 730, 180)
         
     server_col, faction_col = st.columns(2)
@@ -180,6 +189,9 @@ chart = st.empty()
 
 
 if submit:
+    if item is None:
+        st.info("Searching for Titanium Ore - item was not specified correctly.")
+        item = "Titanium Ore"
     if auto:
         if num_days <= 5:
             hide_original = False
