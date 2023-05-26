@@ -56,8 +56,8 @@ if USE_SEARCHBOX:
             items = items.split(',')
             items = [item.strip() for item in items]
         st.session_state['items'] = items
-    if "searchterm" not in st.session_state:
-        st.session_state['searchterm'] = None
+    if "searched_item" not in st.session_state:
+        st.session_state['searched_item'] = None
 
 
 def search_items(search_term: str) -> list[tuple[str,str]]:
@@ -119,14 +119,13 @@ with st.container():
     
     item_col, days_col = st.columns(2)
     if USE_SEARCHBOX:
-        item_searchbox = st.empty()
         with item_col:
-            item = st.session_state['searchterm'] = st_searchbox(
+            item = st.session_state['searched_item'] = st_searchbox(
                 search_function=search_items,
-                placeholder=st.session_state['searchterm'],
+                placeholder="Search...",
                 label="Item name",
-                default=st.session_state['searchterm'],
-                clear_on_submit=True,
+                default=None,
+                clear_on_submit=False,
                 clearable=True,
                 key="search_items",
             )
@@ -201,8 +200,8 @@ if submit:
         if item is None:
             st.info("Searching for Titanium Ore - item was not specified correctly.")
             item = "Titanium Ore"
-        else:
-            st.session_state['search_items'] = {"result": None, "search": "", "options": []}
+        #else:
+            #st.session_state['search_items'] = {"result": None, "search": "", "options": []}
     if auto:
         if num_days <= 5:
             hide_original = False
