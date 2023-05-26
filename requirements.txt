@@ -4,4 +4,5 @@ numpy
 altair
 pandas
 matplotlib
+streamlit-searchbox
 streamlit-javascript
