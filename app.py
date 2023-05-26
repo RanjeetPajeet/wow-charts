@@ -199,7 +199,7 @@ if submit:
             st.info("Searching for Titanium Ore - item was not specified correctly.")
             item = "Titanium Ore"
         else:
-            st.session_state['search_items'] = {"result": None, "search" = "", "options" = []}
+            st.session_state['search_items'] = {"result": None, "search": "", "options": []}
     if auto:
         if num_days <= 5:
             hide_original = False
