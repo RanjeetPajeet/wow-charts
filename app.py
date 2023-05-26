@@ -2,6 +2,7 @@ import streamlit as st
 from charts import Plot
 from api import api_offline
 from misc import hide_element, titleize
+from streamlit_searchbox import st_searchbox
 from streamlit_javascript import st_javascript as js
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
@@ -54,7 +55,24 @@ if "items" not in st.session_state:
     st.session_state['items'] = items
 
 
-
+def search_items(search_term: str) -> list[tuple[str,str]]:
+    """
+    Searches for `search_term` in the list of all items that could appear on the AH.
+    """
+    if len(search_term) < 3: return []
+    items = st.session_state['items']
+    # Get most broad similarity based off of `search_term`
+    similar = [string for string in st.session_state['items'] if search_term.lower() in string.lower()]
+    # Further filter by similarity, only showing strings from `items` that share at least 3 consecutive characters with `search_term`
+    similar = [string for string in similar if len([char for char in search_term.lower() if char in string.lower()]) >= 3]
+    # Sort by degree of similarity
+    similar = sorted(similar, key=lambda x: len([char for char in search_term.lower() if char in x.lower()]), reverse=True)
+    # Sort again by placing any string that contains all of `search_term` in a single word at the top
+    #   For example, if `search_term` is "ore", then "Titanium Ore" should appear in results before "Claymore"
+    similar = sorted(similar, key=lambda x: len([word for word in x.lower().split() if search_term.lower() in word and len(word) == len(search_term)]), reverse=True)
+    return [(string, string) for string in similar]
+    
+    
 
 def update_sessionstate(checkbox, name):    # update other checkboxes when the Auto checkbox is pressed
     if checkbox:
@@ -96,6 +114,7 @@ with st.container():
     
     item_col, days_col = st.columns(2)
     with item_col:  item = st.text_input("Item name", "Titanium Ore")
+#     with item_col:  
     with days_col:  num_days = st.number_input("Number of days", 1, 730, 180)
         
     server_col, faction_col = st.columns(2)
