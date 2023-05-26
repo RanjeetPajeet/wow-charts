@@ -119,6 +119,7 @@ with st.container():
     
     item_col, days_col = st.columns(2)
     if USE_SEARCHBOX:
+        item_searchbox = st.empty()
         with item_col:
             item = st.session_state['searchterm'] = st_searchbox(
                 search_function=search_items,
