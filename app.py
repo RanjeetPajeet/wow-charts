@@ -6,6 +6,8 @@ from streamlit_searchbox import st_searchbox
 from streamlit_javascript import st_javascript as js
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
+USE_SEARCHBOX = True
+
 st.set_page_config(
     layout     = "centered",
     page_icon  = ":moneybag:",
@@ -47,12 +49,13 @@ if "ma72" not in st.session_state:
     st.session_state["ma72"] = False
     
 
-if "items" not in st.session_state:
-    with open("items.txt", 'r') as f:
-        items = f.read()
-        items = items.split(',')
-        items = [item.strip() for item in items]
-    st.session_state['items'] = items
+if USE_SEARCHBOX:
+    if "items" not in st.session_state:
+        with open("items.txt", 'r') as f:
+            items = f.read()
+            items = items.split(',')
+            items = [item.strip() for item in items]
+        st.session_state['items'] = items
 
 
 def search_items(search_term: str) -> list[tuple[str,str]]:
@@ -113,17 +116,19 @@ with st.container():
     st.markdown("### ")
     
     item_col, days_col = st.columns(2)
-#     with item_col:  item = st.text_input("Item name", "Titanium Ore")
-    with item_col:
-        item = st_searchbox(
-            search_function=search_items,
-            placeholder="Search...",
-            label="Item name",
-            default=None,
-            clear_on_submit=False,
-            clearable=True,
-            key="search_items",
-        )
+    if USE_SEARCHBOX:
+        with item_col:
+            item = st_searchbox(
+                search_function=search_items,
+                placeholder="Search...",
+                label="Item name",
+                default=None,
+                clear_on_submit=False,
+                clearable=True,
+                key="search_items",
+            )
+    else:
+        with item_col:  item = st.text_input("Item name", "Titanium Ore")
     with days_col:  num_days = st.number_input("Number of days", 1, 730, 180)
         
     server_col, faction_col = st.columns(2)
@@ -189,9 +194,12 @@ chart = st.empty()
 
 
 if submit:
-    if item is None:
-        st.info("Searching for Titanium Ore - item was not specified correctly.")
-        item = "Titanium Ore"
+    if USE_SEARCHBOX:
+        if item is None:
+            st.info("Searching for Titanium Ore - item was not specified correctly.")
+            item = "Titanium Ore"
+        else:
+            st.session_state['search_items'] = {"result": None, "search" = "", "options" = []}
     if auto:
         if num_days <= 5:
             hide_original = False
