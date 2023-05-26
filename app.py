@@ -44,6 +44,15 @@ if "ma48" not in st.session_state:
     st.session_state["ma48"] = False
 if "ma72" not in st.session_state:
     st.session_state["ma72"] = False
+    
+
+if "items" not in st.session_state:
+    with open("items.txt", 'r') as f:
+        items = f.read()
+        items = items.split(',')
+        items = [item.strip() for item in items]
+    st.session_state['items'] = items
+
 
 
 
