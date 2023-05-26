@@ -123,7 +123,7 @@ with st.container():
                 placeholder="Search...",
                 label="Item name",
                 default=None,
-                clear_on_submit=False,
+                clear_on_submit=True,
                 clearable=True,
                 key="search_items",
             )
