@@ -75,6 +75,9 @@ def search_items(search_term: str) -> list[tuple[str,str]]:
     # Sort again by placing any string that contains all of `search_term` in a single word at the top
     #   For example, if `search_term` is "ore", then "Titanium Ore" should appear in results before "Claymore"
     similar = sorted(similar, key=lambda x: len([word for word in x.lower().split() if search_term.lower() in word and len(word) == len(search_term)]), reverse=True)
+    # Sort one more time, placing any string that starts with `search_term` at the top
+    #   For example, if `search_term` is "titan", then "Titanium Ore" should come before "Plans: Titansteel Spellblade"
+    similar = sorted(similar, key=lambda x: x.lower().startswith(search_term.lower()), reverse=True)
     return [(string, string) for string in similar]
     
     
