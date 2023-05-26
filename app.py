@@ -56,6 +56,8 @@ if USE_SEARCHBOX:
             items = items.split(',')
             items = [item.strip() for item in items]
         st.session_state['items'] = items
+    if "searchterm" not in st.session_state:
+        st.session_state['searchterm'] = None
 
 
 def search_items(search_term: str) -> list[tuple[str,str]]:
@@ -120,9 +122,9 @@ with st.container():
         with item_col:
             item = st_searchbox(
                 search_function=search_items,
-                placeholder="Search...",
+                placeholder=st.session_state['searchterm'],
                 label="Item name",
-                default=None,
+                default=st.session_state['searchterm'],
                 clear_on_submit=True,
                 clearable=True,
                 key="search_items",
