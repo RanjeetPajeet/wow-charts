@@ -120,7 +120,7 @@ with st.container():
     item_col, days_col = st.columns(2)
     if USE_SEARCHBOX:
         with item_col:
-            item = st_searchbox(
+            item = st.session_state['searchterm'] = st_searchbox(
                 search_function=search_items,
                 placeholder=st.session_state['searchterm'],
                 label="Item name",
