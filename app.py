@@ -6,7 +6,7 @@ from streamlit_searchbox import st_searchbox
 from streamlit_javascript import st_javascript as js
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
-USE_SEARCHBOX = True
+USE_SEARCHBOX = False
 
 st.set_page_config(
     layout     = "centered",
