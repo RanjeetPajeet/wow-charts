@@ -134,7 +134,7 @@ with st.container():
             )
     else:
         with item_col:  item = st.text_input("Item name", "Titanium Ore")
-    with days_col:  num_days = st.number_input("Number of days", 1, 730, 180)
+    with days_col:  num_days = st.number_input("Number of days", 1, 730, 120)
         
     server_col, faction_col = st.columns(2)
     with server_col:  server = st.selectbox("Server", ["Pagle","Skyfury","Atiesh","Faerlina","Whitemane"])
