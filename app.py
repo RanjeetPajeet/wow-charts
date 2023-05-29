@@ -137,7 +137,7 @@ with st.container():
     with days_col:  num_days = st.number_input("Number of days", 1, 730, 120)
         
     server_col, faction_col = st.columns(2)
-    with server_col:  server = st.selectbox("Server", ["Pagle","Skyfury","Atiesh","Faerlina","Whitemane"])
+    with server_col:  server = st.selectbox("Server", ["Whitemane","Pagle","Faerlina","Skyfury","Atiesh"])
     with faction_col: faction = st.selectbox("Faction", ["Alliance","Horde"]) if server in ["Skyfury","Pagle","Atiesh"] else st.selectbox("Faction", ["Horde","Alliance"])
 
     st.markdown("## ")
