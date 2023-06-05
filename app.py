@@ -133,7 +133,7 @@ with st.container():
                 key="search_items",
             )
     else:
-        with item_col:  item = st.text_input("Item name", "Titanium Ore")
+        with item_col:  item = st.text_input("Item name", "Titanium Ore").strip()
     with days_col:  num_days = st.number_input("Number of days", 1, 730, 120)
         
     server_col, faction_col = st.columns(2)
