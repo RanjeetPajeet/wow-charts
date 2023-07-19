@@ -456,12 +456,13 @@ def hide_markdown_links():
     """
     Removes all link objects that appear next to markdown headers.
     """
-    import streamlit as st
-    st.markdown(body=\
-        """ <style>
-        a {visibility:hidden}
-        </style> """, unsafe_allow_html=True
-    )
+    run_custom_css("a {visibility:hidden}")
+    # import streamlit as st
+    # st.markdown(body=\
+    #     """ <style>
+    #     a {visibility:hidden}
+    #     </style> """, unsafe_allow_html=True
+    # )
 
 
 
