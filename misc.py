@@ -457,6 +457,7 @@ def hide_markdown_links():
     Removes all link objects that appear next to markdown headers.
     """
     run_custom_css("a {visibility:hidden}")
+    run_custom_css("details {visibility:hidden}")
     # import streamlit as st
     # st.markdown(body=\
     #     """ <style>
