@@ -155,7 +155,7 @@ with st.container():
         if chart_type in ["Price", "Price & Quantity"]:
             chart_style = st.selectbox("Chart style", ["Line", "Candle"], index=0)
         else:
-            chart_style = st.selectbox("Chart style", ["Line", "Candle"], index=0, disabled=True)
+            chart_style = st.selectbox("Chart style", ["Line"], index=0, disabled=True)
     server_compare = None   # Need to initialize as `None` to avoid exception when determining if the `candlestick` checkbox should be drawn
 
 
