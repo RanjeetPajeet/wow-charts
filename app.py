@@ -1,9 +1,9 @@
 import streamlit as st
 from charts import Plot
 from api import api_offline
-from misc import hide_element, titleize
 from streamlit_searchbox import st_searchbox
 from streamlit_javascript import st_javascript as js
+from misc import hide_element, titleize, hide_markdown_links
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
 USE_SEARCHBOX = False
@@ -197,6 +197,8 @@ st.markdown("## ")
 chart = st.empty()
 
 
+hide_markdown_links()
+
 
 if submit:
     if USE_SEARCHBOX:
@@ -272,6 +274,7 @@ if submit:
                 chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         if mobile:
             hide_element("button", "title", "View fullscreen")
+        hide_markdown_links()
     
     except Exception as e:
         if api_offline():
@@ -280,3 +283,4 @@ if submit:
 
             
 hide_footer()   
+hide_markdown_links()
