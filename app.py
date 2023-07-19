@@ -205,7 +205,7 @@ mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing o
 #     candlestick = st.checkbox("Candlestick", value=False, key="candlestick_checkbox", help="Generates a candlestick chart instead of a line chart - ignores all moving averages")
 # else: candlestick = False
 
-candlestick = chart_tyle=="Candle"
+candlestick = chart_style=="Candle"
 
 st.markdown("## ")
 # submit = st.button("Submit")
