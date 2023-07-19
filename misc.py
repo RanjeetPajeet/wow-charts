@@ -452,6 +452,19 @@ def hide_element(element: str, attribute_name: str, attribute_value: str):
 
 
 
+def hide_markdown_links():
+    """
+    Removes all link objects that appear next to markdown headers.
+    """
+    import streatlit as st
+    st.markdown(body=\
+        """ <style>
+        a {visibility:hidden}
+        </style> """, unsafe_allow_html=True
+    )
+
+
+
 
 def map_value(value, input_range, output_range):
     """
