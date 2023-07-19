@@ -109,7 +109,7 @@ def title(item: str, chart_type: str, num_days: int) -> None:
 
 
 # st.title("Auction House Data")
-st.title("WoW Classic AH Item Price & Quantity History")
+st.title("WoW Classic Auction House Price & Quantity History")
 st.markdown("---")
 
 
