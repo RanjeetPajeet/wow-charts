@@ -187,7 +187,7 @@ mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing o
 
 if chart_type in ["Price","Price & Quantity"] and server_compare is None:
     st.markdown("##")
-    candlestick = st.checkbox("Candlestick", value=False)
+    candlestick = st.checkbox("Candlestick", value=False, key="candlestick_checkbox", help="Generates a candlestick plot instead of a line plot; ignores all moving averages")
 else: candlestick = False
 
 st.markdown("## ")
