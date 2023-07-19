@@ -108,7 +108,8 @@ def title(item: str, chart_type: str, num_days: int) -> None:
 
 
 
-st.title("Auction House Data")
+# st.title("Auction House Data")
+st.title("WoW Classic Auction House Item Price/Quantity History")
 st.markdown("---")
 
 
@@ -167,7 +168,7 @@ with st.container():
     st.markdown("### ")
     
     auto_col, ma4_col, ma12_col, ma24_col, ma48_col, ma72_col, hideOG_col = st.columns(7)
-    with auto_col:   auto = st.checkbox("Auto",    value=True,  key="auto_checkbox", help="Selects the appropriate moving average depending on the number of days specified")
+    with auto_col:   auto = st.checkbox("Auto",    value=True,  key="auto_checkbox", help="Selects an appropriate moving average depending on the number of days specified")
     with ma4_col:    ma4  = st.checkbox("4 hour",  value=False, key="ma4_checkbox" )
     with ma12_col:   ma12 = st.checkbox("12 hour", value=False, key="ma12_checkbox")
     with ma24_col:   ma24 = st.checkbox("24 hour", value=False, key="ma24_checkbox")
@@ -187,7 +188,7 @@ mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing o
 
 if chart_type in ["Price","Price & Quantity"] and server_compare is None:
     st.markdown("##")
-    candlestick = st.checkbox("Candlestick", value=False, key="candlestick_checkbox", help="Generates a candlestick plot instead of a line plot; ignores all moving averages")
+    candlestick = st.checkbox("Candlestick", value=False, key="candlestick_checkbox", help="Generates a candlestick chart instead of a line chart - ignores all moving averages")
 else: candlestick = False
 
 st.markdown("## ")
