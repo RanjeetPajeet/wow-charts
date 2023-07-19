@@ -8,6 +8,8 @@ from misc import hide_element, titleize, hide_markdown_links
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
 USE_SEARCHBOX = False
+SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER = 3
+SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT = 1    # Percent of total data points
 
 st.set_page_config(
     layout     = "centered",
@@ -258,6 +260,10 @@ if submit:
                     hide_footer()
                     price_data = get_server_history(item, server, faction, num_days)
                     title(item, chart_type, num_days)
+                    if filter:
+                        filter_window_length = int(len(price_data["prices"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                        if filter_window_length == 0: filter_window_length = 1
+                        price_data["prices"] = savgol_filter(price_data["prices"], filter_window_length, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
                     chart = st.altair_chart(Plot.price_history(price_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
             else:
                 with st.spinner("Loading..."):
@@ -265,6 +271,13 @@ if submit:
                     server1_data = get_server_history(item, server, faction, num_days)
                     server2_data = get_server_history(item, server_compare, faction_compare, num_days)
                     title(item, chart_type, num_days)
+                    if filter:
+                        filter_window_length1 = int(len(server1_data["prices"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                        if filter_window_length1 == 0: filter_window_length1 = 1
+                        filter_window_length2 = int(len(server2_data["prices"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                        if filter_window_length2 == 0: filter_window_length2 = 1
+                        server1_data["prices"] = savgol_filter(server1_data["prices"], filter_window_length1, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
+                        server2_data["prices"] = savgol_filter(server2_data["prices"], filter_window_length2, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
                     chart = st.altair_chart(Plot.price_history_comparison(server1_data, server2_data, server, server_compare, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         elif chart_type == "Price & Region Price":
             with st.spinner("Loading..."):
@@ -272,6 +285,13 @@ if submit:
                 region_data = get_region_history(item, numDays=num_days)
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
+                if filter:
+                    filter_window_length1 = int(len(server_data["prices"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                    if filter_window_length1 == 0: filter_window_length1 = 1
+                    filter_window_length2 = int(len(region_data["prices"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                    if filter_window_length2 == 0: filter_window_length2 = 1
+                    server_data["prices"] = savgol_filter(server_data["prices"], filter_window_length1, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
+                    region_data["prices"] = savgol_filter(region_data["prices"], filter_window_length2, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
                 chart = st.altair_chart(Plot.price_and_region_history_comparison(server_data, region_data, server, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         elif chart_type == "Price & Quantity":
             with st.spinner("Loading..."):
@@ -279,8 +299,12 @@ if submit:
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 if filter:
-                    server_data["prices"] = savgol_filter(server_data["prices"], len(server_data["prices"])//100, 3)
-                    server_data["quantities"] = savgol_filter(server_data["quantities"], len(server_data["quantities"])//100, 3)
+                    filter_window_length1 = int(len(server_data["prices"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                    if filter_window_length1 == 0: filter_window_length1 = 1
+                    filter_window_length2 = int(len(server_data["quantities"])*(SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT/100))
+                    if filter_window_length2 == 0: filter_window_length2 = 1
+                    server_data["prices"] = savgol_filter(server_data["prices"], filter_window_length1, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
+                    server_data["quantities"] = savgol_filter(server_data["quantities"], filter_window_length2, SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER)
                 chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         if mobile:
             hide_element("button", "title", "View fullscreen")
