@@ -193,7 +193,7 @@ else: candlestick = False
 
 st.markdown("## ")
 # submit = st.button("Submit")
-submit_col, _ = st.columns([0.109, 0.891])
+submit_col, _ = st.columns([0.129, 0.871])
 with submit_col:
     submit = st.button(label=":green[Submit]", use_container_width=True)
 
