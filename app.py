@@ -159,7 +159,7 @@ with st.container():
     server_compare = None   # Need to initialize as `None` to avoid exception when determining if the `candlestick` checkbox should be drawn
 
 
-    if chart_type == "Price":
+    if chart_type == "Price" and chart_style != "Candle":
         server_col_compare, faction_col_compare = st.columns(2)
         with server_col_compare:
             server_compare = st.selectbox("Compare with", [None,"Pagle","Atiesh","Skyfury","Faerlina","Whitemane"], key="server_compare")
