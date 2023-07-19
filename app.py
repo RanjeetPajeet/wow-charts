@@ -200,10 +200,12 @@ filter = st.checkbox("Filter", value=False, help="Uses the Savitzky-Golay filter
 st.markdown("## ")
 mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing on smaller screens")
 
-if chart_type in ["Price","Price & Quantity"] and server_compare is None:
-    st.markdown("##")
-    candlestick = st.checkbox("Candlestick", value=False, key="candlestick_checkbox", help="Generates a candlestick chart instead of a line chart - ignores all moving averages")
-else: candlestick = False
+# if chart_type in ["Price","Price & Quantity"] and server_compare is None:
+#     st.markdown("##")
+#     candlestick = st.checkbox("Candlestick", value=False, key="candlestick_checkbox", help="Generates a candlestick chart instead of a line chart - ignores all moving averages")
+# else: candlestick = False
+
+candlestick = chart_tyle=="Candle"
 
 st.markdown("## ")
 # submit = st.button("Submit")
