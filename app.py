@@ -196,7 +196,7 @@ st.markdown("---")
 
 
 st.markdown("# ")
-filter = st.checkbox("Filter", value=False, help="Uses the Savitzky-Golay filter to de-noise/smooth price & quantity data")
+filter = st.checkbox("Filter", value=True, help="Uses the Savitzky-Golay filter to de-noise/smooth price & quantity data")
 st.markdown("## ")
 mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing on smaller screens")
 
