@@ -193,7 +193,9 @@ else: candlestick = False
 
 st.markdown("## ")
 # submit = st.button("Submit")
-submit = st.button(label=":green[Submit]")
+submit_col, _ = st.columns([0.109, 0.891])
+with submit_col:
+    submit = st.button(label=":green[Submit]", use_container_width=True)
 
 st.markdown("## ")
 chart = st.empty()
