@@ -185,6 +185,8 @@ st.markdown("---")
 
 
 st.markdown("# ")
+filter = st.checkbox("Filter", value=False, help="Uses the Savitzky-Golay filter to smooth price & quantity data")
+st.markdown("## ")
 mobile = st.checkbox("Mobile", value=False, help="Optimizes charts for viewing on smaller screens")
 
 if chart_type in ["Price","Price & Quantity"] and server_compare is None:
@@ -276,6 +278,9 @@ if submit:
                 hide_footer()
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
+                if filter:
+                    server_data["prices"] = savgol_filter(y, len(server_data["prices"])//100, 3)
+                    server_data["quantities"] = savgol_filter(y, len(server_data["quantities"])//100, 3)
                 chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         if mobile:
             hide_element("button", "title", "View fullscreen")
