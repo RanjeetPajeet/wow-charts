@@ -279,8 +279,8 @@ if submit:
                 server_data = get_server_history(item, server, faction, num_days)
                 title(item, chart_type, num_days)
                 if filter:
-                    server_data["prices"] = savgol_filter(y, len(server_data["prices"])//100, 3)
-                    server_data["quantities"] = savgol_filter(y, len(server_data["quantities"])//100, 3)
+                    server_data["prices"] = savgol_filter(server_data["prices"], len(server_data["prices"])//100, 3)
+                    server_data["quantities"] = savgol_filter(server_data["quantities"], len(server_data["quantities"])//100, 3)
                 chart = st.altair_chart(Plot.price_and_quantity_history(server_data, ma4, ma12, ma24, ma48, ma72, hide_original, mobile, regression_line=False), use_container_width=True)
         if mobile:
             hide_element("button", "title", "View fullscreen")
