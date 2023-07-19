@@ -8,7 +8,7 @@ from misc import hide_element, titleize, hide_markdown_links
 from data import get_server_history, get_server_history_OHLC, get_region_history
 
 USE_SEARCHBOX = False
-SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER = 4
+SAVITZKY_GOLAY_FILTER_POLYNOMIAL_ORDER = 3
 SAVITZKY_GOLAY_FILTER_WINDOW_LENGTH_PCT = 1    # Percent of total data points
 
 st.set_page_config(
