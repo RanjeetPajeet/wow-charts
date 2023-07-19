@@ -192,7 +192,8 @@ if chart_type in ["Price","Price & Quantity"] and server_compare is None:
 else: candlestick = False
 
 st.markdown("## ")
-submit = st.button("Submit")
+# submit = st.button("Submit")
+submit = st.button(label=":green[Submit]")
 
 st.markdown("## ")
 chart = st.empty()
