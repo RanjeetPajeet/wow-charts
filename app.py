@@ -147,7 +147,15 @@ with st.container():
     st.markdown("## ")
 
     # chart_type = st.selectbox("Chart type", ["Price & Quantity","Price","Price & Region Price"])
-    chart_type = st.selectbox("Chart type", ["Price", "Price vs. Region", "Price & Quantity"], index=2)
+    # chart_type = st.selectbox("Chart type", ["Price", "Price & Quantity", "Price & Region Price"], index=1)
+    chart_type_col, chart_style_col = st.columns(2)
+    with chart_type_col:
+        chart_type = st.selectbox("Chart type", ["Price", "Price & Quantity", "Price & Region Price"], index=1)
+    with chart_style_col:
+        if chart_type in ["Price", "Price & Quantity"]:
+            chart_style = st.selectbox("Chart style", ["Line", "Candle"], index=0)
+        else:
+            chart_style = st.selectbox("Chart style", ["Line", "Candle"], index=0, disabled=True)
     server_compare = None   # Need to initialize as `None` to avoid exception when determining if the `candlestick` checkbox should be drawn
 
 
