@@ -1,6 +1,7 @@
 import streamlit as st
 from charts import Plot
 from api import api_offline
+from scipy.signal import savgol_filter
 from streamlit_searchbox import st_searchbox
 from streamlit_javascript import st_javascript as js
 from misc import hide_element, titleize, hide_markdown_links
