@@ -328,7 +328,7 @@ if submit:
             #st.markdown("### ")
             #_, last_updated_col, _ = st.columns([0.2,0.6,0.2])
             last_updated_str = DB_REF.child("last_updated").get()
-            st.info(f"Last updated: {last_updated_str}")
+            st.info(f"_Last updated_ : {last_updated_str}")
             #hide_markdown_links()
             #with last_updated_col:
             #    last_updated_str = DB_REF.child("last_updated").get()
