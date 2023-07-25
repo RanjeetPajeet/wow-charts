@@ -226,7 +226,7 @@ if submit:
         #import json
         import zipfile
         import firebase_admin
-        #from io import BytesIO
+        from io import BytesIO
         from wcltooltips import *
         from firebase_admin import credentials, db
         if not firebase_admin._apps:
@@ -268,16 +268,19 @@ if submit:
             whitemane_str += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
             for string in whitemane_strings: whitemane_str += string
             whitemane_str += "\n\n\n"
-            with zipfile.ZipFile('lua_files.zip', 'w') as lua_zip:
+            zip_io = BytesIO()
+            with zipfile.ZipFile(zip_io, 'w') as lua_zip:
                 lua_zip.writestr('Pagle.lua', pagle_str)
                 lua_zip.writestr('Faerlina.lua', faerlina_str)
                 lua_zip.writestr('Whitemane.lua', whitemane_str)
-                st.download_button(
-                    data = lua_zip,
-                    label = "lua_files.zip",
-                    file_name = "lua_files.zip",
-                    use_container_width = True
-                )
+            zip_io.seek(0)
+            st.download_button(
+                data = zip_io.getvalue(),
+                label = "lua_files.zip",
+                file_name = "lua_files.zip",
+                mime = 'application/zip',
+                use_container_width = True
+            )
         with pagle_dl:
             f = ""
             f += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
