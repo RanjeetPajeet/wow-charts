@@ -230,7 +230,9 @@ if submit:
         from wcltooltips import *
         from firebase_admin import credentials, db
         cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
-        app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+        if "app" not in st.session_state:
+            st.session_state["app"] = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+        app = st.session_state["app"]
         DB_REF = db.reference("/")
         
         pagle_dict = DB_REF.child("pagle_json").get()
