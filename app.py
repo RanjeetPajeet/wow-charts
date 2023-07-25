@@ -233,6 +233,8 @@ if submit:
             cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
             app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
         DB_REF = db.reference("/")
+
+        hide_footer()
         
         pagle_dict = DB_REF.child("pagle_json").get()
         # pagle_guilds_dict = DB_REF.child("pagle_guilds_json").get()
@@ -241,6 +243,8 @@ if submit:
         whitemane_dict = DB_REF.child("whitemane_json").get()
         # whitemane_guilds_dict = DB_REF.child("whitemane_guilds_json").get()
 
+        hide_footer()
+        
         def get_lua_strings(parses_dict, server_):
             lua_strings = []
             for player_name, player_data in parses_dict.items():
@@ -251,6 +255,8 @@ if submit:
         
         zip_dl, pagle_dl, faerlina_dl, whitemane_dl = st.columns(4)
 
+        hide_footer()
+        
         pagle_strings = get_lua_strings(pagle_dict, "Pagle")
         faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
         whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
@@ -316,6 +322,7 @@ if submit:
                 file_name = "Whitemane.lua",
                 use_container_width = True
             )
+        hide_footer()
         
 
     else:
