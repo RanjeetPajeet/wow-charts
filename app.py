@@ -325,6 +325,12 @@ if submit:
                     use_container_width = True
                 )
             hide_footer()
+            st.markdown("### ")
+            _, last_updated_col, _ = st.columns([0.2,0.6,0.2])
+            with last_updated_col:
+                last_updated_str = DB_REF.child("last_updated").get()
+                st.markdown(f"#### Last updated: {last_updated_str}")
+                hide_markdown_links()
         
 
     else:
