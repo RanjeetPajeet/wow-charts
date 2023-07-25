@@ -276,7 +276,7 @@ if submit:
             zip_io.seek(0)
             st.download_button(
                 data = zip_io.getvalue(),
-                label = "lua_files.zip",
+                label = "AllServers.zip",
                 file_name = "lua_files.zip",
                 mime = 'application/zip',
                 use_container_width = True
