@@ -255,6 +255,8 @@ if submit:
         faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
         whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
 
+        hide_footer()
+        
         with zip_dl:
             pagle_str = ""
             pagle_str += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
