@@ -232,12 +232,6 @@ if submit:
         if not firebase_admin._apps:
             cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
             app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
-        #if "app" not in st.session_state:
-        #    if not firebase_admin._apps:
-        #        cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
-        #        app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
-        #        st.session_state["app"] = app
-        #    app = st.session_state["app"]
         DB_REF = db.reference("/")
         
         pagle_dict = DB_REF.child("pagle_json").get()
@@ -255,19 +249,6 @@ if submit:
                 )
             return lua_strings
         
-        # def get_lua_strings(parses_dict, guilds_dict, server_):
-        #     lua_strings = []
-        #     for player_name, player_data in parses_dict.items():
-        #         lua_strings.append(
-        #             get_lua_string_for_player(player_data["parses"], player_name, server_.lower(), player_data["class"])
-        #         )
-        #     guild_lua_strings = []
-        #     for guild_name,_ in guilds_dict.items():
-        #         guild_lua_strings.append(
-        #             get_lua_string_for_guild(guilds_dict, guild_name, server_)
-        #         )
-        #     return lua_strings, guild_lua_strings
-        
         pagle_dl, faerlina_dl, whitemane_dl = st.columns(3)
         
         with pagle_dl:
@@ -276,14 +257,10 @@ if submit:
             f += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
             for string in pagle_strings: f += string
             f += "\n\n\n"
-            #with open("Pagle.lua", 'w', encoding='utf-8') as f:
-            #    f.write("\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n")
-            #    for string in pagle_strings: f.write(string)
-            #    f.write("\n\n\n")
-            #    # for string in pagle_guild_strings: f.write(string)
             st.download_button(
                 data = f,
                 label = "Pagle.lua",
+                file_name = "Pagle.lua",
                 use_container_width = True
             )
         with faerlina_dl:
@@ -292,14 +269,10 @@ if submit:
             f += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
             for string in faerlina_strings: f += string
             f += "\n\n\n"
-            #with open("Faerlina.lua", 'w', encoding='utf-8') as f:
-            #    f.write("\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n")
-            #    for string in faerlina_strings: f.write(string)
-            #    f.write("\n\n\n")
-            #    # for string in faerlina_guild_strings: f.write(string)
             st.download_button(
                 data = f,
                 label = "Faerlina.lua",
+                file_name = "Faerlina.lua",
                 use_container_width = True
             )
         with whitemane_dl:
@@ -308,14 +281,10 @@ if submit:
             f += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
             for string in whitemane_strings: f += string
             f += "\n\n\n"
-            #with open("Whitemane.lua", 'w', encoding='utf-8') as f:
-            #    f.write("\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n")
-            #    for string in whitemane_strings: f.write(string)
-            #    f.write("\n\n\n")
-            #    # for string in whitemane_guild_strings: f.write(string)
             st.download_button(
                 data = f,
                 label = "Whitemane.lua",
+                file_name = "Whitemane.lua",
                 use_container_width = True
             )
         
