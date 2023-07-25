@@ -229,12 +229,15 @@ if submit:
         #from io import BytesIO
         from wcltooltips import *
         from firebase_admin import credentials, db
-        if "app" not in st.session_state:
-            if not firebase_admin._apps:
-                cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
-                app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
-                st.session_state["app"] = app
-            app = st.session_state["app"]
+        if not firebase_admin._apps:
+            cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
+            app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+        #if "app" not in st.session_state:
+        #    if not firebase_admin._apps:
+        #        cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
+        #        app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+        #        st.session_state["app"] = app
+        #    app = st.session_state["app"]
         DB_REF = db.reference("/")
         
         pagle_dict = DB_REF.child("pagle_json").get()
