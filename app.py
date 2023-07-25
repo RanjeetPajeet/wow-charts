@@ -229,9 +229,10 @@ if submit:
         #from io import BytesIO
         from wcltooltips import *
         from firebase_admin import credentials, db
-        cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
         if "app" not in st.session_state:
-            st.session_state["app"] = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+            cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
+            app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+            st.session_state["app"] = app
         app = st.session_state["app"]
         DB_REF = db.reference("/")
         
