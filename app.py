@@ -224,7 +224,7 @@ if submit:
 
     if "db" in item.lower():
         #import json
-        #import zipfile
+        import zipfile
         import firebase_admin
         #from io import BytesIO
         from wcltooltips import *
@@ -249,10 +249,36 @@ if submit:
                 )
             return lua_strings
         
-        pagle_dl, faerlina_dl, whitemane_dl = st.columns(3)
-        
+        zip_dl, pagle_dl, faerlina_dl, whitemane_dl = st.columns(4)
+
+        pagle_strings = get_lua_strings(pagle_dict, "Pagle")
+        faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
+        whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
+
+        with zip_dl:
+            pagle_str = ""
+            pagle_str += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
+            for string in pagle_strings: pagle_str += string
+            pagle_str += "\n\n\n"
+            faerlina_str = ""
+            faerlina_str += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
+            for string in faerlina_strings: faerlina_str += string
+            faerlina_str += "\n\n\n"
+            whitemane_str = ""
+            whitemane_str += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
+            for string in whitemane_strings: whitemane_str += string
+            whitemane_str += "\n\n\n"
+            with zipfile.ZipFile('lua_files.zip', 'w') as lua_zip:
+                lua_zip.writestr('Pagle.lua', pagle_str)
+                lua_zip.writestr('Faerlina.lua', faerlina_str)
+                lua_zip.writestr('Whitemane.lua', whitemane_str)
+                st.download_button(
+                    data = lua_zip,
+                    label = "lua_files.zip",
+                    file_name = "lua_files.zip",
+                    use_container_width = True
+                )
         with pagle_dl:
-            pagle_strings = get_lua_strings(pagle_dict, "Pagle")
             f = ""
             f += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
             for string in pagle_strings: f += string
@@ -264,7 +290,6 @@ if submit:
                 use_container_width = True
             )
         with faerlina_dl:
-            faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
             f = ""
             f += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
             for string in faerlina_strings: f += string
@@ -276,7 +301,6 @@ if submit:
                 use_container_width = True
             )
         with whitemane_dl:
-            whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
             f = ""
             f += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
             for string in whitemane_strings: f += string
