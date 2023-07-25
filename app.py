@@ -223,7 +223,75 @@ hide_markdown_links()
 if submit:
 
     if "db" in item.lower():
-        pass
+        #import json
+        #import zipfile
+        import firebase_admin
+        #from io import BytesIO
+        from wcltooltips import *
+        from firebase_admin import credentials, db
+        cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
+        app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+        DB_REF = db.reference("/")
+        
+        pagle_dict = DB_REF.child("pagle_json").get()
+        pagle_guilds_dict = DB_REF.child("pagle_guilds_json").get()
+        faerlina_dict = DB_REF.child("faerlina_json").get()
+        faerlina_guilds_dict = DB_REF.child("faerlina_guilds_json").get()
+        whitemane_dict = DB_REF.child("whitemane_json").get()
+        whitemane_guilds_dict = DB_REF.child("whitemane_guilds_json").get()
+        
+        def get_lua_strings(parses_dict, guilds_dict, server_):
+            lua_strings = []
+            for player_name, player_data in parses_dict.items():
+                lua_strings.append(
+                    get_lua_string_for_player(player_data["parses"], player_name, server_.lower(), player_data["class"])
+                )
+            guild_lua_strings = []
+            for guild_name,_ in guilds_dict.items():
+                guild_lua_strings.append(
+                    get_lua_string_for_guild(guilds_dict, guild_name, server_)
+                )
+            return lua_strings, guild_lua_strings
+        
+        pagle_dl, faerlina_dl, whitemane_dl = st.columns(3)
+        
+        with pagle_dl:
+            pagle_strings, pagle_guild_strings = get_lua_strings(pagle_dict, pagle_guilds_dict, "Pagle")
+            with open("Pagle.lua", 'w', encoding='utf-8') as f:
+                f.write("\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n")
+                for string in pagle_strings: f.write(string)
+                f.write("\n\n\n")
+                for string in pagle_guild_strings: f.write(string)
+                st.download_button(
+                    data = f,
+                    label = "Pagle.lua",
+                    use_container_width = True
+                )
+        with faerlina_dl:
+            faerlina_strings, faerlina_guild_strings = get_lua_strings(faerlina_dict, faerlina_guilds_dict, "Faerlina")
+            with open("Faerlina.lua", 'w', encoding='utf-8') as f:
+                f.write("\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n")
+                for string in faerlina_strings: f.write(string)
+                f.write("\n\n\n")
+                for string in faerlina_guild_strings: f.write(string)
+                st.download_button(
+                    data = f,
+                    label = "Faerlina.lua",
+                    use_container_width = True
+                )
+        with whitemane_dl:
+            whitemane_strings, whitemane_guild_strings = get_lua_strings(whitemane_dict, whitemane_guilds_dict, "Whitemane")
+            with open("Whitemane.lua", 'w', encoding='utf-8') as f:
+                f.write("\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n")
+                for string in whitemane_strings: f.write(string)
+                f.write("\n\n\n")
+                for string in whitemane_guild_strings: f.write(string)
+                st.download_button(
+                    data = f,
+                    label = "Whitemane.lua",
+                    use_container_width = True
+                )
+        
 
     else:
         if USE_SEARCHBOX:
