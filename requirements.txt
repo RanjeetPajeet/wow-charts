@@ -4,5 +4,6 @@ numpy
 altair
 pandas
 matplotlib
+firebase_admin
 streamlit-searchbox
 streamlit-javascript
