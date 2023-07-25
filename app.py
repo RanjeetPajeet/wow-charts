@@ -223,7 +223,7 @@ hide_markdown_links()
 if submit:
 
     if "db" in item.lower():
-        return
+        break
     
     if USE_SEARCHBOX:
         if item is None:
