@@ -265,40 +265,52 @@ if submit:
         
         with pagle_dl:
             pagle_strings = get_lua_strings(pagle_dict, "Pagle")
-            with open("Pagle.lua", 'w', encoding='utf-8') as f:
-                f.write("\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n")
-                for string in pagle_strings: f.write(string)
-                f.write("\n\n\n")
-                # for string in pagle_guild_strings: f.write(string)
-                st.download_button(
-                    data = f,
-                    label = "Pagle.lua",
-                    use_container_width = True
-                )
+            f = ""
+            f += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
+            for string in pagle_strings: f += string
+            f += "\n\n\n"
+            #with open("Pagle.lua", 'w', encoding='utf-8') as f:
+            #    f.write("\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n")
+            #    for string in pagle_strings: f.write(string)
+            #    f.write("\n\n\n")
+            #    # for string in pagle_guild_strings: f.write(string)
+            st.download_button(
+                data = f,
+                label = "Pagle.lua",
+                use_container_width = True
+            )
         with faerlina_dl:
             faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
-            with open("Faerlina.lua", 'w', encoding='utf-8') as f:
-                f.write("\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n")
-                for string in faerlina_strings: f.write(string)
-                f.write("\n\n\n")
-                # for string in faerlina_guild_strings: f.write(string)
-                st.download_button(
-                    data = f,
-                    label = "Faerlina.lua",
-                    use_container_width = True
-                )
+            f = ""
+            f += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
+            for string in faerlina_strings: f += string
+            f += "\n\n\n"
+            #with open("Faerlina.lua", 'w', encoding='utf-8') as f:
+            #    f.write("\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n")
+            #    for string in faerlina_strings: f.write(string)
+            #    f.write("\n\n\n")
+            #    # for string in faerlina_guild_strings: f.write(string)
+            st.download_button(
+                data = f,
+                label = "Faerlina.lua",
+                use_container_width = True
+            )
         with whitemane_dl:
             whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
-            with open("Whitemane.lua", 'w', encoding='utf-8') as f:
-                f.write("\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n")
-                for string in whitemane_strings: f.write(string)
-                f.write("\n\n\n")
-                # for string in whitemane_guild_strings: f.write(string)
-                st.download_button(
-                    data = f,
-                    label = "Whitemane.lua",
-                    use_container_width = True
-                )
+            f = ""
+            f += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
+            for string in whitemane_strings: f += string
+            f += "\n\n\n"
+            #with open("Whitemane.lua", 'w', encoding='utf-8') as f:
+            #    f.write("\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n")
+            #    for string in whitemane_strings: f.write(string)
+            #    f.write("\n\n\n")
+            #    # for string in whitemane_guild_strings: f.write(string)
+            st.download_button(
+                data = f,
+                label = "Whitemane.lua",
+                use_container_width = True
+            )
         
 
     else:
