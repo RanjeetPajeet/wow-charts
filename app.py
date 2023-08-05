@@ -223,117 +223,118 @@ hide_markdown_links()
 if submit:
 
     if "db" in item.lower():
-        #import json
-        import zipfile
-        import firebase_admin
-        from io import BytesIO
-        from wcltooltips import *
-        from firebase_admin import credentials, db
-        if not firebase_admin._apps:
-            cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
-            app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
-        DB_REF = db.reference("/")
+        pass
+    #     #import json
+    #     import zipfile
+    #     import firebase_admin
+    #     from io import BytesIO
+    #     from wcltooltips import *
+    #     from firebase_admin import credentials, db
+    #     if not firebase_admin._apps:
+    #         cred = credentials.Certificate("!FirebaseRealtimeDatabaseCredentials.json")
+    #         app = firebase_admin.initialize_app(cred, {"databaseURL": "https://wcltooltips-default-rtdb.firebaseio.com/"})
+    #     DB_REF = db.reference("/")
 
-        hide_footer()
+    #     hide_footer()
 
-        with st.spinner("Loading..."):
+    #     with st.spinner("Loading..."):
             
-            pagle_dict = DB_REF.child("pagle_json").get()
-            # pagle_guilds_dict = DB_REF.child("pagle_guilds_json").get()
-            faerlina_dict = DB_REF.child("faerlina_json").get()
-            # faerlina_guilds_dict = DB_REF.child("faerlina_guilds_json").get()
-            whitemane_dict = DB_REF.child("whitemane_json").get()
-            # whitemane_guilds_dict = DB_REF.child("whitemane_guilds_json").get()
+    #         pagle_dict = DB_REF.child("pagle_json").get()
+    #         # pagle_guilds_dict = DB_REF.child("pagle_guilds_json").get()
+    #         faerlina_dict = DB_REF.child("faerlina_json").get()
+    #         # faerlina_guilds_dict = DB_REF.child("faerlina_guilds_json").get()
+    #         whitemane_dict = DB_REF.child("whitemane_json").get()
+    #         # whitemane_guilds_dict = DB_REF.child("whitemane_guilds_json").get()
     
-            hide_footer()
+    #         hide_footer()
             
-            def get_lua_strings(parses_dict, server_):
-                lua_strings = []
-                for player_name, player_data in parses_dict.items():
-                    lua_strings.append(
-                        get_lua_string_for_player(player_data["parses"], player_name, server_.lower(), player_data["class"])
-                    )
-                return lua_strings
+    #         def get_lua_strings(parses_dict, server_):
+    #             lua_strings = []
+    #             for player_name, player_data in parses_dict.items():
+    #                 lua_strings.append(
+    #                     get_lua_string_for_player(player_data["parses"], player_name, server_.lower(), player_data["class"])
+    #                 )
+    #             return lua_strings
             
-            zip_dl, pagle_dl, faerlina_dl, whitemane_dl = st.columns(4)
+    #         zip_dl, pagle_dl, faerlina_dl, whitemane_dl = st.columns(4)
     
-            hide_footer()
+    #         hide_footer()
             
-            pagle_strings = get_lua_strings(pagle_dict, "Pagle")
-            faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
-            whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
+    #         pagle_strings = get_lua_strings(pagle_dict, "Pagle")
+    #         faerlina_strings = get_lua_strings(faerlina_dict, "Faerlina")
+    #         whitemane_strings = get_lua_strings(whitemane_dict, "Whitemane")
     
-            hide_footer()
+    #         hide_footer()
             
-            with zip_dl:
-                pagle_str = ""
-                pagle_str += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
-                for string in pagle_strings: pagle_str += string
-                pagle_str += "\n\n\n"
-                faerlina_str = ""
-                faerlina_str += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
-                for string in faerlina_strings: faerlina_str += string
-                faerlina_str += "\n\n\n"
-                whitemane_str = ""
-                whitemane_str += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
-                for string in whitemane_strings: whitemane_str += string
-                whitemane_str += "\n\n\n"
-                zip_io = BytesIO()
-                with zipfile.ZipFile(zip_io, 'w') as lua_zip:
-                    lua_zip.writestr('Pagle.lua', pagle_str)
-                    lua_zip.writestr('Faerlina.lua', faerlina_str)
-                    lua_zip.writestr('Whitemane.lua', whitemane_str)
-                zip_io.seek(0)
-                st.download_button(
-                    data = zip_io.getvalue(),
-                    label = "AllServers.zip",
-                    file_name = "lua_files.zip",
-                    mime = 'application/zip',
-                    use_container_width = True
-                )
-            with pagle_dl:
-                f = ""
-                f += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
-                for string in pagle_strings: f += string
-                f += "\n\n\n"
-                st.download_button(
-                    data = f,
-                    label = "Pagle.lua",
-                    file_name = "Pagle.lua",
-                    use_container_width = True
-                )
-            with faerlina_dl:
-                f = ""
-                f += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
-                for string in faerlina_strings: f += string
-                f += "\n\n\n"
-                st.download_button(
-                    data = f,
-                    label = "Faerlina.lua",
-                    file_name = "Faerlina.lua",
-                    use_container_width = True
-                )
-            with whitemane_dl:
-                f = ""
-                f += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
-                for string in whitemane_strings: f += string
-                f += "\n\n\n"
-                st.download_button(
-                    data = f,
-                    label = "Whitemane.lua",
-                    file_name = "Whitemane.lua",
-                    use_container_width = True
-                )
-            hide_footer()
-            #st.markdown("### ")
-            #_, last_updated_col, _ = st.columns([0.2,0.6,0.2])
-            last_updated_str = DB_REF.child("last_updated").get()
-            st.info(f"_Last updated_ : {last_updated_str}")
-            #hide_markdown_links()
-            #with last_updated_col:
-            #    last_updated_str = DB_REF.child("last_updated").get()
-            #    st.info(f"Last updated: {last_updated_str}")
-            #    hide_markdown_links()
+    #         with zip_dl:
+    #             pagle_str = ""
+    #             pagle_str += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
+    #             for string in pagle_strings: pagle_str += string
+    #             pagle_str += "\n\n\n"
+    #             faerlina_str = ""
+    #             faerlina_str += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
+    #             for string in faerlina_strings: faerlina_str += string
+    #             faerlina_str += "\n\n\n"
+    #             whitemane_str = ""
+    #             whitemane_str += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
+    #             for string in whitemane_strings: whitemane_str += string
+    #             whitemane_str += "\n\n\n"
+    #             zip_io = BytesIO()
+    #             with zipfile.ZipFile(zip_io, 'w') as lua_zip:
+    #                 lua_zip.writestr('Pagle.lua', pagle_str)
+    #                 lua_zip.writestr('Faerlina.lua', faerlina_str)
+    #                 lua_zip.writestr('Whitemane.lua', whitemane_str)
+    #             zip_io.seek(0)
+    #             st.download_button(
+    #                 data = zip_io.getvalue(),
+    #                 label = "AllServers.zip",
+    #                 file_name = "lua_files.zip",
+    #                 mime = 'application/zip',
+    #                 use_container_width = True
+    #             )
+    #         with pagle_dl:
+    #             f = ""
+    #             f += "\nWCL.DB." + "Pagle.Guilds = " + "{}" + "\n\n\n"
+    #             for string in pagle_strings: f += string
+    #             f += "\n\n\n"
+    #             st.download_button(
+    #                 data = f,
+    #                 label = "Pagle.lua",
+    #                 file_name = "Pagle.lua",
+    #                 use_container_width = True
+    #             )
+    #         with faerlina_dl:
+    #             f = ""
+    #             f += "\nWCL.DB." + "Faerlina.Guilds = " + "{}" + "\n\n\n"
+    #             for string in faerlina_strings: f += string
+    #             f += "\n\n\n"
+    #             st.download_button(
+    #                 data = f,
+    #                 label = "Faerlina.lua",
+    #                 file_name = "Faerlina.lua",
+    #                 use_container_width = True
+    #             )
+    #         with whitemane_dl:
+    #             f = ""
+    #             f += "\nWCL.DB." + "Whitemane.Guilds = " + "{}" + "\n\n\n"
+    #             for string in whitemane_strings: f += string
+    #             f += "\n\n\n"
+    #             st.download_button(
+    #                 data = f,
+    #                 label = "Whitemane.lua",
+    #                 file_name = "Whitemane.lua",
+    #                 use_container_width = True
+    #             )
+    #         hide_footer()
+    #         #st.markdown("### ")
+    #         #_, last_updated_col, _ = st.columns([0.2,0.6,0.2])
+    #         last_updated_str = DB_REF.child("last_updated").get()
+    #         st.info(f"_Last updated_ : {last_updated_str}")
+    #         #hide_markdown_links()
+    #         #with last_updated_col:
+    #         #    last_updated_str = DB_REF.child("last_updated").get()
+    #         #    st.info(f"Last updated: {last_updated_str}")
+    #         #    hide_markdown_links()
         
 
     else:
